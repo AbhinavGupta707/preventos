@@ -14,11 +14,11 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 | V.2c | Exhale content pack — content drafting | open | — | **Parallel-safe now** (`content/vaping/`) |
 | V.3c | Steady content pack — content drafting | open | — | **Parallel-safe now** (`content/alcohol/`); include hard-stop referral scripts |
 | V.4c | Nightshift content pack — content drafting | open | — | **Parallel-safe now** (`content/sleep/`); no treatment-claim language |
-| 7.1c | Safety risk corpus (~800 labelled cases) | **in_review** | wp/7.1c-safety-corpus | 843 cases, 6 categories; schema/dedup/distribution enforced by `@preventos/red-team` tests in `pnpm verify` (corrupt line proven to fail); adversarial label audit: 2 mislabels found+fixed; tier scheme {0,1,2} assumption in corpus README |
-| 10.1 | Clinical reviewer brief & engagement pack | open | — | **Parallel-safe now** (`compliance/`) |
-| 10.4 | Instrument licensing audit (SCI vs ISI etc.) | open | — | **Parallel-safe now** (`compliance/`) |
-| 10.6 | Privacy pack drafts (DPIAs, policy, ToS) | open | — | **Parallel-safe now** (`compliance/`) |
-| 10.10 | Claims register v0 | open | — | **Parallel-safe now** (`compliance/`); feeds content lint |
+| 7.1c | Safety risk corpus (~800 labelled cases) | **done** | merged (PR #6) | 843 cases, 6 categories; schema/dedup/distribution enforced by `@preventos/red-team` tests in `pnpm verify` (corrupt line proven to fail); adversarial label audit: 2 mislabels found+fixed; tier scheme {0,1,2} assumption in corpus README |
+| 10.1 | Clinical reviewer brief & engagement pack | **done** | merged (PR #4) | DRAFT brief + engagement letter in `compliance/clinical-review/`; two-reviewer recommendation flagged for owner |
+| 10.4 | Instrument licensing audit (SCI vs ISI etc.) | **done** | merged (PR #4) | Audit in `compliance/instruments/`; **finding: SCI paper is CC BY-NC — commercial permission needed (owner action §3.1)**; AUDIT/HSI/PHQ-2/GAD-2 cleared with conditions; ISI rejected (Mapi fees) |
+| 10.6 | Privacy pack drafts (DPIAs, policy, ToS) | **done** | merged (PR #4) | 3 DPIA scaffolds + Art. 9 analysis + privacy policy + ToS drafts in `compliance/privacy/`; all DECISION/TBD items role-tagged |
+| 10.10 | Claims register v0 | **done** | merged (PR #4) | `compliance/claims/` — machine-readable register (3 blocklists, 16 patterns) + checker; 25 test vectors green; forbidden sleep claim proven to exit 1 |
 
 Everything not listed is blocked behind the spine (see plan §7 dependency notes) — add rows as
 WPs unblock. Statuses: open → claimed(session/branch) → in_review(PR) → done(evidence).

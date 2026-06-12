@@ -1,0 +1,183 @@
+{
+  "version": "0.1.0",
+  "status": "DRAFT",
+  "updated": "2026-06-12",
+  "notes": "WP10.10 claims register v0. Blocklists are CI-enforceable guards (WP4.2). Approved language is draft-pending-signoff. See claims-register.md for governance.",
+  "exemptions": [
+    {
+      "scope": "packages/instruments verbatim renders",
+      "reason": "Validated instruments render verbatim (safety invariant #2); their wording is governed by the licensing audit, not the claims lint."
+    }
+  ],
+  "blocklists": {
+    "sleep-treatment-claims": {
+      "appliesTo": ["content/sleep", "marketing", "store-listings", "coach-fences"],
+      "enforcement": "ci-blocking",
+      "rationale": "E16: full CBT-I mechanics under wellbeing framing; treatment claims cross the MHRA medical-device line.",
+      "patterns": [
+        {
+          "id": "sleep-treat-disorder",
+          "pattern": "\\btreat(s|ing|ment)?\\b[^.!?]{0,50}\\b(insomnia|sleep\\s+(disorder|apnoea|apnea|problem)s?)\\b",
+          "flags": "i",
+          "rationale": "Treatment claims against a named disorder"
+        },
+        {
+          "id": "sleep-cure-heal",
+          "pattern": "\\b(cure|cures|curing|heal|heals|healing|remedy)\\b[^.!?]{0,50}\\b(insomnia|sleep)\\b",
+          "flags": "i",
+          "rationale": "Cure/heal claims"
+        },
+        {
+          "id": "sleep-overcome-insomnia",
+          "pattern": "\\b(beat|overcome|fix|end|banish|conquer|defeat|eliminate)\\b[^.!?]{0,40}\\binsomnia\\b",
+          "flags": "i",
+          "rationale": "Outcome claims targeting insomnia by name"
+        },
+        {
+          "id": "sleep-diagnose",
+          "pattern": "\\bdiagnos(e|es|is|ing|tic)\\b",
+          "flags": "i",
+          "rationale": "Diagnosis claims (sleep-scoped copy); signpost to GP instead"
+        },
+        {
+          "id": "sleep-named-therapy",
+          "pattern": "\\b(CBT-?I|cognitive\\s+behaviou?ral\\s+therapy)\\b",
+          "flags": "i",
+          "rationale": "Naming the clinical therapy is a treatment claim in marketing/app copy"
+        },
+        {
+          "id": "sleep-our-therapy",
+          "pattern": "\\b((our|this|the)\\s+(app'?s?\\s+)?therap(y|ies)|(sleep|digital|online)\\s+therapy|therapeutic)\\b",
+          "flags": "i",
+          "rationale": "Describing the product as therapy ('speak to a therapist' signposting still passes)"
+        },
+        {
+          "id": "sleep-clinically-proven",
+          "pattern": "\\b(clinical(ly)?|medical(ly)?|scientifically)\\s+(proven|validated|effective)\\b",
+          "flags": "i",
+          "rationale": "Efficacy claims requiring an evidence basis and sign-off we do not have"
+        },
+        {
+          "id": "sleep-medication-comparison",
+          "pattern": "\\b(replace|instead\\s+of|stop\\s+taking|quit|alternative\\s+to|better\\s+than|without)\\b[^.!?]{0,50}\\b(sleeping\\s+pills?|sleep\\s+(medication|meds)|hypnotics?|z-?drugs?|melatonin)\\b",
+          "flags": "i",
+          "rationale": "Medication-replacement claims; also a safety issue (never advise stopping medication)"
+        },
+        {
+          "id": "sleep-device-claims",
+          "pattern": "\\b(medical\\s+device|SaMD|MHRA[\\s-]?(cleared|approved|registered)|FDA[\\s-]?(cleared|approved)|CE[\\s-]?marked)\\b",
+          "flags": "i",
+          "rationale": "Regulatory-status claims; SaMD is a deferred owner decision"
+        }
+      ]
+    },
+    "alcohol-clinical-claims": {
+      "appliesTo": ["content/alcohol", "marketing", "store-listings", "coach-fences"],
+      "enforcement": "ci-blocking",
+      "rationale": "E17: no in-app pathway for dependence; unsupervised withdrawal is dangerous; no 'safe drinking' messaging.",
+      "patterns": [
+        {
+          "id": "alcohol-detox",
+          "pattern": "\\b(detox(ification)?|withdrawal\\s+(management|plan|schedule|programme|program)|taper(ing)?\\s+off\\s+alcohol)\\b",
+          "flags": "i",
+          "rationale": "Detox/withdrawal guidance is clinically supervised territory — hard-stop referral only"
+        },
+        {
+          "id": "alcohol-safe-drinking",
+          "pattern": "\\b(safe\\s+(level\\s+of\\s+)?drinking|drink(ing)?\\s+safely|safe\\s+amount\\s+of\\s+alcohol)\\b",
+          "flags": "i",
+          "rationale": "UK CMO position: no safe level; use 'low-risk' framing"
+        },
+        {
+          "id": "alcohol-treat-dependence",
+          "pattern": "\\b(treat|cure|therapy\\s+for)\\b[^.!?]{0,50}\\b(alcoholism|alcohol\\s+(dependence|addiction|use\\s+disorder))\\b",
+          "flags": "i",
+          "rationale": "Dependence-treatment claims"
+        }
+      ]
+    },
+    "global-medical-claims": {
+      "appliesTo": ["content/*", "marketing", "store-listings", "coach-fences"],
+      "enforcement": "ci-blocking",
+      "rationale": "Product-wide: no disease-treatment, guarantee, or miracle claims anywhere.",
+      "patterns": [
+        {
+          "id": "global-treat-disease",
+          "pattern": "\\b(treat|cure|prevent|reverse)s?\\b[^.!?]{0,50}\\b(disease|cancer|COPD|heart\\s+disease|stroke|diabetes|depression|anxiety\\s+disorder)\\b",
+          "flags": "i",
+          "rationale": "Disease-outcome claims"
+        },
+        {
+          "id": "global-guarantee",
+          "pattern": "\\bguarantee[ds]?\\b[^.!?]{0,40}\\b(quit|results?|success|abstinence|sobriety|sleep)\\b",
+          "flags": "i",
+          "rationale": "Outcome guarantees"
+        },
+        {
+          "id": "global-miracle",
+          "pattern": "\\b(miracle|miraculous|magic(al)?\\s+(cure|fix|solution))\\b",
+          "flags": "i",
+          "rationale": "Miracle claims"
+        },
+        {
+          "id": "global-nrt-prescribing",
+          "pattern": "\\b(we|app)\\s+(prescribe|recommend\\s+a\\s+dose)|\\bdosage\\s+(plan|schedule)\\s+for\\s+(NRT|nicotine\\s+(patch|gum|replacement))\\b",
+          "flags": "i",
+          "rationale": "NRT support is usage technique only; prescribing/dosing belongs to clinicians"
+        }
+      ]
+    }
+  },
+  "approvedLanguage": {
+    "sleep": [
+      { "id": "sleep-a1", "text": "Build a sleep routine that works for you", "status": "draft-pending-signoff" },
+      { "id": "sleep-a2", "text": "Understand your sleep with a simple morning check-in", "status": "draft-pending-signoff" },
+      { "id": "sleep-a3", "text": "Feel more rested, night by night", "status": "draft-pending-signoff" },
+      { "id": "sleep-a4", "text": "If you're worried about your sleep, speak to your GP", "status": "draft-pending-signoff" }
+    ],
+    "alcohol": [
+      { "id": "alc-a1", "text": "Take back control of your drinking", "status": "draft-pending-signoff" },
+      { "id": "alc-a2", "text": "Drink less, feel better", "status": "draft-pending-signoff" },
+      { "id": "alc-a3", "text": "Set your own pace with drink-free days", "status": "draft-pending-signoff" }
+    ],
+    "smoking": [
+      { "id": "smk-a1", "text": "Your personal quit plan", "status": "draft-pending-signoff" },
+      { "id": "smk-a2", "text": "Craving support that's there in the moment", "status": "draft-pending-signoff" }
+    ],
+    "vaping": [
+      { "id": "vap-a1", "text": "Spend less, breathe easier", "status": "draft-pending-signoff" },
+      { "id": "vap-a2", "text": "Step down at your own pace", "status": "draft-pending-signoff" }
+    ]
+  },
+  "testVectors": {
+    "shouldBlock": [
+      { "text": "Clinically proven to treat insomnia", "expectList": "sleep-treatment-claims" },
+      { "text": "Our programme treats your sleep disorder in six weeks", "expectList": "sleep-treatment-claims" },
+      { "text": "Cure your insomnia naturally", "expectList": "sleep-treatment-claims" },
+      { "text": "Beat insomnia with our app", "expectList": "sleep-treatment-claims" },
+      { "text": "Based on CBT-I, the gold standard", "expectList": "sleep-treatment-claims" },
+      { "text": "Digital sleep therapy on your phone", "expectList": "sleep-treatment-claims" },
+      { "text": "A real alternative to sleeping pills", "expectList": "sleep-treatment-claims" },
+      { "text": "We diagnose what's keeping you awake", "expectList": "sleep-treatment-claims" },
+      { "text": "An MHRA-approved sleep solution", "expectList": "sleep-treatment-claims" },
+      { "text": "Your at-home alcohol detox plan", "expectList": "alcohol-clinical-claims" },
+      { "text": "Learn the safe level of drinking for you", "expectList": "alcohol-clinical-claims" },
+      { "text": "We treat alcohol dependence", "expectList": "alcohol-clinical-claims" },
+      { "text": "Quitting prevents cancer", "expectList": "global-medical-claims" },
+      { "text": "Guaranteed results in 30 days", "expectList": "global-medical-claims" },
+      { "text": "A miracle cure for cravings", "expectList": "global-medical-claims" }
+    ],
+    "shouldPass": [
+      "Build a sleep routine that works for you",
+      "Most people find their sleep settles into a steadier rhythm",
+      "Healthy sleep habits, one evening at a time",
+      "If you're worried about your sleep, speak to your GP or a therapist",
+      "Take back control of your drinking",
+      "Low-risk drinking guidelines from the UK Chief Medical Officers",
+      "Your personal quit plan",
+      "Spend less, breathe easier",
+      "Track your progress and celebrate drink-free days",
+      "Wind down with calming audio before bed"
+    ]
+  }
+}
