@@ -9,7 +9,7 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 |----|-------|--------|----------------|------------------|
 | 1.1a | Root monorepo & CI scaffold | **done** | main (spine session) | `pnpm verify` green; import-boundary lint proven to block violations; license checker active |
 | 1.1b | App shells (Expo, web, console) | **done** | main (spine session) | Expo SDK 56 app: Metro-compiled iOS bundle verified (app code present); web + console: `next build` green and served over HTTP with content confirmed; eas.json profiles in place; `pnpm verify` green across 5 workspaces |
-| 1.2 | Domain model & persistence | open | — | **Spine — single session only**; blocks 1.3/1.4/1.5/4.1 |
+| 1.2 | Domain model & persistence | **done** | main (spine session) | Full entity set + FHIR mapping doc; Postgres schema with identity/core separation; append-only triggers proven at DB level (UPDATE/DELETE rejected on consent/event/decision/sleep_window); migrations idempotent (re-run applies zero); one-active-enrolment-per-vertical enforced; 8/8 integration + 17/17 domain tests; unblocks 1.3, 1.4, 1.5, 4.1 |
 | V.1c | QuitKit content pack — content drafting | open | — | **Parallel-safe now** (`content/smoking/`); draft in structured YAML per plan WP4.1 shape; stamp DRAFT |
 | V.2c | Exhale content pack — content drafting | open | — | **Parallel-safe now** (`content/vaping/`) |
 | V.3c | Steady content pack — content drafting | open | — | **Parallel-safe now** (`content/alcohol/`); include hard-stop referral scripts |
