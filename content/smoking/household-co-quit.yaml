@@ -1,0 +1,130 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+# [BS] feature (PRD §5.1): household co-quit mode. Pairing, data sharing and
+# consent are platform concerns; these atoms are the copy inventory.
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: household-co-quit
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "PRD §5.1 [BS]: partner/household co-quit mode; smoke-free-home pathway for parents"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.coquit.invite
+    type: message
+    title: Quit together?
+    body: >
+      Quitting with someone at home roughly doubles the support in the room.
+      You can invite a partner, flatmate or family member to quit with you.
+      You each get your own plan. You share the milestones.
+      Want to send an invite? They choose what they share with you.
+    bcttv1:
+      - { code: "3.1", label: "Social support (unspecified)" }
+    com_b: [social-opportunity, reflective-motivation]
+    evidence_note: "Invite copy; consent and sharing scope handled by the consent centre, stated up front."
+
+  - id: smoking.coquit.invite-received
+    type: message
+    title: You're invited
+    slots: [inviter_first_name]
+    body: >
+      {inviter_first_name} is quitting smoking and asked you to do it together.
+      Two quits, side by side. Your plan stays yours.
+      You choose what {inviter_first_name} can see.
+      Up for it?
+    bcttv1:
+      - { code: "3.1", label: "Social support (unspecified)" }
+    com_b: [social-opportunity, reflective-motivation]
+    evidence_note: "Invitee-side copy; privacy choice surfaced before acceptance."
+
+  - id: smoking.coquit.shared-milestone
+    type: message
+    title: Both of you
+    slots: [partner_first_name, shared_days]
+    body: >
+      {shared_days} smoke-free days. You and {partner_first_name}, together.
+      Two people, one smoke-free home in the making.
+    bcttv1:
+      - { code: "10.4", label: "Social reward" }
+      - { code: "3.1", label: "Social support (unspecified)" }
+    com_b: [social-opportunity, reflective-motivation]
+    evidence_note: "Synchronised milestone copy (shared plan mechanics in rules)."
+
+  - id: smoking.coquit.partner-slipped
+    type: message
+    title: Your quit is safe
+    slots: [partner_first_name]
+    body: >
+      {partner_first_name} had a slip. Two things to know.
+      One: your quit is your own. It is not dented by this.
+      Two: the kindest move is no lecture. A "you OK?" goes a long way.
+      Slips happen in most quits. Yours stays on track.
+    bcttv1:
+      - { code: "13.2", label: "Framing/reframing" }
+      - { code: "3.1", label: "Social support (unspecified)" }
+    com_b: [reflective-motivation, social-opportunity]
+    evidence_note: >
+      Protects the non-slipping partner from contagion thinking and coaches a
+      supportive (not policing) response. Shown only with the partner's sharing consent.
+
+  - id: smoking.coquit.supporter-guide
+    type: info_card
+    title: How to back up a quitter
+    body: >
+      Helping someone quit? Here is what works.
+
+      Do: ask how they want help. Celebrate the small wins.
+      Be patient with grumpy days. They pass.
+
+      Don't: police them. Count their slips. Say "just have willpower".
+
+      One question beats them all: "What would help right now?"
+    bcttv1:
+      - { code: "3.2", label: "Social support (practical)" }
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+    com_b: [social-opportunity]
+    evidence_note: "Supporter do/don't card; autonomy-supportive support, not surveillance."
+
+  - id: smoking.coquit.smoke-free-home-intro
+    type: info_card
+    title: A smoke-free home
+    body: >
+      This goal is different. It is about the home, not just you.
+      A smoke-free home protects everyone in it, especially kids.
+      Step one: smoking moves outside. Fully. No exceptions indoors.
+      Step two, when you are ready: your own quit, with all our tools.
+      Both steps count. Start where you can.
+    bcttv1:
+      - { code: "1.1", label: "Goal setting (behaviour)" }
+      - { code: "12.1", label: "Restructuring the physical environment" }
+      - { code: "13.1", label: "Identification of self as role model" }
+    com_b: [reflective-motivation, physical-opportunity]
+    evidence_note: >
+      Smoke-free-home pathway (PRD §5.1 [BS]): different goal frame for parents;
+      stepwise, no judgement about smoking status itself.
+
+  - id: smoking.coquit.smoke-free-home-win
+    type: message
+    title: The house wins
+    slots: [smoke_free_home_days]
+    body: >
+      {smoke_free_home_days} days of smoke-free home. The air in your
+      house is cleaner every one of those days. Everyone breathes easier.
+      That is a family-sized win.
+    bcttv1:
+      - { code: "2.2", label: "Feedback on behaviour" }
+      - { code: "10.4", label: "Social reward" }
+    com_b: [reflective-motivation]
+    evidence_note: "Smoke-free-home streak copy; separate counter from personal quit."

@@ -1,0 +1,142 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+# Milestone FIRING is the relapse engine's job (WP5.3: fire exactly once).
+# These atoms are the celebration copy inventory.
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: milestones
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "NHS Better Health: Quit Smoking (public): recovery timeline facts used in milestone pegs"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, push]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.milestones.days-won-explainer
+    type: info_card
+    title: How days won works
+    body: >
+      Every smoke-free day you finish goes in your pile. A day won.
+      Here is the important bit: the pile never empties.
+      A slip pauses the count. It never deletes it.
+      Days won are like miles walked. You cannot un-walk them.
+    bcttv1:
+      - { code: "2.2", label: "Feedback on behaviour" }
+      - { code: "13.2", label: "Framing/reframing" }
+    com_b: [reflective-motivation]
+    evidence_note: "Explains the never-resets mechanic (plan §2.1) before the first milestone fires."
+
+  - id: smoking.milestones.day-1
+    type: message
+    title: Day one, won
+    body: >
+      One full day, smoke-free. The hardest single day is behind you.
+      Your body has already started the clean-up. Sleep well. Day two is lighter.
+    bcttv1:
+      - { code: "10.4", label: "Social reward" }
+      - { code: "15.1", label: "Verbal persuasion about capability" }
+    com_b: [reflective-motivation]
+    evidence_note: "First milestone."
+
+  - id: smoking.milestones.day-3
+    type: message
+    title: Three days
+    body: >
+      Three days. The nicotine is basically out of your body now.
+      From here the cravings are habit, not chemistry. And habits fade.
+      The storm peak is passing. You held on.
+    bcttv1:
+      - { code: "10.4", label: "Social reward" }
+      - { code: "5.1", label: "Information about health consequences" }
+    com_b: [reflective-motivation]
+    evidence_note: "72-hour nicotine clearance fact; marks the peak-withdrawal pass."
+
+  - id: smoking.milestones.week-1
+    type: message
+    title: One week
+    body: >
+      Seven days won. Smell and taste are back on duty.
+      Notice food today. It is better than it was last week.
+      One week proves it is possible. The next one is easier.
+    bcttv1:
+      - { code: "10.4", label: "Social reward" }
+      - { code: "15.3", label: "Focus on past success" }
+    com_b: [reflective-motivation]
+    evidence_note: "Week-1 milestone; pairs with identity.arc-week1 (rules decide pairing)."
+
+  - id: smoking.milestones.week-2
+    type: message
+    title: Two weeks
+    body: >
+      Fourteen days. Walking and stairs feel easier than they did.
+      Your blood is moving better already.
+      The habit is losing its grip. You can feel it, can't you?
+    bcttv1:
+      - { code: "10.4", label: "Social reward" }
+      - { code: "5.1", label: "Information about health consequences" }
+    com_b: [reflective-motivation]
+    evidence_note: "2-12 week circulation improvement window (NHS timeline)."
+
+  - id: smoking.milestones.month-1
+    type: message
+    title: One month
+    body: >
+      A whole month won. This is where quits start to stick.
+      Hours go by without a single thought of smoking now.
+      You are not white-knuckling any more. You are living.
+    bcttv1:
+      - { code: "10.4", label: "Social reward" }
+      - { code: "13.5", label: "Identity associated with changed behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "Month-1 milestone; pairs with identity.arc-month1."
+
+  - id: smoking.milestones.day-100
+    type: message
+    title: One hundred days
+    body: >
+      One hundred days won. Take a second with that number.
+      A hundred mornings, a hundred coffees, a hundred small wins.
+      Most cravings are seconds long now, if they come at all.
+    bcttv1:
+      - { code: "10.4", label: "Social reward" }
+      - { code: "15.3", label: "Focus on past success" }
+    com_b: [reflective-motivation]
+    evidence_note: "100-day milestone."
+
+  - id: smoking.milestones.month-6
+    type: message
+    title: Six months
+    body: >
+      Half a year smoke-free. Your lungs are clearing.
+      Coughs and colds bother you less than they used to.
+      Smoking is becoming something you used to do.
+    bcttv1:
+      - { code: "10.4", label: "Social reward" }
+      - { code: "5.1", label: "Information about health consequences" }
+    com_b: [reflective-motivation]
+    evidence_note: "6-month milestone; aligns with the 6-month outcome check (outcomes module)."
+
+  - id: smoking.milestones.year-1
+    type: message
+    title: One year
+    body: >
+      One year. Your heart is in far better shape than if you had
+      kept smoking. That is a fact, and you built it.
+      A year ago this felt impossible. Look at it now.
+      Happy quit birthday.
+    bcttv1:
+      - { code: "10.4", label: "Social reward" }
+      - { code: "5.1", label: "Information about health consequences" }
+      - { code: "13.5", label: "Identity associated with changed behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "1-year milestone; NHS timeline heart-risk framing kept plain and gain-framed."

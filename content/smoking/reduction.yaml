@@ -1,0 +1,186 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: reduction
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "NICE NG209 (public guidance): harm-reduction / cut-down-to-quit approaches, with NRT support"
+    - "NCSCT briefings (public): scheduled gradual reduction"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.reduction.pathway-intro
+    type: info_card
+    title: Cutting down first
+    body: >
+      You chose to cut down first. Good plan.
+
+      Here is how it works. Each week you smoke a bit less.
+      We set the steps with you. You can use gum, spray or a patch
+      to make the gaps easier.
+
+      Cutting down is the run-up. The goal is still to stop.
+      When you feel ready, you pick your quit day.
+    bcttv1:
+      - { code: "1.1", label: "Goal setting (behaviour)" }
+      - { code: "8.7", label: "Graded tasks" }
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [reflective-motivation, psychological-capability]
+    evidence_note: "NICE NG209: reduction supported by NRT; reduction framed as a path to quitting, not an end state."
+
+  - id: smoking.reduction.scheduled-explainer
+    type: info_card
+    title: Smoking by the clock
+    body: >
+      Here is a trick that works. Smoke by the clock, not by the urge.
+
+      We set times for your cigarettes. You smoke only at those times.
+      Each week, the gaps get longer.
+
+      This breaks the link between urges and smoking.
+      The urge comes. You wait. It passes. You learn you can.
+    bcttv1:
+      - { code: "8.7", label: "Graded tasks" }
+      - { code: "8.4", label: "Habit reversal" }
+      - { code: "12.3", label: "Avoidance/reducing exposure to cues for the behaviour" }
+    com_b: [automatic-motivation, psychological-capability]
+    evidence_note: "Scheduled gradual reduction: decouples smoking from situational cues; NCSCT briefing material."
+
+  - id: smoking.reduction.weekly-step
+    type: message
+    title: This week's step
+    slots: [target_per_day, gap_minutes]
+    body: >
+      New week, new step.
+      This week: {target_per_day} a day. About one every {gap_minutes} minutes
+      while you are awake.
+      Smoke at the set times only. If an urge comes early, try a tool first.
+      You set the pace. We just hold the clock.
+    bcttv1:
+      - { code: "1.1", label: "Goal setting (behaviour)" }
+      - { code: "8.7", label: "Graded tasks" }
+      - { code: "7.1", label: "Prompts/cues" }
+    com_b: [reflective-motivation, automatic-motivation]
+    evidence_note: "Weekly step template; targets computed by the reduction scheduler (rules, not content)."
+
+  - id: smoking.reduction.replan-ahead
+    type: message
+    title: Ahead of plan
+    slots: [actual_per_day, target_per_day]
+    body: >
+      You smoked {actual_per_day} a day this week. The plan said {target_per_day}.
+      You are ahead. Nice.
+      Want to lock in this lower step? Or keep the old plan for one more week?
+      Either is fine. Steady beats fast.
+    bcttv1:
+      - { code: "2.2", label: "Feedback on behaviour" }
+      - { code: "1.5", label: "Review behaviour goal(s)" }
+      - { code: "15.3", label: "Focus on past success" }
+    com_b: [reflective-motivation]
+    evidence_note: "Adherence-aware re-planning (plan §2.2): offers, never imposes, the steeper step."
+
+  - id: smoking.reduction.replan-on-track
+    type: message
+    title: On track
+    slots: [target_per_day]
+    body: >
+      Right on plan this week. {target_per_day} a day. That takes real effort.
+      Next week the gap stretches a little more.
+      Same trick: smoke at the set times, ride out the rest.
+    bcttv1:
+      - { code: "2.2", label: "Feedback on behaviour" }
+      - { code: "15.1", label: "Verbal persuasion about capability" }
+    com_b: [reflective-motivation]
+    evidence_note: "Positive feedback on adherence."
+
+  - id: smoking.reduction.replan-behind
+    type: message
+    title: Plans bend
+    slots: [target_per_day]
+    body: >
+      This week was harder than the plan. That happens. Plans bend.
+      It does not mean you failed. It means the step was too big.
+      Let's make the next step smaller. {target_per_day} a day, held steady.
+      Small and done beats big and broken.
+    bcttv1:
+      - { code: "1.2", label: "Problem solving" }
+      - { code: "1.5", label: "Review behaviour goal(s)" }
+      - { code: "13.2", label: "Framing/reframing" }
+    com_b: [reflective-motivation, psychological-capability]
+    evidence_note: "Adherence-aware re-planning, no-shame framing; step size reduced rather than user blamed."
+
+  - id: smoking.reduction.nrt-while-cutting
+    type: info_card
+    title: Use help while you cut down
+    body: >
+      You can use gum, lozenge or spray while you still smoke.
+      It is safe to do both. It takes the edge off the gaps.
+      Many people find cutting down much easier with it.
+      A pharmacist can help you pick. It is their job and they are good at it.
+    contraindications: [pregnancy, recent_cardiac_event]
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+    com_b: [physical-capability, psychological-capability]
+    evidence_note: >
+      NICE NG209: NRT licensed for cut-down-to-quit. Pregnancy and recent cardiac
+      event route to signposting.yaml specialist atoms instead.
+
+  - id: smoking.reduction.halfway-nudge
+    type: message
+    title: Halfway there
+    slots: [start_per_day, current_per_day]
+    body: >
+      Look at this. You started at {start_per_day} a day.
+      You are now at {current_per_day}. That is the hard half done.
+      Some people find this a good time to pick a quit day.
+      The last cigarettes are easier to drop than you think.
+      Want to look at dates? No pressure. Your timing, your call.
+    bcttv1:
+      - { code: "2.2", label: "Feedback on behaviour" }
+      - { code: "1.1", label: "Goal setting (behaviour)" }
+      - { code: "15.3", label: "Focus on past success" }
+    com_b: [reflective-motivation]
+    evidence_note: "Transition prompt at ~50% reduction; offer framed as optional (autonomy)."
+
+  - id: smoking.reduction.transition-to-quit
+    type: message
+    title: Ready for the last step
+    body: >
+      You have cut right down. The habit is loose now.
+      The last step is the clean break. A quit day.
+      Pick a day in the next two weeks.
+      You have already done the hardest part. This is the finish.
+    bcttv1:
+      - { code: "1.1", label: "Goal setting (behaviour)" }
+      - { code: "15.1", label: "Verbal persuasion about capability" }
+      - { code: "15.3", label: "Focus on past success" }
+    com_b: [reflective-motivation]
+    evidence_note: "Reduction is a bridge to abstinence (NG209 framing); quit-date mechanics in onboarding module."
+
+  - id: smoking.reduction.stall-support
+    type: message
+    title: Stuck at a step
+    body: >
+      Stuck at the same number for a while? Normal. Truly.
+      Some cigarettes are glued to strong habits. Coffee. Driving. Stress.
+      Those need a plan, not just willpower.
+      Try this: pick your one most stuck cigarette. We will build
+      an if-then plan just for it.
+    bcttv1:
+      - { code: "1.2", label: "Problem solving" }
+      - { code: "8.2", label: "Behaviour substitution" }
+    com_b: [psychological-capability]
+    evidence_note: "Routes stalls into the if-then planner (triggers module) rather than pushing harder targets."

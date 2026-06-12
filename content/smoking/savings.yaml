@@ -1,0 +1,102 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+# Savings maths is the savings rail's job (plan §2.1; property-tested in
+# WP2.4). These atoms are copy with declared slots only.
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: savings
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "PRD §5.1 [TS]: savings tracker tied to real prices the user enters, with goal-pegging"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.savings.setup
+    type: message
+    title: Your money, counted honestly
+    body: >
+      Let's count what smoking really cost you.
+      How much do you spend, and how often? Use your real numbers.
+      We only count money you actually stop spending. No made-up figures.
+      Watching it stack up is one of the best parts of quitting.
+    bcttv1:
+      - { code: "2.4", label: "Self-monitoring of outcome(s) of behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "Setup copy; honest-numbers framing builds trust in the rail."
+
+  - id: smoking.savings.goal-peg-prompt
+    type: exercise
+    title: Give the money a job
+    steps:
+      - "Money you do not spend on cigarettes is real money."
+      - "Give it a job. A holiday? A bike? The boiler service? Christmas?"
+      - "Name your goal and what it costs."
+      - "We will show you how close your quit has carried you."
+    bcttv1:
+      - { code: "10.7", label: "Self-incentive" }
+      - { code: "1.3", label: "Goal setting (outcome)" }
+    com_b: [reflective-motivation]
+    evidence_note: "Goal-pegging setup (PRD: '£312 = your boiler service + Christmas float')."
+
+  - id: smoking.savings.goal-progress
+    type: message
+    title: Getting closer
+    slots: [saved_amount, goal_name, goal_percent]
+    body: >
+      {saved_amount} saved so far. That is {goal_percent} of the way
+      to {goal_name}. Your quit is paying for it, day by day.
+    bcttv1:
+      - { code: "2.4", label: "Self-monitoring of outcome(s) of behaviour" }
+      - { code: "10.7", label: "Self-incentive" }
+    com_b: [reflective-motivation]
+    evidence_note: "Progress template; percent computed by the rail."
+
+  - id: smoking.savings.goal-reached
+    type: message
+    title: Paid in full
+    slots: [goal_name, saved_amount]
+    body: >
+      Done. {saved_amount} saved. {goal_name} is paid for by your quit.
+      Cigarettes used to take this money. Now look who is holding it.
+      Want to set the next goal?
+    bcttv1:
+      - { code: "10.7", label: "Self-incentive" }
+      - { code: "2.2", label: "Feedback on behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "Goal completion moment; immediately re-pegs (next goal offer)."
+
+  - id: smoking.savings.weekly-recap
+    type: message
+    title: This week's tally
+    slots: [week_amount, total_amount]
+    body: >
+      {week_amount} kept in your pocket this week.
+      {total_amount} since you started. Quiet, steady, yours.
+    bcttv1:
+      - { code: "2.4", label: "Self-monitoring of outcome(s) of behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "Weekly recap; cross-programme totals handled by the shared rail."
+
+  - id: smoking.savings.milestone-100
+    type: message
+    title: Three figures
+    slots: [saved_amount]
+    body: >
+      Your savings just passed {saved_amount}. Three figures.
+      That is not an app number. That is real money you get to keep.
+    bcttv1:
+      - { code: "2.4", label: "Self-monitoring of outcome(s) of behaviour" }
+      - { code: "10.4", label: "Social reward" }
+    com_b: [reflective-motivation]
+    evidence_note: "Threshold celebration template (rail decides thresholds)."

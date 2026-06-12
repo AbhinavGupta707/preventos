@@ -1,0 +1,166 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+# Bundled offline with the rescue surface (plan §2.1).
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: cravings-menus
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "NHS Better Health: Quit Smoking (public guidance): craving coping ideas, 4Ds"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.menus.four-ds
+    type: info_card
+    title: The 4 Ds
+    body: >
+      Four quick moves that beat most cravings.
+
+      Delay. Wait five minutes. The craving fades.
+
+      Deep breathe. Slow breaths, long out-breath.
+
+      Drink water. Sip it slowly.
+
+      Do something else. Hands busy, mind busy.
+    bcttv1:
+      - { code: "8.2", label: "Behaviour substitution" }
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+    com_b: [psychological-capability, automatic-motivation]
+    evidence_note: "Classic 4Ds coping card (NHS-aligned)."
+
+  - id: smoking.menus.sub-water
+    type: chooser_item
+    title: Sip cold water
+    body: "Sip it slow. Hold it in your mouth a second. Keeps mouth and hands busy."
+    bcttv1: [{ code: "8.2", label: "Behaviour substitution" }]
+    com_b: [automatic-motivation]
+    evidence_note: "Substitution menu item."
+
+  - id: smoking.menus.sub-gum
+    type: chooser_item
+    title: Sugar-free gum
+    body: "Chew slowly. Mint works best for most people."
+    bcttv1: [{ code: "8.2", label: "Behaviour substitution" }]
+    com_b: [automatic-motivation]
+    evidence_note: "Substitution menu item. Nicotine gum lives in the NRT module, not here."
+
+  - id: smoking.menus.sub-crunchy
+    type: chooser_item
+    title: Something crunchy
+    body: "Carrot sticks, apple slices, celery. Crunch beats craving."
+    bcttv1: [{ code: "8.2", label: "Behaviour substitution" }]
+    com_b: [automatic-motivation]
+    evidence_note: "Substitution menu item."
+
+  - id: smoking.menus.sub-brush-teeth
+    type: chooser_item
+    title: Brush your teeth
+    body: "A clean mouth makes smoking feel wrong. Strange but true."
+    bcttv1: [{ code: "8.2", label: "Behaviour substitution" }, { code: "12.3", label: "Avoidance/reducing exposure to cues for the behaviour" }]
+    com_b: [automatic-motivation]
+    evidence_note: "Substitution menu item."
+
+  - id: smoking.menus.sub-straw
+    type: chooser_item
+    title: Drinking straw
+    body: "Cut a straw to cigarette size. Hold it, sip air through it. Hands remember; let them."
+    bcttv1: [{ code: "8.2", label: "Behaviour substitution" }]
+    com_b: [automatic-motivation]
+    evidence_note: "Hand-to-mouth substitute."
+
+  - id: smoking.menus.sub-stress-ball
+    type: chooser_item
+    title: Squeeze something
+    body: "Stress ball, putty, a rolled-up sock. Give your hands a job."
+    bcttv1: [{ code: "8.2", label: "Behaviour substitution" }]
+    com_b: [automatic-motivation]
+    evidence_note: "Hand-occupation substitute."
+
+  - id: smoking.menus.sub-mints
+    type: chooser_item
+    title: Strong mint
+    body: "A strong mint resets your mouth. Keep a pack where your cigarettes used to live."
+    bcttv1: [{ code: "8.2", label: "Behaviour substitution" }, { code: "12.1", label: "Restructuring the physical environment" }]
+    com_b: [automatic-motivation, physical-opportunity]
+    evidence_note: "Substitution + pocket-environment swap."
+
+  - id: smoking.menus.dis-walk
+    type: chooser_item
+    title: Walk it off
+    body: "Round the block, round the office, up the stairs. Move for five minutes."
+    bcttv1: [{ code: "8.2", label: "Behaviour substitution" }]
+    com_b: [automatic-motivation, physical-capability]
+    evidence_note: "Distraction pack item; brief activity reduces craving intensity."
+
+  - id: smoking.menus.dis-text-someone
+    type: chooser_item
+    title: Text someone
+    body: "Message a mate. Any topic. Five minutes of chat beats five minutes of craving."
+    bcttv1: [{ code: "3.1", label: "Social support (unspecified)" }, { code: "8.2", label: "Behaviour substitution" }]
+    com_b: [social-opportunity, automatic-motivation]
+    evidence_note: "Distraction pack item."
+
+  - id: smoking.menus.dis-game
+    type: chooser_item
+    title: Quick game
+    body: "One round of any phone game. Thumbs busy, craving forgotten."
+    bcttv1: [{ code: "8.2", label: "Behaviour substitution" }]
+    com_b: [automatic-motivation]
+    evidence_note: "Distraction pack item."
+
+  - id: smoking.menus.dis-music
+    type: chooser_item
+    title: One loud song
+    body: "Play one song you love. Loud if you can. Sing if you dare."
+    bcttv1: [{ code: "8.2", label: "Behaviour substitution" }, { code: "11.2", label: "Reduce negative emotions" }]
+    com_b: [automatic-motivation]
+    evidence_note: "Distraction pack item; mood shift."
+
+  - id: smoking.menus.dis-tidy
+    type: chooser_item
+    title: Tidy one small thing
+    body: "One drawer. One shelf. One desk corner. Five minutes, done, and it shows."
+    bcttv1: [{ code: "8.2", label: "Behaviour substitution" }]
+    com_b: [automatic-motivation]
+    evidence_note: "Distraction pack item; visible completion."
+
+  - id: smoking.menus.dis-shower
+    type: chooser_item
+    title: Quick shower
+    body: "Hard to smoke in the shower. Fresh start for the next hour too."
+    bcttv1: [{ code: "8.2", label: "Behaviour substitution" }, { code: "12.3", label: "Avoidance/reducing exposure to cues for the behaviour" }]
+    com_b: [automatic-motivation]
+    evidence_note: "Distraction pack item (home context)."
+
+  - id: smoking.menus.dis-puzzle
+    type: chooser_item
+    title: Puzzle break
+    body: "Crossword, sudoku, word game. Your brain can only do one hard thing at a time."
+    bcttv1: [{ code: "8.2", label: "Behaviour substitution" }]
+    com_b: [automatic-motivation, psychological-capability]
+    evidence_note: "Distraction pack item; cognitive load displaces craving focus."
+
+  - id: smoking.menus.build-your-own
+    type: message
+    title: Your own list
+    body: >
+      The best tool is the one you will really use.
+      What works for you? Add it to your list.
+      Next craving, your own ideas show up first.
+    bcttv1:
+      - { code: "1.2", label: "Problem solving" }
+      - { code: "8.2", label: "Behaviour substitution" }
+    com_b: [psychological-capability, reflective-motivation]
+    evidence_note: "Personalisation prompt; user-authored items rank first in the rescue menu (UI rule)."

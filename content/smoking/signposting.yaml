@@ -1,0 +1,117 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+# ESCALATION DELTAS (display copy only). Detection and routing are the
+# deterministic safety package's job (safety invariant 1). Tier-1 crisis
+# content lives in the core safety package, NEVER in a vertical pack.
+# These atoms cover QuitKit-specific signposts per PRD §5.1 escalation notes.
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: signposting
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "PRD §5.1 escalation: pregnancy → specialist services; MH deterioration → mood pathway/GP; chest-pain-type red flags → urgent-care signposting"
+    - "NHS public guidance: stop smoking in pregnancy support; medicines affected by quitting"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.signpost.pregnancy
+    type: signpost
+    title: Specialist support for you
+    body: >
+      Quitting while pregnant is one of the best things you can do
+      for you and your baby. And you deserve the best support for it.
+      That is specialist help, made for pregnancy.
+      Your midwife can connect you today. Just tell them you want
+      to stop smoking. There are stop-smoking advisers who work
+      only with pregnancy. They are kind, and they are good.
+      We will keep helping with cravings and plans alongside them.
+    bcttv1:
+      - { code: "3.2", label: "Social support (practical)" }
+    com_b: [physical-opportunity, social-opportunity]
+    evidence_note: >
+      Pregnancy escalation (PRD §5.1). Replaces the self-serve NRT chooser for
+      pregnancy-flagged users (contraindication taxonomy): NRT in pregnancy is a
+      specialist/midwife conversation. Zero guilt framing — support, not warning.
+
+  - id: smoking.signpost.urgent-symptoms
+    type: signpost
+    title: Get this checked now
+    body: >
+      Chest pain, crushing pressure, or real trouble breathing
+      is never a quitting symptom.
+      If this is happening now, call 999.
+      If you are unsure, call 111. They will tell you what to do.
+      Do this first. The app will still be here after.
+    bcttv1:
+      - { code: "3.2", label: "Social support (practical)" }
+    com_b: [physical-opportunity]
+    evidence_note: >
+      Chest-pain-type red-flag display copy (PRD §5.1). Trigger detection is
+      deterministic (safety package); this atom is what renders. Reading age
+      kept minimal; bundled offline with crisis resources (E13).
+
+  - id: smoking.signpost.mood-support
+    type: signpost
+    title: Worth a proper chat
+    contraindications: []
+    body: >
+      Low mood that hangs around for more than two weeks is worth
+      taking seriously. Not as a quitting problem. As you mattering.
+      Your GP is the right first call. This is a normal thing to see them about.
+      You can also refer yourself to free NHS talking therapies.
+      No GP letter needed.
+      Keep quitting if you can. Quitting helps mood in the long run.
+      But get the support too. Both, not either.
+    bcttv1:
+      - { code: "3.2", label: "Social support (practical)" }
+    com_b: [physical-opportunity, psychological-capability]
+    evidence_note: >
+      MH deterioration signpost (PRD §5.1: mood pathway/GP). Paired by rules with
+      withdrawal.cope-low-mood for mood_flagged users. Self-harm/crisis content is
+      tier-1 and handled by the safety package, never here.
+
+  - id: smoking.signpost.medicines-check
+    type: signpost
+    title: Tell your GP you quit
+    body: >
+      One thing many people miss. Quitting smoking can change how
+      some regular medicines work in your body.
+      If you take regular medicine, tell your GP or pharmacist
+      that you have stopped smoking. It is a quick check.
+      They may want to review your dose. That is normal and good.
+    bcttv1:
+      - { code: "3.2", label: "Social support (practical)" }
+      - { code: "5.1", label: "Information about health consequences" }
+    com_b: [physical-opportunity, psychological-capability]
+    evidence_note: >
+      Smoking induces metabolism of several medicines (e.g. via CYP1A2);
+      cessation can raise levels. Names of specific drugs deliberately omitted —
+      the instruction is "tell your GP/pharmacist", not self-management.
+
+  - id: smoking.signpost.local-services
+    type: signpost
+    title: Free local help
+    body: >
+      Your local stop-smoking service is free and friendly.
+      Real people, weekly support, and quit aids often supplied.
+      People who use them are much more likely to quit for good.
+      Search "stop smoking service" with your area name,
+      or ask at any pharmacy. Using us and them together works best.
+    bcttv1:
+      - { code: "3.2", label: "Social support (practical)" }
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [physical-opportunity, social-opportunity]
+    evidence_note: >
+      Local stop-smoking service signpost (NCSCT-aligned; app positions itself as
+      an adjunct, not a replacement). Service-finder integration is a later feature.

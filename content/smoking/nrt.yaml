@@ -1,0 +1,288 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+# SCOPE FENCE (PRD §5.1, WP6.3): adherence and technique support ONLY.
+# No dosing decisions, no strength recommendations, no medical advice.
+# Product questions route to pharmacist/prescriber. Pregnancy and recent
+# cardiac event suppress this chooser and route to signposting.yaml.
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: nrt
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "NCSCT (public): combination NRT, common usage errors (underdosing, stopping early), gum chew-and-park technique"
+    - "NHS Better Health: Quit Smoking (public): NRT product overview, vaping-to-quit positioning"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    vertical: smoking
+    contraindications: [pregnancy, recent_cardiac_event]
+
+atoms:
+  - id: smoking.nrt.intro
+    type: info_card
+    title: Double your chances
+    body: >
+      Cravings are chemistry. The right help fights chemistry better
+      than willpower alone.
+
+      Stop-smoking aids roughly double your chance of quitting for good.
+      They give your body clean nicotine while the habit fades.
+      Then you step off the aid too. No smoke, no tar, no fuss.
+
+      A pharmacist can sort you out in five minutes. Free advice, no booking.
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+      - { code: "5.1", label: "Information about health consequences" }
+    com_b: [psychological-capability, reflective-motivation]
+    evidence_note: "NRT roughly doubles quit rates vs unaided (Cochrane, public); positive framing, no scare."
+
+  - id: smoking.nrt.combo-explainer
+    type: info_card
+    title: The strong combo
+    body: >
+      The best-tested setup is two aids at once.
+
+      A patch for steady background help, all day.
+      Plus a fast one — gum, lozenge or spray — for sudden cravings.
+
+      Patch for the war, fast one for the battles.
+      Ask your pharmacist about using both together. It is standard advice.
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+    com_b: [psychological-capability]
+    evidence_note: "NCSCT: combination NRT (patch + fast-acting) is more effective than single-product use."
+
+  - id: smoking.nrt.chooser-patch
+    type: chooser_item
+    title: Patch
+    body: >
+      A plaster you stick on once a day. Steady help, no thinking needed.
+      Good if: you want simple, or you smoke steadily through the day.
+      Know this: it is slow. Pair it with a fast aid for sudden cravings.
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [psychological-capability]
+    evidence_note: "Chooser entry; 16h vs 24h choice deferred to pharmacist."
+
+  - id: smoking.nrt.chooser-gum
+    type: chooser_item
+    title: Gum
+    body: >
+      Chew when a craving comes. Works in minutes.
+      Good if: you like having something to do with your mouth.
+      Know this: there is a trick to it. Chew, then park it. We will show you.
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [psychological-capability]
+    evidence_note: "Chooser entry; technique atom follows."
+
+  - id: smoking.nrt.chooser-lozenge
+    type: chooser_item
+    title: Lozenge
+    body: >
+      A sweet you park in your cheek. Quiet and easy.
+      Good if: gum is not your thing, or you want something discreet.
+      Know this: let it dissolve slowly. Do not chew or swallow it.
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [psychological-capability]
+    evidence_note: "Chooser entry."
+
+  - id: smoking.nrt.chooser-mouth-spray
+    type: chooser_item
+    title: Mouth spray
+    body: >
+      A quick spray inside your cheek. The fastest of the lot.
+      Good if: your cravings hit hard and fast.
+      Know this: the taste is strong at first. Most people get used to it.
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [psychological-capability]
+    evidence_note: "Chooser entry."
+
+  - id: smoking.nrt.chooser-inhalator
+    type: chooser_item
+    title: Inhalator
+    body: >
+      A small tube you puff on. Keeps your hands busy too.
+      Good if: you miss the hand-to-mouth part of smoking.
+      Know this: puff little and often, like sipping.
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [psychological-capability]
+    evidence_note: "Chooser entry; hand-to-mouth substitute value noted."
+
+  - id: smoking.nrt.chooser-nasal-spray
+    type: chooser_item
+    title: Nasal spray
+    body: >
+      A spray for your nose. Strong and very fast.
+      Good if: other aids have felt too weak.
+      Know this: it stings at first. That settles for most people.
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [psychological-capability]
+    evidence_note: "Chooser entry."
+
+  - id: smoking.nrt.technique-gum
+    type: info_card
+    title: "Gum: the trick"
+    body: >
+      Most people use nicotine gum wrong. Here is the trick.
+
+      Chew slowly until you get a peppery taste.
+      Then stop. Park the gum between your cheek and gums.
+      When the taste fades, chew again. Then park again.
+
+      Chew-and-park. Chewing non-stop wastes it and can upset your tummy.
+      One more tip: no coffee, juice or fizzy drinks just before or while
+      you use it. They block it from working.
+    bcttv1:
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [psychological-capability, physical-capability]
+    evidence_note: "NCSCT chew-and-park technique; acidic-drinks interaction is standard leaflet guidance."
+
+  - id: smoking.nrt.technique-patch
+    type: info_card
+    title: "Patch: getting it right"
+    body: >
+      Stick it on clean, dry skin with no hair. Upper arm, chest or hip.
+      Press it down for ten seconds. New day, new spot.
+      Moving the spot each day stops sore skin.
+      Put it on first thing, before the first craving wakes up.
+    bcttv1:
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [psychological-capability, physical-capability]
+    evidence_note: "Standard patch technique; site rotation."
+
+  - id: smoking.nrt.technique-spray
+    type: info_card
+    title: "Spray: getting it right"
+    body: >
+      Point it at the inside of your cheek, not your throat.
+      Do not breathe in while you spray.
+      Do not swallow for a few seconds after.
+      That is it. Fast help, done right.
+    bcttv1:
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [psychological-capability, physical-capability]
+    evidence_note: "Standard mouth-spray technique."
+
+  - id: smoking.nrt.side-effect-skin
+    type: info_card
+    title: Sore skin under the patch?
+    body: >
+      A bit of redness under a patch is common. It usually settles.
+      Move the patch to a new spot each day. That is the main fix.
+      If your skin stays sore or gets worse, ask your pharmacist.
+      There are other options.
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+      - { code: "1.2", label: "Problem solving" }
+    com_b: [psychological-capability]
+    evidence_note: "Side-effect coping; escalation to pharmacist, no medical advice in-app."
+
+  - id: smoking.nrt.side-effect-sleep
+    type: info_card
+    title: Odd dreams or poor sleep?
+    body: >
+      Some people get vivid dreams or lighter sleep with a patch on at night.
+      There are easy fixes, like a different patch type.
+      Ask your pharmacist. Quick chat, quick fix.
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+      - { code: "1.2", label: "Problem solving" }
+    com_b: [psychological-capability]
+    evidence_note: "Sleep disturbance with 24h patches; 16h alternative is a pharmacist decision, not ours."
+
+  - id: smoking.nrt.side-effect-mouth
+    type: info_card
+    title: Hiccups or sore throat?
+    body: >
+      Hiccups, a tingly throat or an upset tummy usually mean one thing:
+      going too fast. Slow down. Chew less, park more. Spray less often.
+      If it keeps bothering you, your pharmacist can help you adjust.
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+    com_b: [psychological-capability]
+    evidence_note: "Common oral-NRT effects tied back to technique."
+
+  - id: smoking.nrt.use-enough
+    type: info_card
+    title: The two big mistakes
+    body: >
+      Two mistakes catch most people.
+
+      Mistake one: using too little. Scared of the aid, so they ration it.
+      The aid is far safer than smoking. Use it when you need it.
+
+      Mistake two: stopping too soon. The habit is still healing at week
+      three. Most people do best using their aid for eight to twelve weeks.
+
+      Use enough. Use it long enough. Then step off.
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+    com_b: [psychological-capability, reflective-motivation]
+    evidence_note: "NCSCT: underdosing and premature discontinuation are the two main NRT failure modes."
+
+  - id: smoking.nrt.prescription-adherence
+    type: message
+    title: On quit-smoking tablets?
+    contraindications: []
+    body: >
+      Taking tablets from your doctor to help you quit? Great choice.
+      Two things matter:
+      Take them as prescribed, even on good days.
+      If side effects bother you, talk to your prescriber before stopping.
+      Do not just stop. A quick call can usually sort it.
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [psychological-capability]
+    evidence_note: >
+      Varenicline/cytisine adherence loop (PRD §5.1): prescriber-in-the-loop,
+      zero dosing content. Shown only to users who say they have a prescription
+      (prescriber_medication tag selects FOR this atom — rules layer).
+
+  - id: smoking.nrt.vaping-option
+    type: info_card
+    title: What about vaping?
+    contraindications: [pregnancy, under_18]
+    body: >
+      Some people quit smoking with a vape. That is a real option.
+      Vaping is not risk-free, but it is far less harmful than smoking.
+      If you vape to quit, the aim is: off cigarettes first,
+      then off the vape later, at your pace. We can help with both.
+    bcttv1:
+      - { code: "11.1", label: "Pharmacological support" }
+      - { code: "13.2", label: "Framing/reframing" }
+    com_b: [psychological-capability, reflective-motivation]
+    evidence_note: >
+      NHS/NCSCT position on vaping as a quit aid, stated plainly without
+      promotion. Later vape-quitting routes to Exhale.
+
+  - id: smoking.nrt.pharmacy-signpost
+    type: signpost
+    title: Five minutes with a pharmacist
+    body: >
+      Not sure which aid fits you? A pharmacist will know.
+      Walk in, no booking. Tell them you are quitting smoking.
+      They help people do this every single day.
+      Your local stop-smoking service can also supply aids, often free.
+    bcttv1:
+      - { code: "3.2", label: "Social support (practical)" }
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [physical-opportunity, social-opportunity]
+    evidence_note: "Pharmacy + local stop-smoking service signpost; pharmacy-finder integration is a later [TS] feature."

@@ -1,0 +1,188 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: triggers
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "NCSCT standard treatment programme (public): identifying smoking cues, coping planning"
+    - "Implementation intentions (if-then planning): public behavioural-science literature"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.triggers.log-prompt
+    type: message
+    title: What set it off?
+    body: >
+      Quick one: what set off that craving? One tap.
+      Knowing your triggers is half the battle.
+    bcttv1:
+      - { code: "2.3", label: "Self-monitoring of behaviour" }
+    com_b: [psychological-capability]
+    evidence_note: "One-tap trigger logging (PRD §5.1 [TS]); options come from the taxonomy atom."
+
+  - id: smoking.triggers.taxonomy
+    type: info_card
+    title: Common triggers
+    options:
+      - { key: coffee, label: "Coffee or tea" }
+      - { key: alcohol, label: "A drink" }
+      - { key: after-meal, label: "After eating" }
+      - { key: stress, label: "Stress" }
+      - { key: boredom, label: "Boredom" }
+      - { key: driving, label: "Driving" }
+      - { key: work-break, label: "Break at work" }
+      - { key: phone, label: "Scrolling my phone" }
+      - { key: others-smoking, label: "Seeing someone smoke" }
+      - { key: morning, label: "First thing in the morning" }
+      - { key: phone-call, label: "On a phone call" }
+      - { key: waiting, label: "Waiting around" }
+      - { key: argument, label: "After an argument" }
+      - { key: other, label: "Something else" }
+    body: >
+      Most cravings have a trigger. Spot yours and you can plan for them.
+    bcttv1:
+      - { code: "2.3", label: "Self-monitoring of behaviour" }
+      - { code: "1.2", label: "Problem solving" }
+    com_b: [psychological-capability]
+    evidence_note: >
+      Trigger taxonomy doubles as the logging option set and the risk-window
+      learning vocabulary (rules layer reads the keys).
+
+  - id: smoking.triggers.top3-reveal
+    type: message
+    title: Your top three
+    slots: [trigger_1, trigger_2, trigger_3]
+    body: >
+      Your logs tell a story. Your top three triggers are:
+      1. {trigger_1}
+      2. {trigger_2}
+      3. {trigger_3}
+      Let's build a plan for each one. Three plans, three weak spots covered.
+    bcttv1:
+      - { code: "2.2", label: "Feedback on behaviour" }
+      - { code: "1.2", label: "Problem solving" }
+    com_b: [psychological-capability, reflective-motivation]
+    evidence_note: "Feeds the if-then builder with the user's own data (PRD §5.1: plans for top-3 triggers)."
+
+  - id: smoking.triggers.if-then-explainer
+    type: info_card
+    title: If-then plans
+    body: >
+      An if-then plan is one line: "If X happens, then I will do Y."
+
+      Why it works: you decide once, in advance.
+      When the moment comes, you do not have to think. The plan fires.
+
+      Example: "If I get coffee, then I drink it in a different chair
+      with gum in my mouth."
+
+      Simple plans beat strong willpower. Every time.
+    bcttv1:
+      - { code: "1.4", label: "Action planning" }
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+    com_b: [psychological-capability]
+    evidence_note: "Implementation intentions in plain words."
+
+  - id: smoking.triggers.if-then-template
+    type: plan_template
+    title: Build your plan
+    slots: [trigger_label]
+    body: >
+      Your trigger: {trigger_label}.
+      Finish this line.
+      "If {trigger_label}, then I will..."
+    options:
+      - "...move somewhere else for five minutes."
+      - "...use my spray or gum straight away."
+      - "...start a five-minute timer and ride it out."
+      - "...drink a glass of water slowly."
+      - "...text my backup person."
+      - "...write my own."
+    bcttv1:
+      - { code: "1.4", label: "Action planning" }
+      - { code: "8.2", label: "Behaviour substitution" }
+    com_b: [psychological-capability, reflective-motivation]
+    evidence_note: "Co-edited with coach later (WP6.2 typed tool: edit plan); options seed, user owns the final line."
+
+  - id: smoking.triggers.example-coffee
+    type: info_card
+    title: "Worked example: coffee"
+    body: >
+      "If I make my morning coffee, then I drink it in the garden,
+      phone in hand. Not in my smoking chair."
+
+      Why it works: new place, new hands, old link broken.
+    bcttv1:
+      - { code: "1.4", label: "Action planning" }
+      - { code: "12.1", label: "Restructuring the physical environment" }
+      - { code: "8.4", label: "Habit reversal" }
+    com_b: [psychological-capability]
+    evidence_note: "Worked example for the most common trigger pairing."
+
+  - id: smoking.triggers.example-drinking
+    type: info_card
+    title: "Worked example: a night out"
+    body: >
+      "If someone offers me a cigarette, then I say: no thanks, I've stopped.
+      And I keep my drink in my smoking hand."
+
+      Short answer, hand busy, moment over.
+    bcttv1:
+      - { code: "1.4", label: "Action planning" }
+      - { code: "12.3", label: "Avoidance/reducing exposure to cues for the behaviour" }
+    com_b: [psychological-capability, social-opportunity]
+    evidence_note: "Refusal script + hand-occupation; pairs with risk-windows drinking atoms."
+
+  - id: smoking.triggers.example-stress
+    type: info_card
+    title: "Worked example: stress"
+    body: >
+      "If work stress spikes, then I step outside and do ten slow breaths
+      before I decide anything."
+
+      The break you used to get from smoking? You still get it. Just no smoke.
+    bcttv1:
+      - { code: "1.4", label: "Action planning" }
+      - { code: "11.2", label: "Reduce negative emotions" }
+      - { code: "13.2", label: "Framing/reframing" }
+    com_b: [psychological-capability, automatic-motivation]
+    evidence_note: "Reframes the cigarette break as a break, preserving the functional benefit."
+
+  - id: smoking.triggers.rehearsal-prompt
+    type: exercise
+    title: Run it once in your head
+    steps:
+      - "Read your plan out loud, or in your head."
+      - "Now picture the trigger moment. Really see it."
+      - "Picture yourself doing your plan. Step by step."
+      - "Done. Your brain just had a practice run. The real one is easier now."
+    bcttv1:
+      - { code: "15.2", label: "Mental rehearsal of successful performance" }
+    com_b: [psychological-capability]
+    evidence_note: "Mental rehearsal strengthens implementation intentions."
+
+  - id: smoking.triggers.weekly-review
+    type: message
+    title: Plan check
+    slots: [plan_count]
+    body: >
+      Quick check on your {plan_count} plans.
+      Which ones fired this week? Which ones never get used?
+      A plan that never fires might need a new "then". Want to tweak one?
+    bcttv1:
+      - { code: "1.5", label: "Review behaviour goal(s)" }
+      - { code: "1.2", label: "Problem solving" }
+    com_b: [reflective-motivation, psychological-capability]
+    evidence_note: "Weekly plan review; keeps plans alive instead of stale."

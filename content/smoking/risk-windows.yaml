@@ -1,0 +1,199 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+# JITAI atoms. Delivery timing, frequency, quiet hours and arbitration are the
+# JITAI engine's job (WP5.2, single cross-vertical burden budget) — content
+# here is the message inventory only. trigger_window keys match the trigger
+# taxonomy in triggers.yaml where applicable.
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: risk-windows
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "PRD §5.1 [D] risk-window JITAI: learned windows incl. first-cigarette time, commute, after-work, payday, post-meal, drinking occasions"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [push]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.jitai.morning-1
+    type: jitai_message
+    trigger_window: morning
+    variant_group: morning
+    title: Morning move
+    body: "Toughest hour of the day. Patch on, plan ready? You've got this morning."
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [automatic-motivation]
+    evidence_note: "Pre-emptive support at learned first-cigarette time."
+
+  - id: smoking.jitai.morning-2
+    type: jitai_message
+    trigger_window: morning
+    variant_group: morning
+    title: New routine
+    body: "Different mug, different chair, shower first. Break the morning link one more day."
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+      - { code: "8.4", label: "Habit reversal" }
+    com_b: [automatic-motivation]
+    evidence_note: "Variant for rotation; routine disruption."
+
+  - id: smoking.jitai.commute-1
+    type: jitai_message
+    trigger_window: driving
+    variant_group: commute
+    title: Before you set off
+    body: "Commute time. Gum in, playlist on, windows down. The drive is yours now."
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+      - { code: "8.2", label: "Behaviour substitution" }
+    com_b: [automatic-motivation]
+    evidence_note: "Pre-commute micro-support."
+
+  - id: smoking.jitai.commute-2
+    type: jitai_message
+    trigger_window: driving
+    variant_group: commute
+    title: Car check
+    body: "Quick car check: lighter out of the glovebox? Mints in? Small moves, big help."
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+      - { code: "12.1", label: "Restructuring the physical environment" }
+    com_b: [automatic-motivation, physical-opportunity]
+    evidence_note: "Variant; cue removal in the car."
+
+  - id: smoking.jitai.after-work-1
+    type: jitai_message
+    trigger_window: after-work
+    variant_group: after-work
+    title: The home straight
+    body: "Clocking off soon. The walk-out smoke was a habit, not a need. What's your instead?"
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+      - { code: "8.2", label: "Behaviour substitution" }
+    com_b: [automatic-motivation]
+    evidence_note: "After-work window."
+
+  - id: smoking.jitai.after-work-2
+    type: jitai_message
+    trigger_window: after-work
+    variant_group: after-work
+    title: Day done
+    body: "Long day. You still get your wind-down — just smoke-free. Five slow breaths before the door."
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+      - { code: "11.2", label: "Reduce negative emotions" }
+    com_b: [automatic-motivation]
+    evidence_note: "Variant; preserves the decompression function."
+
+  - id: smoking.jitai.post-meal-1
+    type: jitai_message
+    trigger_window: after-meal
+    variant_group: post-meal
+    title: After food
+    body: "The after-dinner urge lasts a few minutes. Brush your teeth or grab a mint. Gone."
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+      - { code: "8.2", label: "Behaviour substitution" }
+    com_b: [automatic-motivation]
+    evidence_note: "Post-meal window."
+
+  - id: smoking.jitai.payday-1
+    type: jitai_message
+    trigger_window: payday
+    variant_group: payday
+    title: Payday
+    slots: [saved_amount]
+    body: "Payday! Your quit has saved you {saved_amount} so far. Today's pay stretches further too."
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+      - { code: "2.4", label: "Self-monitoring of outcome(s) of behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "Payday risk window flipped into a savings reinforcement moment."
+
+  - id: smoking.jitai.friday-drinking-plan
+    type: jitai_message
+    trigger_window: alcohol
+    variant_group: drinking
+    title: Drinking tonight?
+    body: >
+      Out tonight? Drinks and cigarettes used to be a pair.
+      Thirty seconds now saves the night: what will you say if offered one?
+      Tap to set your plan.
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+      - { code: "1.4", label: "Action planning" }
+    com_b: [psychological-capability, automatic-motivation]
+    evidence_note: >
+      Friday-afternoon plan prompt (PRD §5.1 [D]). Opens the if-then builder
+      pre-loaded with the drinking trigger (triggers module).
+
+  - id: smoking.jitai.drinking-night-checkin
+    type: jitai_message
+    trigger_window: alcohol
+    variant_group: drinking
+    title: Mid-evening check
+    body: "Hope it's a good night. Drink in your smoking hand, stay where the air is warm. You've got this."
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+      - { code: "12.3", label: "Avoidance/reducing exposure to cues for the behaviour" }
+    com_b: [automatic-motivation]
+    evidence_note: "In-window support variant; stay-inside tactic keeps user away from smoking areas."
+
+  - id: smoking.jitai.weekend-morning
+    type: jitai_message
+    trigger_window: morning
+    variant_group: weekend
+    title: Slow morning
+    body: "Weekend mornings run on old habits. New plan: coffee somewhere different today."
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+      - { code: "8.4", label: "Habit reversal" }
+    com_b: [automatic-motivation]
+    evidence_note: "Weekend-pattern variant of the morning window."
+
+  - id: smoking.jitai.stress-generic
+    type: jitai_message
+    trigger_window: stress
+    variant_group: stress
+    title: Rough patch?
+    body: "Stressy day? The rescue button is one tap away. Ninety seconds, no smoke needed."
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+      - { code: "11.2", label: "Reduce negative emotions" }
+    com_b: [automatic-motivation]
+    evidence_note: "Generic stress-window pointer to the SOS surface; fires only on explicit stress signals (rules)."
+
+  - id: smoking.jitai.quit-eve
+    type: jitai_message
+    trigger_window: quit-eve
+    variant_group: countdown
+    title: Tomorrow's the day
+    body: "Quit day tomorrow. Tonight: bin the cigarettes, lighters, ashtrays. Wake up free."
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+      - { code: "12.1", label: "Restructuring the physical environment" }
+    com_b: [physical-opportunity, reflective-motivation]
+    evidence_note: "Countdown push, night before quit date (Demo A journey)."
+
+  - id: smoking.jitai.quit-morning
+    type: jitai_message
+    trigger_window: quit-day
+    variant_group: countdown
+    title: Day one
+    body: "Today is day one. One morning, one craving, one win at a time. We're with you."
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+      - { code: "15.1", label: "Verbal persuasion about capability" }
+    com_b: [reflective-motivation, automatic-motivation]
+    evidence_note: "Quit-day morning push (Demo A journey)."
