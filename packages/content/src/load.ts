@@ -32,7 +32,10 @@ export async function loadModuleFile(filePath: string): Promise<LoadedPack> {
 }
 
 export async function loadPackDir(packDir: string): Promise<LoadedPack> {
-  const entries = (await readdir(packDir)).filter((f) => f.endsWith(".yaml") || f.endsWith(".yml")).sort();
+  // pack.yaml is a pack-level manifest (reserved for WP4.2), not an atom module.
+  const entries = (await readdir(packDir))
+    .filter((f) => (f.endsWith(".yaml") || f.endsWith(".yml")) && f !== "pack.yaml")
+    .sort();
   const atoms: ResolvedAtom[] = [];
   const sequences: Sequence[] = [];
   const errors: string[] = [];
