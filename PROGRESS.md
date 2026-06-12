@@ -12,7 +12,7 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 | 1.2 | Domain model & persistence | open | — | **Spine — single session only**; blocks 1.3/1.4/1.5/4.1 |
 | V.1c | QuitKit content pack — content drafting | open | — | **Parallel-safe now** (`content/smoking/`); draft in structured YAML per plan WP4.1 shape; stamp DRAFT |
 | V.2c | Exhale content pack — content drafting | open | — | **Parallel-safe now** (`content/vaping/`) |
-| V.3c | Steady content pack — content drafting | open | — | **Parallel-safe now** (`content/alcohol/`); include hard-stop referral scripts |
+| V.3c | Steady content pack — content drafting | **in_review** | wp/v3c-steady-content | 91 DRAFT atoms, 7 YAML files + manifest in `content/alcohol/`: diary, tomorrow-morning, social-survival, UK units, normative feedback, AVE lapse debriefs, dependence hard-stop referral scripts (inv. 4). Negative tests pass: no reduction language in hard-stop atoms; no verbatim AUDIT text; all moderation atoms contraindicated `dependence-flagged`. Assumptions: atom shape self-defined pending WP4.1 schema; pregnancy-pathway copy parked for clinical input; service numbers flagged for G3 verification |
 | V.4c | Nightshift content pack — content drafting | open | — | **Parallel-safe now** (`content/sleep/`); no treatment-claim language |
 | 7.1c | Safety risk corpus (~800 labelled cases) | open | — | **Parallel-safe now** (`tools/red-team/corpus/`); incl. hard negatives |
 | 10.1 | Clinical reviewer brief & engagement pack | open | — | **Parallel-safe now** (`compliance/`) |

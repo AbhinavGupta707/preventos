@@ -1,0 +1,118 @@
+meta:
+  pack: alcohol
+  file: units-education
+  status: DRAFT
+  version: 0.1.0
+  signoff: null
+  notes: >
+    UK-unit education. All maths must be property-tested against published UK
+    examples in the WPV.3 rules half (unit calculator); the examples below are
+    the content-side companions and MUST match the calculator's outputs.
+    Clinical reviewer to verify examples and CMO guideline framing at G3.
+
+atoms:
+  # ---- Core concept -----------------------------------------------------------
+  - id: steady.units.what-is-a-unit
+    kind: education
+    surface: education.units
+    audience: all
+    contraindications: []
+    body: >
+      One UK unit = 10ml (8g) of pure alcohol — roughly what a healthy adult
+      liver processes in an hour. Drinks don't come in units, which is why
+      they're sneaky: a "glass of wine" can be anything from 1.5 to 3 units
+      depending on the pour and the strength.
+
+  - id: steady.units.the-maths
+    kind: education
+    surface: education.units
+    audience: all
+    contraindications: []
+    body: >
+      The only formula you need: strength (ABV %) × volume (litres) = units.
+      A pint (568ml) of 5.2% lager: 5.2 × 0.568 = 3.0 units. The strength is
+      on every label and pump clip — the volume is the part nobody clocks.
+
+  - id: steady.units.common-drinks
+    kind: education
+    surface: education.units
+    audience: all
+    contraindications: []
+    body: |
+      What things actually are:
+      · Pint of 4% beer — 2.3 units
+      · Pint of 5.2% craft IPA — 3 units
+      · Medium glass (175ml) of 13% wine — 2.3 units
+      · Large glass (250ml) of 13% wine — 3.3 units (a third of a bottle)
+      · Bottle of 13% wine — 9.75 units
+      · Single (25ml) 40% spirit — 1 unit
+      · Double (50ml) 40% spirit — 2 units
+      · 440ml can of 7.5% super-strength lager — 3.3 units
+      · 500ml can of 4.5% cider — 2.3 units
+
+  - id: steady.units.sneaky-truths
+    kind: education
+    surface: education.units
+    audience: all
+    contraindications: []
+    body: |
+      The ones that surprise people:
+      · A large wine is 50% more than a medium — same "one glass" in your head.
+      · Home pours run 1.5–2× pub measures. Your "couple of glasses" at home may be half a bottle.
+      · "A few pints" of strong IPA (3 units each) outdrinks "a bottle of wine" night.
+      · Low-alcohol ≠ no-alcohol: 0.5% is near-zero, but "session 3.4%" still adds up across a session.
+
+  # ---- Low-risk guidelines ------------------------------------------------------
+  - id: steady.units.cmo-guideline
+    kind: education
+    surface: education.guidelines
+    audience: all
+    contraindications: []
+    body: >
+      The UK Chief Medical Officers' low-risk guideline: no more than 14 units
+      a week for both men and women, spread over three or more days, with
+      several drink-free days. 14 isn't a target to drink up to — it's the
+      level below which risks stay low. There's no "safe" amount, just lower
+      and higher risk, and your weekly number is yours to choose.
+
+  - id: steady.units.fourteen-looks-like
+    kind: education
+    surface: education.guidelines
+    audience: all
+    contraindications: []
+    body: >
+      14 units in real drinks: about six pints of 4% beer, or a bottle and a
+      half of 13% wine — across the whole week. Saved up for one night, the
+      same 14 units carries different risks: bingeing concentrates harm even
+      when the weekly total looks fine.
+
+  - id: steady.units.pregnancy
+    kind: education
+    surface: education.guidelines
+    audience: all
+    contraindications: []
+    body: >
+      Pregnant or trying? The UK guidance is clear: the safest approach is no
+      alcohol at all. If that's relevant to you, your midwife or GP can talk
+      it through without judgement — and this app will follow your lead.
+
+  # ---- Reflection hooks (link education → diary) -----------------------------
+  - id: steady.units.your-week-in-units
+    kind: education
+    surface: education.reflection
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      Your diary says last week was {{week_units}} units. Knowing what you now
+      know about pours and strengths — does that number feel about right, or
+      is the diary missing a few? (Updating it is a win, not a confession.)
+
+  - id: steady.units.quiz-hook
+    kind: education
+    surface: education.reflection
+    audience: all
+    contraindications: []
+    body: >
+      Quick one: which has more units — a large glass of wine, or a pint of
+      5% lager? ({{quiz_answer_reveal}}). Most people get this wrong, which
+      is exactly why counting drinks undercounts.
