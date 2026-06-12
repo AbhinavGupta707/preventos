@@ -69,6 +69,16 @@ export const event = core.table("event", {
   occurredAt: ts("occurred_at").notNull().defaultNow(),
 });
 
+export const outbox = core.table("outbox", {
+  id: bigint("id", { mode: "bigint" }).generatedAlwaysAsIdentity().primaryKey(),
+  eventId: bigint("event_id", { mode: "bigint" }).notNull().references(() => event.id),
+  topic: text("topic").notNull(),
+  status: text("status").notNull().default("pending"),
+  attempts: integer("attempts").notNull().default(0),
+  nextAttemptAt: ts("next_attempt_at").notNull().defaultNow(),
+  dispatchedAt: ts("dispatched_at"),
+});
+
 export const decisionRecord = core.table("decision_record", {
   id: uuid("id").primaryKey().defaultRandom(),
   personId: uuid("person_id").notNull().references(() => person.id),

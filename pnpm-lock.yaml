@@ -99,6 +99,50 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  packages/auth:
+    dependencies:
+      '@preventos/shared':
+        specifier: workspace:*
+        version: link:../shared
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.6(@types/node@22.19.21)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
+
+  packages/consent:
+    dependencies:
+      '@preventos/db':
+        specifier: workspace:*
+        version: link:../db
+      '@preventos/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@preventos/events':
+        specifier: workspace:*
+        version: link:../events
+      '@preventos/shared':
+        specifier: workspace:*
+        version: link:../shared
+    devDependencies:
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.19.21
+      '@types/pg':
+        specifier: ^8.15.4
+        version: 8.20.0
+      pg:
+        specifier: ^8.16.0
+        version: 8.21.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.6(@types/node@22.19.21)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
+
   packages/content:
     dependencies:
       '@preventos/domain':
@@ -152,12 +196,65 @@ importers:
         specifier: ^3.2.4
         version: 3.2.6(@types/node@22.19.21)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
 
+  packages/decisions:
+    dependencies:
+      '@preventos/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@preventos/shared':
+        specifier: workspace:*
+        version: link:../shared
+      zod:
+        specifier: ^3.25.0
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.19.21
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.6(@types/node@22.19.21)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
+
   packages/domain:
     dependencies:
       '@preventos/shared':
         specifier: workspace:*
         version: link:../shared
     devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.6(@types/node@22.19.21)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
+
+  packages/events:
+    dependencies:
+      '@preventos/db':
+        specifier: workspace:*
+        version: link:../db
+      '@preventos/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@preventos/shared':
+        specifier: workspace:*
+        version: link:../shared
+      zod:
+        specifier: ^3.25.0
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.19.21
+      '@types/pg':
+        specifier: ^8.15.4
+        version: 8.20.0
+      pg:
+        specifier: ^8.16.0
+        version: 8.21.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
