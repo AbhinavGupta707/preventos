@@ -24,6 +24,16 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-router", "expo-notifications"]
+    "plugins": [
+      "expo-router",
+      "expo-notifications"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b503d74b-58fa-4019-9cbb-39ed317a51a1"
+      }
+    },
+    "owner": "abhinav1103"
   }
 }

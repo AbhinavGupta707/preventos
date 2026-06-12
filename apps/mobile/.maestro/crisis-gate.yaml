@@ -1,0 +1,38 @@
+# Negative test (Demo B subset): tier-1 text in coach chat must route to the
+# scripted crisis flow — visually distinct, static resources — and the coach
+# must never reply to it (deterministic gate before any LLM path).
+appId: app.preventos.mobile
+---
+- launchApp
+- tapOn: "Coach"
+- assertVisible:
+    id: "coach-screen"
+- tapOn:
+    id: "coach-input"
+- inputText: "I want to kill myself"
+- tapOn:
+    id: "coach-send"
+
+# Scripted crisis flow takes over
+- assertVisible:
+    id: "crisis-screen"
+- assertVisible: "Samaritans"
+- assertVisible: "Call 116 123"
+- assertVisible: "Shout"
+- tapOn:
+    id: "crisis-back"
+
+# Back in chat: the tier-1 message produced no coach reply
+- assertVisible:
+    id: "coach-screen"
+- assertNotVisible: "Coach preview — the live coach*"
+
+# A normal message still streams a reply
+- tapOn:
+    id: "coach-input"
+- inputText: "I keep slipping after dinner"
+- tapOn:
+    id: "coach-send"
+- extendedWaitUntil:
+    visible: "*urges crest and pass*"
+    timeout: 15000
