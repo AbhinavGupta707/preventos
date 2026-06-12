@@ -1,0 +1,32 @@
+{
+  "name": "@preventos/worker",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src test",
+    "test": "vitest run",
+    "dev": "tsx src/main.ts"
+  },
+  "dependencies": {
+    "@preventos/consent": "workspace:*",
+    "@preventos/db": "workspace:*",
+    "@preventos/decisions": "workspace:*",
+    "@preventos/domain": "workspace:*",
+    "@preventos/events": "workspace:*",
+    "@preventos/shared": "workspace:*",
+    "drizzle-orm": "^0.44.2",
+    "pg": "^8.16.0",
+    "pino": "^9.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "@types/pg": "^8.15.4",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}
