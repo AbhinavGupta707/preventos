@@ -1,0 +1,18 @@
+# Sign-off registry — the machine-readable record behind safety invariant #3:
+# "No content reaches a real user without a sign-off registry entry."
+#
+# Schema seeded by WP10.1/10.4/10.10/10.6 session (2026-06-12); entries land via WP10.2
+# (per-vertical content sign-off packages). Pipeline enforcement: WP4.2 content lint.
+#
+# Entry schema:
+#   - id:            unique slug, e.g. smoking-pack-v1
+#     artifact:      path or content-pack identifier + version/hash being signed
+#     scope:         what the signature covers (content accuracy/safety, parameters, legal)
+#     signed_by:     name + role (clinical reviewer / owner / legal)
+#     date:          YYYY-MM-DD
+#     gate:          G1–G5 reference
+#     notes:         conditions or carve-outs, if any
+#
+# An empty list means NOTHING is cleared for real users. That is the correct current state.
+
+entries: []
