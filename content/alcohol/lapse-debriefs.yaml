@@ -1,0 +1,173 @@
+meta:
+  pack: alcohol
+  file: lapse-debriefs
+  status: DRAFT
+  version: 0.1.0
+  signoff: null
+  notes: >
+    Lapse debriefs tuned for the abstinence-violation effect (AVE): the danger
+    after a lapse isn't the units drunk, it's the "I've blown it, what's the
+    point" spiral that turns one heavy night into a written-off month. Every
+    debrief: (1) normalise without trivialising, (2) kill the all-or-nothing
+    frame, (3) extract one piece of usable information, (4) repair the plan,
+    (5) shrink the timeline back to today. Banned words: failed, ruined,
+    blown it, wasted, back to square one, willpower.
+
+atoms:
+  # ---- Immediate post-lapse (first screen after a heavy log) -------------------
+  - id: steady.lapse.immediate.open
+    kind: debrief
+    surface: lapse.immediate
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      Last night went past the plan. Before anything else: logging it was the
+      strong move — most people's instinct is to hide the evidence, including
+      from themselves.
+
+  - id: steady.lapse.immediate.ave-defuse
+    kind: debrief
+    surface: lapse.immediate
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      Here's the trap to dodge today: the voice that says "well, that's the
+      week ruined, may as well carry on." That voice turns one night into
+      seven. The maths says otherwise — one heavy night in a better month is
+      still a better month. Nothing you built is undone.
+
+  - id: steady.lapse.immediate.choice
+    kind: debrief
+    surface: lapse.immediate
+    audience: all
+    contraindications: [dependence-flagged]
+    body: |
+      What would help right now?
+      · Two-minute debrief — work out what happened
+      · Just repair the plan and move on
+      · Neither, today — come back to it later (it'll be here)
+
+  # ---- Functional-analysis debrief (the two-minute version) --------------------
+  - id: steady.lapse.debrief.walkthrough
+    kind: debrief
+    surface: lapse.debrief
+    audience: all
+    contraindications: [dependence-flagged]
+    body: |
+      No blame in any of these — just mechanics:
+      · Where were you, and who with?
+      · What was the feeling just before the first drink — stress, boredom, relief, celebration, autopilot?
+      · Was there a moment it tipped — a round, a top-up, a "go on then"?
+      · What would have had to be different for the night to go to plan?
+
+  - id: steady.lapse.debrief.pattern-link
+    kind: debrief
+    surface: lapse.debrief
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      That's the third debrief that mentions {{recurring_trigger}}. Patterns
+      like that aren't character flaws — they're design problems, and design
+      problems have design fixes. Want to build a plan specifically for
+      {{recurring_trigger}}?
+
+  - id: steady.lapse.debrief.close
+    kind: debrief
+    surface: lapse.debrief
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      Filed. One honest debrief is worth more than a week of feeling bad —
+      feeling bad isn't a strategy, but "{{extracted_insight}}" is something
+      we can actually build around.
+
+  # ---- Plan repair ---------------------------------------------------------------
+  - id: steady.lapse.repair.offer
+    kind: debrief
+    surface: lapse.repair
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      Your goal ({{goal_label}}) doesn't reset — it continues from today.
+      Want to keep it as is, or adjust it? Adjusting after new information
+      is called learning, not lowering the bar.
+
+  - id: steady.lapse.repair.today-sized
+    kind: debrief
+    surface: lapse.repair
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      Forget the week for a second. Today is the whole assignment: how do you
+      want today to go? Tomorrow can have its own meeting.
+
+  # ---- Repeat-lapse compassion ladder (escalating warmth, never judgement) ------
+  - id: steady.lapse.repeat.second
+    kind: debrief
+    surface: lapse.repeat
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      Two big nights this week. Still not a verdict — but worth saying plainly:
+      the plan as written isn't matching your actual week. That's a plan
+      problem. Let's make the plan fit the life, not pretend the life will
+      fit the plan.
+
+  - id: steady.lapse.repeat.third
+    kind: debrief
+    surface: lapse.repeat
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      This stretch has been heavy going, and you've kept logging through it —
+      that takes more honesty than a good week does. Two thoughts: smaller
+      goals win streaks, and talking it through helps more than toughing it
+      out. The coach is here; so is a do-over on the plan. Pick either.
+
+  - id: steady.lapse.repeat.persistent-note
+    kind: debrief
+    surface: lapse.repeat
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      If the last few weeks have felt less like choosing to drink and more
+      like not being able to choose — that's worth a proper conversation with
+      someone qualified, and it's a sign of the problem's size, not yours.
+      We can show you free, confidential options whenever you want them.
+      # NOTE (rules half): persistent heavy pattern should also re-trigger
+      # the deterministic dependence screen (WP10.3 criteria) — this copy is
+      # a soft signpost, never the safety mechanism itself.
+
+  # ---- Craving rescue (urge surfing + delay + call-someone) ----------------------
+  - id: steady.lapse.rescue.urge-surf
+    kind: script
+    surface: rescue.urge
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      Cravings crest and fall like a wave — usually inside 20 minutes, always
+      eventually. You don't have to beat it, just outlast it. Notice where it
+      sits in your body. Breathe slower than feels natural. You've outlasted
+      every craving you've ever had; that's why you're here to read this.
+
+  - id: steady.lapse.rescue.delay
+    kind: script
+    surface: rescue.urge
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      The 15-minute deal: not "no", just "not yet". Kettle on, shower, walk
+      to the corner, one episode of anything. If you still want the drink in
+      15 minutes, that's a decision you're allowed to make — but most waves
+      don't survive the kettle.
+
+  - id: steady.lapse.rescue.call-someone
+    kind: script
+    surface: rescue.urge
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      Cravings hate witnesses. Text or call {{support_contact_name}} — you
+      don't have to mention the craving; the conversation itself does the
+      work. No one to hand? Drinkline is free and confidential:
+      0300 123 1110 (weekdays 9am–8pm, weekends 11am–4pm).

@@ -1,0 +1,78 @@
+meta:
+  pack: alcohol
+  programme: steady
+  status: DRAFT # invariant 3 — no user exposure without compliance/ sign-off entry
+  version: 0.1.0
+  signoff: null
+  drafted: "2026-06-12"
+  notes: >
+    Manifest only. Enforcement of the dependence hard stop is deterministic rules-engine
+    config (WPV.3 rules half) — this file declares the content surfaces and taxonomy.
+
+instruments:
+  # Invariant 2: rendered verbatim from packages/instruments by registry id.
+  # Question text must never appear in this pack.
+  - registryId: audit-c
+    use: intake-screen
+  - registryId: audit
+    use: full-assessment-on-laddering
+  - registryId: phq-2
+    use: signpost-only-cross-screen
+  - registryId: gad-2
+    use: signpost-only-cross-screen
+
+goalTypes:
+  # All moderation goals are contraindicated for dependence-flagged users.
+  - id: drink-free-days
+    label: "Drink-free days"
+    contraindications: [dependence-flagged]
+  - id: unit-cap
+    label: "Weekly unit cap"
+    contraindications: [dependence-flagged]
+  - id: spend-cap
+    label: "Weekly spend cap"
+    contraindications: [dependence-flagged]
+
+riskWindows:
+  # Definitions feed JITAI scheduling (WP5.2). Copy for these moments lives in
+  # tomorrow-morning.yaml (countdowns) and social-survival.yaml (plans).
+  - id: friday-evening
+    kind: recurring-weekly
+  - id: payday
+    kind: recurring-monthly
+  - id: fixture-day
+    kind: calendar-event
+  - id: learned-window
+    kind: learned-from-diary
+
+contraindicationTaxonomy:
+  - key: dependence-flagged
+    meaning: >
+      Dependence/withdrawal-risk indicators present (criteria per WP10.3 parameter
+      sheet). Blocks ALL moderation, goal, diary-goal, normative and lapse-debrief
+      content. Routes to referral-hard-stop.yaml surfaces only. Never reversible by
+      config, flag, or prompt (invariant 1/4).
+  - key: pregnancy-flagged
+    meaning: >
+      Self-disclosed pregnancy. Blocks normative-feedback and moderation framing;
+      routes to no-safe-level education + midwife/GP signposting (copy TBD with
+      clinical reviewer — parked, see PROGRESS notes).
+
+escalationDeltas:
+  - id: dv-safeguarding-elevated
+    note: >
+      Alcohol contexts elevate DV/safeguarding lexicon sensitivity (PRD §5.3).
+      Lexicon itself is packages/safety (WP7.1) — this pack must never duplicate it.
+  - id: dependence-hard-stop
+    note: >
+      Dependence indicators → deterministic hard stop + referral surfaces
+      (referral-hard-stop.yaml). No reduction pathway. LLM never handles this turn.
+
+files:
+  - diary.yaml
+  - tomorrow-morning.yaml
+  - social-survival.yaml
+  - units-education.yaml
+  - normative-feedback.yaml
+  - lapse-debriefs.yaml
+  - referral-hard-stop.yaml

@@ -1,0 +1,112 @@
+meta:
+  pack: alcohol
+  file: normative-feedback
+  status: DRAFT
+  version: 0.1.0
+  signoff: null
+  notes: >
+    Personalised normative feedback ("people your age in your area actually
+    drink..."). Templates with data slots — a real normative dataset must be
+    wired before activation; slots without data must suppress the whole atom,
+    never render placeholders.
+  display-rules:
+    - >
+      BOOMERANG GUARD: descriptive norms are only shown when the user's intake
+      is ABOVE the reference norm. Telling lighter drinkers they drink less
+      than average licenses an increase. Below-norm users get the affirmation
+      atom (norm.below.affirm) with no comparative figures.
+    - "Norms are descriptive, never moralising. The fact does the work; copy stays flat."
+    - "All comparative atoms contraindicated for dependence-flagged users (no moderation framing)."
+    - "Data provenance (survey, year, n) must be available behind an info tap."
+
+atoms:
+  # ---- Perception vs reality --------------------------------------------------
+  - id: steady.norm.perception-check
+    kind: feedback-template
+    surface: norms.perception
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      Before we show you the numbers — a guess: out of 10 people your age in
+      {{region_label}}, how many do you reckon drank more than {{week_units}}
+      units last week?
+
+  - id: steady.norm.perception-reveal
+    kind: feedback-template
+    surface: norms.perception
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      You guessed {{user_guess}} in 10. The survey data says about
+      {{actual_above_count}} in 10. Most people picture everyone else drinking
+      more than they really do — the "everyone drinks like this" feeling is
+      usually the loudest 20% of the room.
+
+  # ---- Above-norm comparative (the core normative atom) -----------------------
+  - id: steady.norm.above.weekly
+    kind: feedback-template
+    surface: norms.comparison
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      Your last 4 weeks averaged {{avg_week_units}} units. For
+      {{age_band}}-year-olds in {{region_label}}, the typical week is about
+      {{norm_week_units}} units — meaning you're drinking more than around
+      {{percentile}}% of people like you. Not a verdict — just a truer mirror
+      than a night out provides.
+
+  - id: steady.norm.above.heavy-days
+    kind: feedback-template
+    surface: norms.comparison
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      Heavy days (6+ units in a day): you logged {{user_heavy_days}} last
+      month. The typical figure for your age group is {{norm_heavy_days}}.
+      It's the pattern, not any single night, that this is pointing at.
+
+  - id: steady.norm.above.reframe
+    kind: feedback-template
+    surface: norms.comparison
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      Worth knowing: "{{percentile}}th percentile" isn't a character
+      reference. It mostly means your routines — the after-work pint, the
+      Friday pattern — are doing the deciding. Routines can be redesigned;
+      that's literally what this app is for.
+
+  # ---- Below-norm path (NO comparative figures — boomerang guard) -------------
+  - id: steady.norm.below.affirm
+    kind: feedback-template
+    surface: norms.comparison
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      We looked at your pattern against the survey data and there's nothing
+      here to flag. Whatever you're doing is working — the diary will tell
+      you if that changes.
+
+  # ---- Spend mirror -------------------------------------------------------------
+  - id: steady.norm.spend.mirror
+    kind: feedback-template
+    surface: norms.spend
+    audience: all
+    contraindications: [dependence-flagged]
+    body: >
+      At your logged pace, alcohol is costing you roughly £{{est_month_spend}}
+      a month — about £{{est_year_spend}} a year. Against your savings goal
+      ({{savings_goal_label}}), that's {{goal_fraction}} of it, every year,
+      on autopilot.
+
+  # ---- Provenance ----------------------------------------------------------------
+  - id: steady.norm.provenance
+    kind: microcopy
+    surface: norms.info
+    audience: all
+    contraindications: []
+    body: >
+      Where these numbers come from: {{data_source_name}} ({{data_source_year}},
+      {{data_source_n}} respondents), matched to your age band and region.
+      Self-reported surveys under-count a bit — the real norms are, if
+      anything, lower.
