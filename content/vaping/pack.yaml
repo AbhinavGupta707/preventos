@@ -1,0 +1,87 @@
+# =============================================================================
+# Exhale — adult vaping cessation content pack (WPV.2c)
+# STATUS: DRAFT — no atom in this pack may reach a real user until a sign-off
+# entry exists in compliance/ (safety invariant 3). DRAFT stamp is load-bearing.
+# =============================================================================
+pack: vaping
+programme: exhale
+status: DRAFT
+version: 0.1.0
+drafted: 2026-06-12
+sign_off: null # must reference a compliance/ sign-off registry entry before release
+
+# --- Scope (plan E18) --------------------------------------------------------
+audience: adult # 18+ only, age-gated at onboarding (WP2.2)
+deferred_segments:
+  - adolescents_13_17 # structurally separate build: Children's Code, safeguarding
+
+# --- Framing policy (PRD §5.2: autonomy-supportive, never disease-scare-led) --
+framing:
+  allowed: [appearance, performance, savings, autonomy, freedom, control]
+  banned_lexicon: # content lint blocklist; WP4.2 wires this into CI
+    # match on word boundaries, case-insensitive ("tar" must not match "start")
+    - cancer
+    - tumour
+    - disease
+    - lung damage
+    - popcorn lung
+    - emphysema
+    - COPD
+    - tar
+    - poison
+    - toxic
+    - deadly
+    - "kill you"
+    - "harming your body"
+  notes: >
+    Copy motivates through what the user gains (skin, breath, fitness, focus,
+    sleep, money, self-respect) — never through fear of illness. Withdrawal
+    symptoms may be named factually (irritability, restlessness, cravings)
+    because honest expectation-setting is coaching, not scare.
+
+# --- Instruments (E19; rendered verbatim per safety invariant 2) -------------
+instruments:
+  - id: ttfv_index # time-to-first-vape dependence proxy; lives in packages/instruments
+    role: dependence_proxy
+    note: referenced by taper logic; never paraphrased in copy
+
+# --- Outcome definitions referenced (WP8.1) ----------------------------------
+outcomes:
+  - self_report_abstinence_7d
+  - self_report_abstinence_30d
+  - use_days
+  - ttfv_trajectory
+
+# --- Escalation deltas (content-level notes; rules live in WPV.2 rules half) --
+escalation_notes:
+  - MH-comorbidity step-up signposting copy shared with core safety pack
+  - no vaping-specific tier-1 additions; core risk lexicon applies unchanged
+
+# --- Contraindication taxonomy hooks (WP4.1) ----------------------------------
+contraindications_defined:
+  - dual_user_unrouted # dual users must pass through dual-user-routing before taper content
+  - pregnancy_flagged # signpost to specialist services; no in-app taper coaching
+
+# --- File index ----------------------------------------------------------------
+files:
+  - withdrawal-coaching.yaml # symptom-by-symptom coaching atoms + timeline expectations
+  - boredom-replacement.yaml # context-keyed replacement menus
+  - stealth-use-analysis.yaml # functional analysis flow + debrief copy
+  - taper-puff-budget.yaml # puff-budget plan templates + coaching copy
+  - taper-strength-ladder.yaml # nicotine-strength step-down ladder content
+  - product-mapping.yaml # product-mapping database structure + illustrative seeds [BS]
+  - dual-user-routing.yaml # vape+smoke → QuitKit routing copy
+
+# --- Atom shape assumption ------------------------------------------------------
+# WP4.1 (content-atom schema) is not yet built. All files in this pack use the
+# shape below; WP4.1 should formalise or migrate it.
+atom_shape:
+  id: string # vap-<area>-NNN
+  type: coaching_card | menu | flow | script | plan_template | schema
+  title: string
+  audience: adult
+  framing: list # subset of framing.allowed
+  contraindications: list # subset of contraindications_defined
+  status: draft # every atom individually stamped
+  body: markdown # user-facing copy; {{slot}} variables allowed
+  slots: map # slot name -> description, optional

@@ -1,0 +1,128 @@
+# Exhale — boredom-replacement menus (WPV.2c)
+# STATUS: DRAFT — not user-deliverable without compliance/ sign-off entry.
+# Vaping's strongest habit loop is micro-boredom: small empty moments that the
+# device fills. Menus are keyed by context so the rescue surface can offer the
+# right swap at the right moment, and split by what the vape was supplying:
+# hands, mouth, or mind.
+pack: vaping
+file: boredom-replacement
+status: DRAFT
+version: 0.1.0
+
+atoms:
+  - id: vap-bored-001
+    type: menu
+    title: "Desk / working"
+    audience: adult
+    framing: [performance]
+    contraindications: []
+    status: draft
+    context: desk
+    items:
+      - { fills: hands, copy: "Fidget object in the vape pocket — same reach, different object. Put it where the vape lived." }
+      - { fills: hands, copy: "Two-minute tidy: clear five things off the desk. Restless energy, spent." }
+      - { fills: mouth, copy: "Cold water or sparkling water within arm's reach. Refill = your new micro-break." }
+      - { fills: mouth, copy: "Sugar-free gum or a mint — keep them where the vape used to sit." }
+      - { fills: mind, copy: "The vape break was really a screen break. Take the break without the vape: window, stretch, 10 deep breaths." }
+
+  - id: vap-bored-002
+    type: menu
+    title: "Commute / travelling"
+    audience: adult
+    framing: [autonomy, performance]
+    contraindications: []
+    status: draft
+    context: commute
+    items:
+      - { fills: mind, copy: "Queue a podcast or playlist that only plays on the commute — give the journey its own reward." }
+      - { fills: hands, copy: "Phone game or puzzle app for exactly the stretch where you used to vape." }
+      - { fills: mouth, copy: "Travel pack of gum in the same pocket the vape used." }
+      - { fills: mind, copy: "Get off one stop early when you can. The walk does what the vape pretended to do — clears your head, for free." }
+
+  - id: vap-bored-003
+    type: menu
+    title: "Gaming / watching TV"
+    audience: adult
+    framing: [performance, autonomy]
+    contraindications: []
+    status: draft
+    context: sofa
+    items:
+      - { fills: hands, copy: "Controller in both hands is already a vape blocker. The risk window is the lobby/loading screen — keep a drink there instead." }
+      - { fills: mouth, copy: "Bottle of something cold on the side table before you sit down. Decide once, not every craving." }
+      - { fills: hands, copy: "Between episodes: 60 seconds of anything physical — stretch, press-ups, kettle on. Breaks the auto-reach." }
+      - { fills: mind, copy: "Notice the pattern: pause = puff was a rule you never chose. Write a new one: pause = sip." }
+
+  - id: vap-bored-004
+    type: menu
+    title: "Queueing / waiting around"
+    audience: adult
+    framing: [autonomy]
+    contraindications: []
+    status: draft
+    context: waiting
+    items:
+      - { fills: mind, copy: "This is the rawest boredom there is — and it's also the shortest. Most waits end within minutes; the craving's on the same timer." }
+      - { fills: hands, copy: "Phone is fine here. Open the app, log the craving, watch it count as a win." }
+      - { fills: mouth, copy: "Mint tin in the jacket pocket. Same ritual: reach, open, done." }
+      - { fills: mind, copy: "People-watch deliberately: find three things you'd never have noticed mid-puff." }
+
+  - id: vap-bored-005
+    type: menu
+    title: "Social smoking/vaping break (outdoors with others)"
+    audience: adult
+    framing: [autonomy, appearance]
+    contraindications: []
+    status: draft
+    context: social_break
+    items:
+      - { fills: mind, copy: "Go on the break — skip the vape. The break was always the good part: air, chat, a pause. Keep all of that." }
+      - { fills: mouth, copy: "Take a coffee or cold drink out with you. Hands and mouth occupied, nothing to explain." }
+      - { fills: mind, copy: "Have your line ready: 'I'm cutting down.' Said casually, it lands casually — and most people quietly respect it." }
+      - { fills: hands, copy: "If holding nothing feels weird, hold the drink in your vaping hand specifically." }
+
+  - id: vap-bored-006
+    type: menu
+    title: "Phone scroll / toilet break"
+    audience: adult
+    framing: [autonomy]
+    contraindications: []
+    status: draft
+    context: private_break
+    notes: pairs with stealth-use functional analysis (vap-stealth-*)
+    items:
+      - { fills: mind, copy: "The scroll-and-puff pair is one habit wearing two coats. Break either half and the other loosens: leave the vape outside the door once today." }
+      - { fills: mind, copy: "If this break is really an escape hatch from something (a person, a task, a feeling) — that's worth knowing. Two questions in the app will tell you." }
+      - { fills: mouth, copy: "Water bottle goes where the vape went. Same pocket, same reach." }
+
+  - id: vap-bored-007
+    type: menu
+    title: "Evening wind-down"
+    audience: adult
+    framing: [performance, appearance]
+    contraindications: []
+    status: draft
+    context: evening
+    items:
+      - { fills: mind, copy: "Evening puffs cost you twice: tonight's sleep and tomorrow's dependence. Push your last vape earlier and both improve." }
+      - { fills: mouth, copy: "Herbal tea or decaf ritual at the time you'd usually start evening vaping. New anchor, same comfort." }
+      - { fills: hands, copy: "Hands busy, mind quiet: shower, skincare, stretching, tidying tomorrow's stuff. The skincare one pays you back in the mirror." }
+      - { fills: mind, copy: "Charge the vape outside the bedroom. Distance is the cheapest willpower there is." }
+
+  - id: vap-bored-008
+    type: coaching_card
+    title: "Why boredom is the real opponent"
+    audience: adult
+    framing: [autonomy]
+    contraindications: []
+    status: draft
+    body: |
+      Most vaping isn't about strong cravings — it's about small empty
+      moments. The device became your default for every gap in the day:
+      loading screens, kettle boiling, lift lobbies.
+
+      That's actually encouraging. You don't need heroic willpower; you need
+      better defaults for ten small moments. We'll set them up one context at
+      a time, starting with wherever you vape most.
+    slots:
+      top_context: user's most-logged vaping context

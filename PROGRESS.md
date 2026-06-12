@@ -11,7 +11,7 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 | 1.1b | App shells (Expo, web, console) | **claimed** | main (spine session) | In progress 2026-06-12 |
 | 1.2 | Domain model & persistence | open | — | **Spine — single session only**; blocks 1.3/1.4/1.5/4.1 |
 | V.1c | QuitKit content pack — content drafting | open | — | **Parallel-safe now** (`content/smoking/`); draft in structured YAML per plan WP4.1 shape; stamp DRAFT |
-| V.2c | Exhale content pack — content drafting | open | — | **Parallel-safe now** (`content/vaping/`) |
+| V.2c | Exhale content pack — content drafting | **done** | `wp/v2c-exhale-content` | 8 YAML files / 45 atoms in `content/vaping/`; validated: parse + DRAFT stamps + banned-lexicon (word-boundary) + atom-id cross-refs + ladder↔product coverage + TPD ≤20mg/ml. Adult-only (E18). Product seeds are illustrative archetypes — real catalogue sourcing is an owner decision |
 | V.3c | Steady content pack — content drafting | open | — | **Parallel-safe now** (`content/alcohol/`); include hard-stop referral scripts |
 | V.4c | Nightshift content pack — content drafting | open | — | **Parallel-safe now** (`content/sleep/`); no treatment-claim language |
 | 7.1c | Safety risk corpus (~800 labelled cases) | open | — | **Parallel-safe now** (`tools/red-team/corpus/`); incl. hard negatives |
