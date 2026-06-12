@@ -1,0 +1,58 @@
+# ============================================================================
+# DRAFT — Nightshift content pack manifest (WP V.4c)
+# Not for production. No atom may reach a real user without a sign-off
+# registry entry in compliance/ (invariant 3). Framing rules: see README.md.
+# ============================================================================
+pack: sleep
+programme: nightshift
+status: DRAFT
+version: 0.1.0
+language: en-GB
+framing: wellbeing # E16 — copy supports sleep habits; no health-condition claims
+claims_posture:
+  rule: E16
+  blocklist_ref: README.md # forbidden language classes listed there, lint-seeded
+  lint: pending-wp4.2 # until CI lint lands, run README self-check pre-commit
+
+modules:
+  - file: stimulus-control.yaml
+    id: sleep.sc
+    summary: Bed–sleep connection coaching (core habit loop)
+  - file: cognitive-restructuring.yaml
+    id: sleep.cr
+    summary: Reframing unhelpful night-time thoughts
+  - file: wind-down-audio.yaml
+    id: sleep.audio
+    summary: Wind-down audio voiceover scripts
+  - file: rescue-2am.yaml
+    id: sleep.rescue
+    summary: Middle-of-the-night rescue mode (dark UI, audio-first)
+  - file: shift-worker.yaml
+    id: sleep.shift
+    summary: Shift-worker protocol variants (replace circadian-anchor atoms)
+  - file: orthosomnia.yaml
+    id: sleep.ortho
+    summary: Sleep-tracker de-escalation
+  - file: safety-screens.yaml
+    id: sleep.safety
+    summary: Occupation and daytime-sleepiness screens + window-floor copy
+
+defaults:
+  reading_age: 9
+  language: en-GB
+  tone: autonomy-supportive
+  status: DRAFT
+
+routing_notes:
+  - profile:shift-worker replaces atoms carrying contraindication
+    profile:shift-worker with the variant_of-linked atom in shift-worker.yaml.
+  - flag:occupation-safety is set only by safety-screens.yaml outcomes; it pins
+    the titration window floor (engine half of WPV.4) and suppresses any atom
+    carrying contraindication flag:occupation-safety.
+  - Wearable data is corroboration only; diary primacy is product policy
+    (orthosomnia.yaml explains this to users).
+
+signoff:
+  registry_entry: null # required before any release (compliance/)
+  reviewed_by: null
+  review_notes: null

@@ -13,7 +13,7 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 | V.1c | QuitKit content pack — content drafting | open | — | **Parallel-safe now** (`content/smoking/`); draft in structured YAML per plan WP4.1 shape; stamp DRAFT |
 | V.2c | Exhale content pack — content drafting | open | — | **Parallel-safe now** (`content/vaping/`) |
 | V.3c | Steady content pack — content drafting | open | — | **Parallel-safe now** (`content/alcohol/`); include hard-stop referral scripts |
-| V.4c | Nightshift content pack — content drafting | open | — | **Parallel-safe now** (`content/sleep/`); no treatment-claim language |
+| V.4c | Nightshift content pack — content drafting | **done** | wp/V.4c-nightshift-content | 7 modules, 54 atoms in `content/sleep/`, all DRAFT-stamped, YAML-validated, cross-refs resolve; claims-blocklist grep (README self-check) zero hits; `pnpm verify` green. Safety-screen questions bespoke (not instrument-derived); window-floor values deferred to engine half of WPV.4 |
 | 7.1c | Safety risk corpus (~800 labelled cases) | open | — | **Parallel-safe now** (`tools/red-team/corpus/`); incl. hard negatives |
 | 10.1 | Clinical reviewer brief & engagement pack | open | — | **Parallel-safe now** (`compliance/`) |
 | 10.4 | Instrument licensing audit (SCI vs ISI etc.) | open | — | **Parallel-safe now** (`compliance/`) |
@@ -25,3 +25,4 @@ WPs unblock. Statuses: open → claimed(session/branch) → in_review(PR) → do
 
 ## Session log
 - 2026-06-12 · spine session: plan v3 adopted; WP1.1a built and verified; repo initialized.
+- 2026-06-12 · V.4c session (worktree): Nightshift content pack drafted under wellbeing framing (E16); claims blocklist seeded in content/sleep/README.md pending WP4.2 lint/WP10.10 register.

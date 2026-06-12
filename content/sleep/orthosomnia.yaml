@@ -1,0 +1,163 @@
+# DRAFT — Nightshift: sleep-tracker de-escalation (WP V.4c)
+# Framing rules + claims blocklist: see README.md. Sign-off required before release.
+#
+# Product policy (PRD §5.12 [BS]): wearable-informed, not wearable-led. Diary has
+# primacy; device data is corroboration. This module actively de-escalates
+# tracker fixation rather than leaning into it.
+pack: sleep
+module: orthosomnia
+id: sleep.ortho
+status: DRAFT
+version: 0.1.0
+
+routing_notes:
+  - Serve sleep.ortho.score-check when a connected wearable is present and the
+    user's check-ins mention the tracker or its scores.
+  - Serve the full module when tracker-related worry is reported directly.
+  - UI: device data renders as secondary corroboration, never as the headline.
+
+atoms:
+  - id: sleep.ortho.tracker-reality
+    status: DRAFT
+    type: message
+    title: What your tracker actually knows
+    bct: ["4.1", "13.2"]
+    com_b: [psychological-capability]
+    reading_age: 11
+    channels: [in_app]
+    tone: practical
+    contraindications: []
+    body: |
+      A quick reality check on sleep trackers: they don't measure sleep.
+      They measure movement, heart rate and a few other signals, then
+      *estimate* sleep from them. For the deeper details — which stage you
+      were in, exactly when you drifted off — they're making educated
+      guesses, and different brands guess differently from the same night.
+
+      That doesn't make them useless. Trends over weeks are worth something.
+      But last night's "sleep score" is a rough estimate dressed up as a
+      precise number.
+
+      You have a better instrument: how you actually feel this morning,
+      and your own morning diary. In this programme, those lead. The
+      tracker is a second opinion — never the verdict.
+
+  - id: sleep.ortho.diary-primacy
+    status: DRAFT
+    type: message
+    title: Why your diary outranks your device
+    bct: ["4.1", "2.3"]
+    com_b: [psychological-capability, reflective-motivation]
+    reading_age: 9
+    channels: [in_app]
+    tone: autonomy-supportive
+    contraindications: []
+    body: |
+      In this programme, your morning diary is the source of truth. Your
+      wearable, if you use one, plays backing vocals.
+
+      Here's why. Your plan adjusts each week based on how your nights are
+      actually going — and "actually going" includes things only you know:
+      how long the night felt, how you feel today. Four taps each morning
+      captures that. A device can agree or disagree quietly in the
+      background, and that's all it gets to do.
+
+      So when your tracker and your diary tell different stories, we go
+      with yours. You were there.
+
+  - id: sleep.ortho.score-check
+    status: DRAFT
+    type: exercise
+    title: Did the number decide your day?
+    bct: ["13.2", "2.4"]
+    com_b: [reflective-motivation]
+    reading_age: 9
+    channels: [in_app]
+    tone: warm-challenge
+    contraindications: []
+    body: |
+      Try this honesty check next time you look at your sleep score:
+
+      How did you feel in the thirty seconds *before* you saw the number?
+
+      If the answer was "actually fine" — and then a 58 made you feel
+      exhausted — notice what happened. The night didn't change. The
+      number changed your story about the night, and the story is what
+      you carried into the day.
+
+      It cuts both ways: people sleep the same night and feel worse or
+      better depending on which score they're shown. If a number can do
+      that, the number has too much power.
+
+      Your morning body knows things your wristband doesn't. Ask it first.
+
+  - id: sleep.ortho.tracker-holiday
+    status: DRAFT
+    type: exercise
+    title: A week off the score
+    bct: ["12.3", "1.4"]
+    com_b: [automatic-motivation]
+    reading_age: 9
+    channels: [in_app]
+    tone: autonomy-supportive
+    contraindications: []
+    body: |
+      If checking your sleep data has started to feel like checking exam
+      results, here's an experiment worth running: a one-week tracker
+      holiday.
+
+      Keep wearing the device if you like — just don't open the sleep
+      section. Mute its sleep notifications (we can remind you how). Keep
+      doing your four-tap morning diary as usual.
+
+      At the end of the week, ask yourself two things: did my sleep get
+      worse without the supervision? And were my mornings calmer without
+      the verdict?
+
+      Whatever you find, you'll know something useful about who's wearing
+      whom. Many people never go back to daily score-checking — the
+      weekly trend turns out to be all they needed.
+
+  - id: sleep.ortho.perfect-sleep-myth
+    status: DRAFT
+    type: message
+    title: Nobody sleeps a perfect night
+    bct: ["13.2", "4.1"]
+    com_b: [psychological-capability, reflective-motivation]
+    reading_age: 9
+    channels: [in_app]
+    tone: autonomy-supportive
+    contraindications: []
+    related: [sleep.cr.one-bad-night]
+    body: |
+      One thing trackers accidentally taught everyone: that sleep should
+      look like a tidy diagram — smooth cycles, long deep blocks, no gaps.
+
+      Real sleep isn't like that for anyone. Healthy sleepers wake briefly
+      many times a night and simply don't remember. Stages vary night to
+      night, season to season, age to age. The tidy diagram is a cartoon.
+
+      So if your device shows fragments and shallow patches: that's not a
+      malfunction in you. That's what human sleep looks like when you put
+      a microscope on it. The microscope is the new part — not the mess.
+
+  - id: sleep.ortho.rest-vs-data
+    status: DRAFT
+    type: message
+    title: The goal is mornings, not metrics
+    bct: ["13.2", "1.1"]
+    com_b: [reflective-motivation]
+    reading_age: 9
+    channels: [in_app, push]
+    tone: autonomy-supportive
+    contraindications: []
+    body: |
+      Easy to lose the plot here, so let's say it plainly: the goal of all
+      this was never a better sleep score. It was better mornings — waking
+      up feeling more like yourself, more of the time.
+
+      If the mornings are improving, the project is working, whatever any
+      chart says. And if chasing the chart is making your evenings tense,
+      the chart has become part of the problem it was meant to solve.
+
+      Numbers are staff, not management. Feel first, measure second.
