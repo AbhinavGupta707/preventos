@@ -29,7 +29,7 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 | 1.5 | Auth port, RBAC, k-anonymity | **done (port)** | main (spine session) | `@preventos/auth`: provider port + fake provider; deny-by-default matrix (analyst provably excluded from every row-level action); k≥5 suppression. **Clerk adapter awaits owner-created API keys** |
 | 4.2m | Content pipeline + canonical migration (wave 2) | open | — | WP4.2 + migrate all 4 packs + shrink LEGACY_PACKS to empty + claims-register lint + WP4.4 instruments |
 | WS7 | Safety subsystem (7.1, 7.2, crisis-static, 7.4) (wave 2) | open | — | Corpus (843 cases) + spine ready; recall ≥0.95 tier-1 is the bar |
-| WS2 | Mobile app (2.1–2.6) (wave 2) | open | — | apps/mobile; spine packages available |
+| WS2 | Mobile app (2.1–2.6) (wave 2) | claimed | wp/ws2-mobile-app | apps/mobile + minimal packages/instruments seed (HSI only, invariant 2); golden path = smoking; mock API behind typed client port until SVC |
 | WS3 | Web (3.1 + 3.2) (wave 2) | open | — | apps/web; claims lint applies to marketing copy |
 | SVC | Services assembly (apps/api + apps/worker) (wave 2) | open | — | Wires spine packages; consumes events dispatcher + scheduler |
 | WS8 | Outcomes, analytics & evidence (8.1–8.4) (wave 2) | open | — | events + auth(k-anon) ready |
