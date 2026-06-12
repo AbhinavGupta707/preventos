@@ -27,7 +27,7 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 | 5.2 | Burden governor + arbitration + scheduler | **done** | main (spine session) | One cross-vertical budget (≤3/day, 60-min gap, quiet 21:30–08:00 — pending WP10.3 sign-off); starvation-guarded arbitration (fairness proven over 25 rounds); deterministic decision-point generator (6-week time-warp test) |
 | 5.3 | Relapse state machine | **done** | main (spine session) | Universal machine, per-vertical lapse definitions in config; lapse never skips debrief; days-won monotone non-decreasing (property-tested) |
 | 1.5 | Auth port, RBAC, k-anonymity | **done (port)** | main (spine session) | `@preventos/auth`: provider port + fake provider; deny-by-default matrix (analyst provably excluded from every row-level action); k≥5 suppression. **Clerk adapter awaits owner-created API keys** |
-| 4.2m | Content pipeline + canonical migration (wave 2) | open | — | WP4.2 + migrate all 4 packs + shrink LEGACY_PACKS to empty + claims-register lint + WP4.4 instruments |
+| 4.2m | Content pipeline + canonical migration (wave 2) | claimed | wp/4.2m-content-pipeline | WP4.2 + migrate all 4 packs + shrink LEGACY_PACKS to empty + claims-register lint + WP4.4 instruments |
 | WS7 | Safety subsystem (7.1, 7.2, crisis-static, 7.4) (wave 2) | open | — | Corpus (843 cases) + spine ready; recall ≥0.95 tier-1 is the bar |
 | WS2 | Mobile app (2.1–2.6) (wave 2) | open | — | apps/mobile; spine packages available |
 | WS3 | Web (3.1 + 3.2) (wave 2) | open | — | apps/web; claims lint applies to marketing copy |
