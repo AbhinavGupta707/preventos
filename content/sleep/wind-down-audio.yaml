@@ -1,0 +1,209 @@
+# DRAFT — Nightshift: wind-down audio voiceover scripts (WP V.4c)
+# Framing rules + claims blocklist: see README.md. Sign-off required before release.
+# VO conventions: [pause Ns] = silence; (dir: …) = delivery direction, not spoken.
+pack: sleep
+module: wind-down-audio
+id: sleep.audio
+status: DRAFT
+version: 0.1.0
+
+atoms:
+  - id: sleep.audio.body-scan
+    status: DRAFT
+    type: audio_script
+    title: Body scan — heavy and slow
+    duration_target_min: 10
+    bct: ["11.2"]
+    com_b: [automatic-motivation]
+    reading_age: 9
+    channels: [audio]
+    tone: autonomy-supportive
+    contraindications: []
+    rendering:
+      voice: low, unhurried, slightly warm
+      music: none, or near-silent low pad
+      pace: slower than feels natural when recording
+    body: |
+      (dir: begin softly, as if not to wake anyone)
+
+      You don't need to do anything for the next few minutes.
+      There's nothing to get right. [pause 4s]
+
+      Let your eyes close, if they haven't already.
+      And just notice the weight of your body, lying here.
+      The mattress is doing all the work. You can stop holding yourself.
+      [pause 6s]
+
+      We'll move attention slowly through the body. Wherever we visit,
+      you don't have to relax it on purpose. Just notice it,
+      and let it be heavy. [pause 4s]
+
+      Start with your feet. Notice them down there at the end of the bed.
+      Warm or cool. Still. Heavy. [pause 8s]
+
+      Let that heaviness drift up into your ankles… your calves…
+      slow, like water soaking into sand. [pause 8s]
+
+      Your knees. Your thighs. Big, heavy muscles with nothing left
+      to do today. They carried you everywhere. They're done now.
+      [pause 10s]
+
+      Your hips, and the small of your back, settling into the mattress.
+      A little more with each breath out. [pause 10s]
+
+      Your stomach, rising and falling. You're not breathing on purpose —
+      it's just happening, the way it has all day. Let it. [pause 10s]
+
+      Your chest. Your shoulders. (dir: even slower here)
+      Shoulders hold the day. Let the mattress have them. [pause 10s]
+
+      Down your arms… elbows… wrists… all the way to your fingertips.
+      Heavy. Warm. Still. [pause 10s]
+
+      Your neck. Your jaw — let your teeth part slightly.
+      Your forehead, smoothing out. Even your eyes, resting
+      in the dark behind your eyelids. [pause 12s]
+
+      Your whole body now, from feet to forehead. One heavy, quiet shape
+      in a dark room. Nothing to do. Nowhere to be. [pause 15s]
+
+      If sleep wants to come, let it.
+      If it doesn't yet, that's fine too — this rest counts.
+      [pause 10s]
+
+      (dir: trail off, slower and quieter)
+      Just heavy… and warm… and still. [pause 20s, then fade out]
+
+  - id: sleep.audio.slow-breathing
+    status: DRAFT
+    type: audio_script
+    title: Slow breathing — out longer than in
+    duration_target_min: 6
+    bct: ["11.2", "4.1"]
+    com_b: [automatic-motivation, psychological-capability]
+    reading_age: 9
+    channels: [audio]
+    tone: practical
+    contraindications: []
+    rendering:
+      voice: calm, even, metronomic in the counted sections
+      music: none
+    body: |
+      This one is simple: we'll breathe with the out-breath a little longer
+      than the in-breath. A long, slow exhale is one of the few signals your
+      body always understands as "we're safe, stand down". [pause 3s]
+
+      No special technique. If counting ever feels like work, drop the
+      numbers and just keep the out-breath long and lazy. [pause 3s]
+
+      Let's start. Breathe in through your nose… two… three… four.
+      [pause 1s]
+      And out, slowly… two… three… four… five… six.
+      [pause 2s]
+
+      In… two… three… four.
+      Out… two… three… four… five… six.
+      [pause 2s]
+
+      (dir: repeat the counted cycle ~10 times, voice gradually quieter,
+       pauses gradually longer)
+
+      Good. Let the counting fade now, and keep the shape —
+      in, gentle… out, long and slow, like a sigh you don't have to make.
+      [pause 15s]
+
+      Each out-breath, a little heavier into the bed. [pause 15s]
+
+      Keep going at your own pace. I'll be quiet now.
+      [pause 60s, then fade out]
+
+  - id: sleep.audio.day-shutdown
+    status: DRAFT
+    type: audio_script
+    title: Putting the day down
+    duration_target_min: 8
+    bct: ["11.2", "1.2"]
+    com_b: [psychological-capability, automatic-motivation]
+    reading_age: 9
+    channels: [audio]
+    tone: autonomy-supportive
+    contraindications: []
+    related: [sleep.cr.constructive-worry]
+    rendering:
+      voice: warm, conversational at first, slowing throughout
+      music: optional very low pad after the midpoint
+    body: |
+      Before sleep, it helps to put the day down — the way you'd set down
+      a heavy bag when you get home. You're not throwing it away.
+      Just setting it down. It'll be there in the morning. [pause 4s]
+
+      Let the day pass by once, quickly, like scenery from a train window.
+      The morning… [pause 5s] the middle… [pause 5s] the evening…
+      [pause 5s] You don't need to fix or re-run anything. Just watch it
+      go past, and let it be over. [pause 8s]
+
+      Some of it went well. Let yourself notice one thing — however small —
+      that was good, or even just okay. [pause 8s]
+
+      Some of it is unfinished. That's allowed. Every life is mid-sentence
+      at bedtime. [pause 4s] Picture the unfinished things going into the
+      bag. The bag goes by the door. Nothing in it needs you before morning.
+      [pause 10s]
+
+      If your mind reaches for the bag — and it will — you can say:
+      "Not now. It has a slot tomorrow." And come back to the bed,
+      the dark, the warmth, this breath. [pause 10s]
+
+      The day is done. Not perfect — done. [pause 6s]
+      Tomorrow has its own light, its own energy. It isn't asking
+      anything of you yet. [pause 10s]
+
+      For now, the only thing on the list… is rest.
+      [pause 20s, then fade out]
+
+  - id: sleep.audio.rain-descent
+    status: DRAFT
+    type: audio_script
+    title: Imagery — rain on the roof, going downhill
+    duration_target_min: 12
+    bct: ["11.2"]
+    com_b: [automatic-motivation]
+    reading_age: 9
+    channels: [audio]
+    tone: autonomy-supportive
+    contraindications: []
+    rendering:
+      voice: low, slow, increasingly sparse
+      music: soft rain ambience, mixed under the voice throughout
+    body: |
+      (dir: rain ambience fades in first, alone, for ~10s)
+
+      Rain on the roof. Steady. Going nowhere. [pause 6s]
+
+      Imagine you're somewhere small and warm while it falls — a cabin,
+      a childhood bedroom, the back seat of a long drive home.
+      Somewhere it was always easy to fall asleep. [pause 10s]
+
+      The rain has no pattern you need to follow. Thousands of tiny
+      sounds, none of them for you. Nothing in it needs an answer.
+      [pause 12s]
+
+      Now imagine a path, sloping gently downhill. Soft ground.
+      And you're walking it — slowly, no destination, just down.
+      [pause 8s]
+
+      With every few steps, things get a little dimmer…
+      a little warmer… a little quieter. [pause 12s]
+
+      Down past the tall trees… [pause 10s]
+      Down where the rain is just a murmur in the leaves… [pause 12s]
+      Down… where the path goes soft underfoot… [pause 15s]
+
+      (dir: from here, lines arrive far apart, almost murmured)
+
+      Heavier now… [pause 15s]
+      Warmer… [pause 15s]
+      Further down… [pause 20s]
+      Just the rain… [pause 20s]
+
+      (dir: voice ends; rain continues alone for 2+ minutes, then slow fade)

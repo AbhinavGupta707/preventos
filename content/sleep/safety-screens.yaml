@@ -1,0 +1,206 @@
+# DRAFT — Nightshift: occupation & daytime-sleepiness safety screens (WP V.4c)
+# Framing rules + claims blocklist: see README.md. Sign-off required before release.
+#
+# SAFETY-CRITICAL ROUTING (plan WPV.4, demo B): a positive occupation screen sets
+# flag:occupation-safety, which (a) pins the titration window floor in the engine
+# (engine half of WPV.4 — values live there, not here), (b) suppresses every atom
+# tagged with contraindication flag:occupation-safety, and (c) serves the
+# floor-explainer below. These questions are BESPOKE routing questions — they are
+# deliberately not drawn from or adapted from any validated instrument
+# (invariant 2: validated instruments render verbatim from packages/instruments).
+pack: sleep
+module: safety-screens
+id: sleep.safety
+status: DRAFT
+version: 0.1.0
+
+routing:
+  on_flag:
+    set: flag:occupation-safety
+    effects:
+      - titration-window-floor: engine-enforced # see WPV.4 engine half
+      - suppress-atoms-tagged: flag:occupation-safety
+      - serve: sleep.safety.floor-explainer
+  rescreen:
+    - on: occupation-change-reported
+    - on: enrolment-anniversary
+
+atoms:
+  - id: sleep.safety.screen-intro
+    status: DRAFT
+    type: screen_script
+    title: Why we ask about your work
+    bct: ["4.1"]
+    com_b: [psychological-capability]
+    reading_age: 9
+    channels: [in_app]
+    tone: autonomy-supportive
+    contraindications: []
+    body: |
+      Quick one before we shape your plan: a couple of questions about
+      your work and your days.
+
+      Here's why. Parts of this programme gently reshape when and how long
+      you sleep, and that can mean feeling sleepier than usual for a few
+      weeks while things settle. For most people that's just a yawny
+      patch. But if staying sharp is a safety matter in your day — driving
+      for work, operating machinery, that kind of thing — we set your plan
+      up more gently from the start.
+
+      Honest answers get you the right version. There's no wrong answer
+      and nothing to fail.
+
+  - id: sleep.safety.occupation-screen
+    status: DRAFT
+    type: screen_script
+    title: Occupation screen (bespoke routing questions)
+    bct: ["4.1"]
+    com_b: [psychological-capability]
+    reading_age: 9
+    channels: [in_app]
+    tone: practical
+    contraindications: []
+    script:
+      q1:
+        prompt: |
+          Does your work regularly involve any of these? Tick all that apply.
+        options:
+          - id: driving-professional
+            label: Driving as the job — lorry, bus, coach, taxi, delivery
+            flag: true
+          - id: driving-long-commute
+            label: Long daily drives (over an hour each way)
+            flag: true
+          - id: machinery
+            label: Operating heavy machinery, plant or power tools
+            flag: true
+          - id: heights-rail-marine-air
+            label: Working at height, or in rail, marine or aviation roles
+            flag: true
+          - id: safety-of-others
+            label: Others' safety directly in my hands (e.g. care of
+              vulnerable people, emergency response, security)
+            flag: true
+          - id: none
+            label: None of these
+            flag: false
+      q2:
+        prompt: |
+          Outside work — do you regularly drive, or are you the main carer
+          for someone who depends on you through the day or night?
+        options:
+          - id: yes-driving-or-caring
+            label: "Yes"
+            flag: true
+          - id: no
+            label: "No"
+            flag: false
+      on_any_flag: set flag:occupation-safety; serve sleep.safety.floor-explainer
+      on_no_flag: continue enrolment
+
+  - id: sleep.safety.sleepiness-screen
+    status: DRAFT
+    type: screen_script
+    title: Daytime sleepiness check (bespoke routing questions)
+    bct: ["2.4", "4.1"]
+    com_b: [psychological-capability]
+    reading_age: 9
+    channels: [in_app]
+    tone: practical
+    contraindications: []
+    script:
+      q1:
+        prompt: |
+          In the last month, have you found yourself fighting to stay awake
+          — or actually nodding off — at times when you needed to be alert?
+          For example while driving, at the wheel waiting in traffic, or
+          operating anything that could hurt you or someone else.
+        options:
+          - id: never
+            label: No, that hasn't happened
+            route: continue
+          - id: once-or-twice
+            label: Once or twice
+            route: set flag:occupation-safety; serve sleep.safety.sleepiness-signpost
+          - id: regularly
+            label: Yes, it keeps happening
+            route: set flag:occupation-safety; serve sleep.safety.sleepiness-signpost
+            priority: immediate
+      notes: |
+        This is a routing question about safety context, not a measurement.
+        Validated sleep questionnaires live in packages/instruments and are
+        rendered verbatim elsewhere in the journey.
+
+  - id: sleep.safety.floor-explainer
+    status: DRAFT
+    type: message
+    title: Why your plan is the gentler version
+    bct: ["4.1", "13.2"]
+    com_b: [psychological-capability, reflective-motivation]
+    reading_age: 9
+    channels: [in_app]
+    tone: autonomy-supportive
+    contraindications: []
+    requires: [flag:occupation-safety]
+    body: |
+      Based on what you've told us about your days, we've set you up with
+      the gentler version of the sleep plan.
+
+      What that means in practice: your sleep window — the regular sleep
+      slot we'll help you settle into — never goes below a protected
+      minimum, and we move it in smaller steps. You still get the full
+      programme: the habits, the wind-downs, the thought tools, the diary.
+      We just never push the sleepiness dial hard, because your days need
+      you alert.
+
+      This isn't a lesser version — it's the right version for someone
+      whose alertness carries weight. It tends to take a little longer
+      and lands in the same place.
+
+      If your work or driving situation changes, tell us in settings and
+      we'll adjust.
+
+  - id: sleep.safety.sleepiness-signpost
+    status: DRAFT
+    type: message
+    title: When sleepiness needs more than an app
+    bct: ["3.1"]
+    com_b: [psychological-capability]
+    reading_age: 9
+    channels: [in_app]
+    tone: autonomy-supportive
+    contraindications: []
+    requires: [flag:occupation-safety]
+    body: |
+      You've told us you've been fighting sleep at moments where alertness
+      really matters. Thank you for being straight about it — that takes
+      honesty, and it changes what good support looks like.
+
+      Two things we'd genuinely encourage:
+
+      • Book a chat with your GP about the daytime sleepiness specifically.
+        Strong sleepiness in safety-moments is worth a professional pair of
+        eyes, separate from anything we do here. If it helps, the app can
+        show you a summary of your recent sleep diary to bring along.
+      • Until it's settled: please don't push through heavy eyes at the
+        wheel or at the controls of anything. Pull over, take the
+        20-minute nap, ask someone else to drive. Late beats every
+        alternative.
+
+      Your programme here continues as normal — on the gentler plan, with
+      every tool still available. This is backup, not a handover.
+
+  - id: sleep.safety.occupation-change
+    status: DRAFT
+    type: message
+    title: (Settings) Work or driving changed?
+    bct: ["7.1"]
+    com_b: [psychological-capability]
+    reading_age: 9
+    channels: [in_app]
+    tone: practical
+    contraindications: []
+    body: |
+      New job, new commute, new caring responsibilities? Anything that
+      changes how alert your days need you to be is worth re-checking —
+      it takes under a minute and keeps your plan tuned to your real life.

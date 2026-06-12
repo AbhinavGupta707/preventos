@@ -1,0 +1,229 @@
+# DRAFT — Nightshift: thought-reframing atoms (WP V.4c)
+# Framing rules + claims blocklist: see README.md. Sign-off required before release.
+pack: sleep
+module: cognitive-restructuring
+id: sleep.cr
+status: DRAFT
+version: 0.1.0
+
+# Shape: each "thought-checker" atom = common night-time thought → questions to
+# test it → a balanced alternative. Plain language; no jargon labels.
+
+atoms:
+  - id: sleep.cr.intro
+    status: DRAFT
+    type: message
+    title: Thoughts about sleep change sleep
+    bct: ["13.2", "4.1"]
+    com_b: [psychological-capability]
+    reading_age: 9
+    channels: [in_app]
+    tone: autonomy-supportive
+    contraindications: []
+    body: |
+      What you believe about sleep shows up in your body. "Tonight has to go
+      well or tomorrow is ruined" raises the stakes — and raised stakes mean
+      alertness, the exact opposite of what helps.
+
+      In this section we'll take the most common night-time thoughts, hold
+      them up to the light, and find versions that are more accurate — and
+      easier to fall asleep next to.
+
+      This isn't positive thinking. It's accurate thinking. The honest version
+      of most sleep worries turns out to be far less scary than the 2am version.
+
+  - id: sleep.cr.eight-hours-rule
+    status: DRAFT
+    type: exercise
+    title: "Thought-checker: 'I need 8 hours or tomorrow is ruined'"
+    bct: ["13.2"]
+    com_b: [psychological-capability, reflective-motivation]
+    reading_age: 9
+    channels: [in_app]
+    tone: autonomy-supportive
+    contraindications: []
+    body: |
+      The thought: "I need 8 hours, or tomorrow is ruined."
+
+      Check it:
+      • Have you ever had a decent day on less? (Almost everyone has — new
+        parents and night-before-a-flight travellers do it constantly.)
+      • Is "8 hours" your number, or just a number you've heard? People's
+        real needs range widely, and they shift with age and season.
+      • What actually ruined past bad-sleep days — the missing hours, or the
+        dread about the missing hours?
+
+      A steadier version: "More sleep is nice, but I've run on less plenty of
+      times. Tomorrow will be okay either way — and believing that makes
+      tonight easier too."
+
+  - id: sleep.cr.wont-cope
+    status: DRAFT
+    type: exercise
+    title: "Thought-checker: 'I won't cope tomorrow'"
+    bct: ["13.2", "15.1"]
+    com_b: [psychological-capability, reflective-motivation]
+    reading_age: 9
+    channels: [in_app, audio]
+    tone: autonomy-supportive
+    contraindications: []
+    body: |
+      The thought: "If I don't sleep, I won't cope tomorrow."
+
+      Check it:
+      • Think of your last genuinely rough night. What actually happened the
+        next day? Probably tired, a bit flat — and yet things got done.
+      • You're predicting collapse, but your track record shows endurance.
+        Which is the better evidence?
+
+      A steadier version: "Tomorrow might be tiring, not impossible. I've done
+      tired days before. I can lower the bar a little and get through —
+      and tired days end in sleepy nights."
+
+  - id: sleep.cr.broken-sleeper-identity
+    status: DRAFT
+    type: exercise
+    title: "Thought-checker: 'I'm just a bad sleeper'"
+    bct: ["13.2", "13.4"]
+    com_b: [reflective-motivation]
+    reading_age: 9
+    channels: [in_app]
+    tone: warm-challenge
+    contraindications: []
+    body: |
+      The thought: "I'm just a bad sleeper. Always have been."
+
+      Check it:
+      • Always? Every single night of your life? Or are there exceptions —
+        holidays, certain sofas, nights you'd given up caring?
+      • The exceptions matter. They show your sleep system still works; it's
+        the conditions and habits around it that have drifted.
+      • "Bad sleeper" is an identity. Identities feel permanent. Habits don't —
+        and what we're changing here is habits.
+
+      A steadier version: "I'm someone whose sleep has been off track lately.
+      Patterns got me here, and patterns are exactly the thing I can change."
+
+  - id: sleep.cr.trying-harder
+    status: DRAFT
+    type: exercise
+    title: "Thought-checker: 'I just need to try harder to sleep'"
+    bct: ["13.2", "4.1"]
+    com_b: [psychological-capability]
+    reading_age: 9
+    channels: [in_app, audio]
+    tone: autonomy-supportive
+    contraindications: []
+    body: |
+      The thought: "I need to try harder to fall asleep."
+
+      Here's the trap: sleep is the one goal that runs away when you chase
+      it. Trying is effort, effort is arousal, and arousal is wakefulness.
+      You can't force sleep for the same reason you can't force hunger.
+
+      What you can do is set the table — wind down, dim light, bed when
+      sleepy — and let your body take it from there.
+
+      A steadier version: "My job is the conditions, not the result. I'll do
+      my wind-down and let sleep arrive on its own schedule. It always does,
+      eventually — that part isn't up to me."
+
+  - id: sleep.cr.right-now-spiral
+    status: DRAFT
+    type: exercise
+    title: "Thought-checker: 'If I don't fall asleep RIGHT NOW…'"
+    bct: ["13.2", "11.2"]
+    com_b: [psychological-capability, automatic-motivation]
+    reading_age: 9
+    channels: [in_app, audio]
+    tone: autonomy-supportive
+    contraindications: []
+    related: [sleep.rescue.entry]
+    body: |
+      The thought: "If I don't fall asleep right now, that's only five hours…
+      now four and a half…"
+
+      Notice what this is: doing maths against a deadline. Nobody relaxes
+      during a countdown.
+
+      Check it:
+      • Has the countdown ever once helped you fall asleep faster?
+      • The numbers feel precise, but they're guesses stacked on guesses —
+        you don't actually know when you'll drop off or how the night will go.
+
+      A steadier version: "The maths never helps. Whatever sleep I get from
+      here is a bonus, and resting quietly counts for something too. I'm
+      putting the calculator down."
+
+  - id: sleep.cr.one-bad-night
+    status: DRAFT
+    type: message
+    title: One rough night is one rough night
+    bct: ["13.2", "11.2"]
+    com_b: [reflective-motivation]
+    reading_age: 9
+    channels: [in_app, push]
+    tone: autonomy-supportive
+    contraindications: []
+    related: [sleep.rescue.morning-after]
+    body: |
+      A rough night feels like it should "count" against you — like the streak
+      is broken and the project has failed.
+
+      It hasn't. Sleep patterns are built over weeks, not single nights.
+      Everyone, including naturally great sleepers, has scattered bad nights;
+      they just don't read them as verdicts.
+
+      The only move that matters after a bad night: get up at your usual time
+      and carry on. The pattern is the prize, and the pattern is still intact.
+
+  - id: sleep.cr.constructive-worry
+    status: DRAFT
+    type: exercise
+    title: Park the worry before it goes to bed with you
+    bct: ["1.2", "1.4", "11.2"]
+    com_b: [psychological-capability]
+    reading_age: 9
+    channels: [in_app]
+    tone: practical
+    contraindications: []
+    related: [sleep.audio.day-shutdown]
+    body: |
+      Night-time is when worries queue up — because it's the first quiet
+      moment your brain has had all day to raise them.
+
+      Give them an earlier slot instead. Sometime in the early evening, take
+      ten minutes with paper:
+
+      1. Write down what's on your mind — everything, big or small.
+      2. For each one, jot the single next step (even "ask Sam on Monday").
+      3. Fold the paper. The list now exists outside your head.
+
+      If a worry shows up at 2am anyway: "It's on the list. It has a slot.
+      Not now." It takes practice, but the list makes it true.
+
+  - id: sleep.cr.night-thought-check
+    status: DRAFT
+    type: exercise
+    title: The 2am thought check (short form)
+    bct: ["13.2", "11.2"]
+    com_b: [psychological-capability]
+    reading_age: 9
+    channels: [audio, in_app]
+    tone: autonomy-supportive
+    contraindications: []
+    related: [sleep.rescue.entry, sleep.cr.right-now-spiral]
+    rendering:
+      audio_first: true
+      ui_theme: dark
+    body: |
+      Caught in a 2am thought? Three quick questions, no pen needed:
+
+      1. Is this thought a fact, or a 2am forecast? (2am forecasts are
+         famously grim and famously wrong.)
+      2. Will this look this big at 10am tomorrow?
+      3. Is there anything I can usefully do about it right now, in the dark?
+
+      The answer to the third one is almost always no — which is oddly
+      freeing. Nothing is being asked of you until morning. The only job left
+      tonight is to rest, and rest doesn't require solving anything.

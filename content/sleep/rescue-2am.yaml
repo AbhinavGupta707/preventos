@@ -1,0 +1,224 @@
+# DRAFT — Nightshift: "can't sleep right now" rescue mode (WP V.4c)
+# Framing rules + claims blocklist: see README.md. Sign-off required before release.
+#
+# Rendering contract (PRD §5.12): 2am-safe. Dark UI only, minimal text, large touch
+# targets, audio-first, screen brightness floor respected, no celebratory animation,
+# no numbers/clocks anywhere in this flow.
+pack: sleep
+module: rescue-2am
+id: sleep.rescue
+status: DRAFT
+version: 0.1.0
+
+rendering_defaults:
+  ui_theme: dark
+  audio_first: true
+  show_clock: false
+  max_words_per_screen: 40
+
+atoms:
+  - id: sleep.rescue.entry
+    status: DRAFT
+    type: message
+    title: Rescue mode — entry screen
+    bct: ["11.2", "3.3"]
+    com_b: [automatic-motivation]
+    reading_age: 9
+    channels: [in_app, audio]
+    tone: autonomy-supportive
+    contraindications: []
+    body: |
+      You're awake. That's okay — you've done nothing wrong,
+      and nothing is broken.
+
+      Let's take the pressure off for a few minutes.
+    audio_body: |
+      (dir: very quiet, very slow — the listener may be next to a sleeping partner)
+      Hey. You're awake. That's okay. [pause 3s]
+      Nights like this happen to everyone, and they pass. [pause 3s]
+      Nothing needs solving right now. Let's just take the pressure off.
+
+  - id: sleep.rescue.choice-menu
+    status: DRAFT
+    type: message
+    title: Rescue mode — three doors
+    bct: ["4.1"]
+    com_b: [psychological-capability]
+    reading_age: 9
+    channels: [in_app]
+    tone: practical
+    contraindications: []
+    body: |
+      Pick whichever feels easiest:
+
+      ▸ Listen — quiet audio, eyes closed
+      ▸ Get up for a bit — a short walkthrough
+      ▸ Just breathe — stay put, slow things down
+
+      There's no wrong door. All three lead back to sleepy.
+
+  - id: sleep.rescue.get-up-walkthrough
+    status: DRAFT
+    type: audio_script
+    title: Rescue mode — getting up, the gentle way
+    duration_target_min: 4
+    bct: ["4.1", "12.1"]
+    com_b: [psychological-capability, automatic-motivation]
+    reading_age: 9
+    channels: [audio, in_app]
+    tone: autonomy-supportive
+    contraindications: []
+    related: [sleep.sc.leave-bed-when-awake]
+    body: |
+      (dir: near-whisper, unhurried throughout)
+
+      If you've been lying there long enough to feel fed up,
+      the kindest move is a strange one: get up for a little while.
+      [pause 3s]
+
+      Not as punishment. As a reset. Bed stays the place where
+      sleeping happens — not the place where 2am happens. [pause 4s]
+
+      So: ease out of bed. Keep the lights low — a lamp at most.
+      Find somewhere comfortable that isn't bed. [pause 4s]
+
+      Now do something genuinely dull. A boring book. Slow stretching.
+      Sitting with a warm, milky drink. Folding laundry badly.
+      [pause 3s]
+
+      Two things to avoid: bright screens, and anything interesting.
+      Interesting is the enemy at this hour. [pause 4s]
+
+      Then just… wait, gently. You're not trying to get sleepy.
+      You're letting sleepy find you. It knows where you are.
+      [pause 4s]
+
+      When your eyes go heavy — actually heavy, not just bored —
+      head back to bed. If sleep doesn't come again, that's fine.
+      Same move, no drama. Some nights take two or three rounds,
+      and the practice still counts. Every round teaches your brain
+      where sleeping lives.
+
+  - id: sleep.rescue.stay-put-breathing
+    status: DRAFT
+    type: audio_script
+    title: Rescue mode — can't get up? Rest where you are
+    duration_target_min: 5
+    bct: ["11.2"]
+    com_b: [automatic-motivation]
+    reading_age: 9
+    channels: [audio]
+    tone: autonomy-supportive
+    contraindications: []
+    related: [sleep.audio.slow-breathing]
+    body: |
+      (dir: near-whisper)
+
+      Sometimes getting up isn't realistic — a sleeping partner,
+      a cold flat, a body that says no. That's fine.
+      We'll rest right here instead. [pause 4s]
+
+      First, drop the goal. You're not trying to fall asleep anymore.
+      You're just lying in a warm bed in the dark, resting —
+      which is already a good place to spend a night-time hour.
+      [pause 5s]
+
+      Let your breath go slow, out-breath long and lazy,
+      like a door closing softly… [pause 6s]
+
+      Body heavy. Jaw loose. Shoulders down. [pause 6s]
+
+      Thoughts will wander past — tomorrow, yesterday, nonsense.
+      Let them be traffic on a far road. You don't have to get in
+      any of the cars. [pause 8s]
+
+      Quiet rest in the dark refuels more than it feels like it does.
+      And sleep has a way of arriving precisely when you stop
+      watching for it. [pause 8s]
+
+      Long, slow breaths. I'll stay quiet with you for a while.
+      [pause 60s, then fade]
+
+  - id: sleep.rescue.no-clocks
+    status: DRAFT
+    type: message
+    title: Rescue mode — the time doesn't matter
+    bct: ["12.3", "13.2"]
+    com_b: [automatic-motivation]
+    reading_age: 9
+    channels: [in_app, audio]
+    tone: practical
+    contraindications: []
+    related: [sleep.sc.clock-out-of-sight]
+    body: |
+      One favour to ask: don't check the time.
+
+      Whatever it says, it can't help — it can only start the maths,
+      and the maths always says something unkind.
+
+      Your alarm knows when morning is. That's its job, not yours.
+
+  - id: sleep.rescue.return-to-bed
+    status: DRAFT
+    type: message
+    title: Rescue mode — heading back
+    bct: ["7.1", "15.1"]
+    com_b: [automatic-motivation]
+    reading_age: 9
+    channels: [in_app, audio]
+    tone: autonomy-supportive
+    contraindications: []
+    body: |
+      Eyes heavy? That's your cue.
+
+      Head back to bed, keep the lights off, settle in.
+      No pressure for sleep to come instantly — heaviness is enough.
+
+      You handled tonight well, whatever happens next.
+
+  - id: sleep.rescue.morning-after
+    status: DRAFT
+    type: message
+    title: Morning after a rough night
+    bct: ["11.2", "15.1", "13.2"]
+    com_b: [reflective-motivation]
+    reading_age: 9
+    channels: [in_app, push]
+    tone: autonomy-supportive
+    contraindications: []
+    related: [sleep.cr.one-bad-night, sleep.cr.wont-cope]
+    body: |
+      Rough night. Morning anyway — and you're up, which is the one move
+      that matters most after a night like that.
+
+      Today: lower the bar a little, get some daylight early, go easy on
+      the afternoon caffeine, and resist the long nap. Tonight will collect
+      the sleepiness you banked.
+
+      One bad night changes nothing about the bigger pattern you're building.
+
+  - id: sleep.rescue.repeated-nights-checkin
+    status: DRAFT
+    type: message
+    title: When rough nights keep stacking up
+    bct: ["3.1"]
+    com_b: [psychological-capability]
+    reading_age: 9
+    channels: [in_app]
+    tone: autonomy-supportive
+    contraindications: []
+    related: [sleep.safety.sleepiness-signpost]
+    routing:
+      trigger: rescue-mode used on 4+ nights in any rolling 7 days
+    body: |
+      We've noticed you've had a string of hard nights. That's tough,
+      and you're clearly putting the work in.
+
+      Two things worth knowing:
+
+      • Rebuilding sleep is rarely a straight line — strings of hard nights
+        happen on the way, and the habits still count.
+      • If daytime sleepiness is starting to affect things that need you
+        alert — driving, your work, looking after someone — it's worth a
+        chat with your GP. That's not a setback; it's just sensible
+        backup while you keep going.
