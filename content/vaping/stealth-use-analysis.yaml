@@ -1,0 +1,169 @@
+# Exhale — stealth-use functional analysis (WPV.2c)
+# STATUS: DRAFT — not user-deliverable without compliance/ sign-off entry.
+# Stealth use = vaping in places/moments engineered to be unnoticed (toilet
+# breaks, car before walking in, stairwells, "going to get something"). It is
+# the highest-information behaviour in the programme: each stealth episode is
+# doing a job. The flow below surfaces the job, then routes to the matching
+# replacement coaching. Tone is curious and non-judgemental throughout —
+# stealth use carries shame, and shame is the enemy of accurate logging.
+pack: vaping
+file: stealth-use-analysis
+status: DRAFT
+version: 0.1.0
+
+atoms:
+  - id: vap-stealth-001
+    type: flow
+    title: "Stealth-use functional analysis"
+    audience: adult
+    framing: [autonomy]
+    contraindications: []
+    status: draft
+    steps:
+      - key: intro
+        copy: |
+          No judgement here — the hidden vapes are usually the most
+          interesting ones. They're rarely about nicotine alone; they're
+          doing a job. Two minutes of honest answers and we'll find out
+          what job, and what else could do it.
+      - key: q_where
+        copy: "Where does it usually happen?"
+        options: [toilet break, car before going in, stepping outside, stairwell or corridor, "while 'fetching something'", other]
+      - key: q_before
+        copy: "What's usually happening right before? (pick the closest)"
+        options:
+          - a task I'm avoiding
+          - a person or meeting I need a break from
+          - pure boredom / a dead gap
+          - tension or stress building up
+          - it's just the routine at that time
+      - key: q_job
+        copy: "And the vape itself — what does it actually give you in that moment?"
+        options:
+          - permission to leave / an exit
+          - a few minutes alone
+          - a hit of stimulation
+          - calming down
+          - something to do
+      - key: reflect
+        copy: |
+          So the {{q_where}} vape is mostly buying you: {{q_job}}.
+
+          Worth saying plainly: that's a legitimate need. The goal isn't to
+          stop needing breaks, exits, or calm — it's to stop paying for them
+          in nicotine. Here's what could do the same job.
+        routes_on: q_job
+
+  - id: vap-stealth-002
+    type: coaching_card
+    title: "Function: the exit pass"
+    audience: adult
+    framing: [autonomy]
+    contraindications: []
+    status: draft
+    function: permission_to_leave
+    body: |
+      The vape became your hall pass — a socially packaged reason to leave a
+      room. Notice: the leaving is what helps. The vape just launders it.
+
+      You're an adult. "Back in five" is a complete sentence. Try taking the
+      exact same break, same length, same route — without the device. Same
+      relief, and nobody's ever once asked you to justify a glass of water.
+
+  - id: vap-stealth-003
+    type: coaching_card
+    title: "Function: minutes alone"
+    audience: adult
+    framing: [autonomy, performance]
+    contraindications: []
+    status: draft
+    function: time_alone
+    body: |
+      If the hidden vape is buying you solitude, the real need is recovery
+      time — especially if your day is wall-to-wall people. That need is
+      valid and it deserves better than a stairwell.
+
+      Schedule the alone time on purpose: a real walk at lunch, headphones
+      for the first ten minutes after you get home, the long way round to
+      the meeting. Planned solitude beats stolen solitude — it actually
+      restores you, and there's nothing to hide.
+
+  - id: vap-stealth-004
+    type: coaching_card
+    title: "Function: the stimulation hit"
+    audience: adult
+    framing: [performance]
+    contraindications: []
+    status: draft
+    function: stimulation
+    body: |
+      Reaching for a hit to push through a slump? Nicotine's lift is real
+      but rigged: every hit digs the next dip. You're borrowing alertness
+      from yourself an hour from now.
+
+      Off-device versions that don't charge interest: cold water on the
+      face or wrists, 20 fast stair-steps, two minutes of brisk air,
+      daylight if you've been inside all morning. Cheaper, faster, and your
+      focus stops sawtoothing through the day.
+
+  - id: vap-stealth-005
+    type: coaching_card
+    title: "Function: calming down"
+    audience: adult
+    framing: [autonomy, performance]
+    contraindications: []
+    status: draft
+    function: calming
+    body: |
+      Here's the trick nicotine plays: a good chunk of the tension it
+      "relieves" is the tension of running low on it. The calm you feel is
+      mostly the alarm being switched off — an alarm only nicotine set.
+
+      What actually downshifts your nervous system: long exhales (the
+      breathing pacer does this with you — 90 seconds), dropping your
+      shoulders, stepping outside. As your levels step down, the background
+      tension drops with them. Most people report feeling *less* wound up
+      two weeks after a step-down, not more.
+    slots:
+      pacer_link: deep link to breathing pacer
+
+  - id: vap-stealth-006
+    type: coaching_card
+    title: "Function: something to do"
+    audience: adult
+    framing: [autonomy]
+    contraindications: []
+    status: draft
+    function: occupation
+    body: |
+      If the honest answer is "it's just something to do", you've found the
+      easiest function to replace — boredom has a hundred substitutes and
+      your replacement menu is built from them.
+
+      Start with the single context where stealth puffs happen most, and
+      pre-place the substitute there today: gum in the car door, water
+      bottle on the desk, podcast queued for the walk.
+    slots:
+      replacement_menu_link: deep link to boredom-replacement menu for top context
+
+  - id: vap-stealth-007
+    type: script
+    title: "Stealth-episode debrief (coach copy)"
+    audience: adult
+    framing: [autonomy]
+    contraindications: []
+    status: draft
+    body: |
+      Logged it — and logging the hidden ones takes the most honesty, so
+      credit where it's due.
+
+      Quick read-back: that's the {{episode_count}}th one this week in
+      {{context}}, and the pattern says it's mostly about {{function}}.
+      Each one of these is information, not a verdict. Want to set up a
+      swap for that exact moment, or just keep watching the pattern for now?
+
+      Either answer is fine. You're the one steering.
+    slots:
+      episode_count: stealth episodes this week
+      context: most recent stealth context
+      function: inferred function from analysis flow
