@@ -30,7 +30,8 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 | 4.2m | Content pipeline + canonical migration (wave 2) | open | — | WP4.2 + migrate all 4 packs + shrink LEGACY_PACKS to empty + claims-register lint + WP4.4 instruments |
 | WS7 | Safety subsystem (7.1, 7.2, crisis-static, 7.4) (wave 2) | open | — | Corpus (843 cases) + spine ready; recall ≥0.95 tier-1 is the bar |
 | WS2 | Mobile app (2.1–2.6) (wave 2) | open | — | apps/mobile; spine packages available |
-| WS3 | Web (3.1 + 3.2) (wave 2) | open | — | apps/web; claims lint applies to marketing copy |
+| 3.1 | Marketing site (web) | **in_review** | wp/3.1-web-surface (PR) | 4 landing pages + savings & sleep-debt calculators + 4-article SEO hub + waitlist; claims-register lint wired into `lint` AND `prebuild` (forbidden claim proven to fail `next build`); conversion events first-party (NDJSON sink pending SVC); Lighthouse 99–100 perf / 100 a11y / 100 bp / 100 SEO on marketing pages; unit maths pinned to NHS published examples |
+| 3.2 | Web app parity | **claimed** (started) | wp/3.1-web-surface (PR) | Onboarding (Steady dependence signpost gate proven unbypassable in flow), today surface, sleep diary (4-tap, metrics verified in-browser), drink log (UK units), consent centre (deny-by-default, export, 2-step erase — journey verified in real browser); axe-core zero violations (held stricter than zero-criticals bar) on all 16 pages; local-first store pending SVC for server sync; Demo A/C/D + remaining flows outstanding |
 | SVC | Services assembly (apps/api + apps/worker) (wave 2) | open | — | Wires spine packages; consumes events dispatcher + scheduler |
 | WS8 | Outcomes, analytics & evidence (8.1–8.4) (wave 2) | open | — | events + auth(k-anon) ready |
 
@@ -39,3 +40,4 @@ Statuses: open → claimed(session/branch) → in_review(PR) → done(evidence).
 ## Session log
 - 2026-06-12 · spine session: plan v3 adopted; WP1.1a built and verified; repo initialized.
 - 2026-06-12 · V.4c session (worktree): Nightshift content pack drafted under wellbeing framing (E16); claims blocklist seeded in content/sleep/README.md pending WP4.2 lint/WP10.10 register.
+- 2026-06-12 · WS3 session (worktree wp/3.1-web-surface): WP3.1 built+verified, WP3.2 started. Assumptions: waitlist/events persist to gitignored `.data/*.ndjson` until SVC; marketing nav uses plain anchors (static pages, no client nav needed); app flows are local-first (localStorage, zod-validated) until SVC provides sync; unit/diary maths lives in `apps/web/lib` with tests, earmarked for extraction to WPV.3/V.4 packs; `/app` is intentionally noindex (Lighthouse SEO 63 there by design).
