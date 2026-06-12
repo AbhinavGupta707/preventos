@@ -2,6 +2,11 @@ import { execSync } from "node:child_process";
 
 const BANNED = /AGPL|(?<!L)GPL/i;
 
+const isBanned = (license) => {
+  const alternatives = license.replace(/^\(|\)$/g, "").split(/\s+OR\s+/i);
+  return alternatives.every((alt) => BANNED.test(alt));
+};
+
 let raw;
 try {
   raw = execSync("pnpm licenses list --json", { encoding: "utf8" });
@@ -17,7 +22,7 @@ if (raw.trim().startsWith("No licenses")) {
 
 const byLicense = JSON.parse(raw);
 const violations = Object.entries(byLicense)
-  .filter(([license]) => BANNED.test(license))
+  .filter(([license]) => isBanned(license))
   .flatMap(([license, pkgs]) => pkgs.map((p) => `${p.name}@${p.versions.join(",")} (${license})`));
 
 if (violations.length > 0) {
