@@ -1,0 +1,154 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: identity
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "PRD §5.1 [D]: identity-shift programme — 'becoming a non-smoker' narrative arc"
+    - "Identity-based behaviour change: public behavioural-science literature"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.identity.arc-day0
+    type: info_card
+    title: "Chapter 1: The decider"
+    body: >
+      Today you decided. That is the whole first chapter.
+      Most people who smoke want to stop. You moved.
+      That puts you in a smaller, braver group already: the deciders.
+    bcttv1:
+      - { code: "13.5", label: "Identity associated with changed behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "Narrative arc stage 1; decision reframed as identity act."
+
+  - id: smoking.identity.arc-day3
+    type: info_card
+    title: "Chapter 2: Through the storm"
+    body: >
+      Day three. For most people this is the roughest patch.
+      The fact you are reading this means you are in the storm and still standing.
+      People who get through these days have a name: quitters who stick.
+      The storm passes. You stay.
+    bcttv1:
+      - { code: "13.5", label: "Identity associated with changed behaviour" }
+      - { code: "15.1", label: "Verbal persuasion about capability" }
+    com_b: [reflective-motivation]
+    evidence_note: "Narrative arc stage 2; timed to peak-withdrawal window (withdrawal module aligns)."
+
+  - id: smoking.identity.arc-week1
+    type: info_card
+    title: "Chapter 3: Proof"
+    body: >
+      One week. That is not luck. Luck does not last seven days.
+      That is you, making the same brave choice over and over.
+      You now have proof you can do hard things. Keep the receipt.
+    bcttv1:
+      - { code: "13.5", label: "Identity associated with changed behaviour" }
+      - { code: "15.3", label: "Focus on past success" }
+    com_b: [reflective-motivation]
+    evidence_note: "Narrative arc stage 3."
+
+  - id: smoking.identity.arc-month1
+    type: info_card
+    title: "Chapter 4: The new normal"
+    body: >
+      A month. Somewhere in these weeks, something changed.
+      Whole hours pass without thinking about smoking.
+      This is what the new normal feels like. It grows from here.
+    bcttv1:
+      - { code: "13.5", label: "Identity associated with changed behaviour" }
+    com_b: [reflective-motivation, automatic-motivation]
+    evidence_note: "Narrative arc stage 4."
+
+  - id: smoking.identity.arc-month3
+    type: info_card
+    title: "Chapter 5: Non-smoker"
+    body: >
+      Three months. Time to say it plainly.
+      You are not "trying to quit" any more. You are a non-smoker.
+      Not because we say so. Because you built it, day by day.
+      This is who you are now. Wear it.
+    bcttv1:
+      - { code: "13.5", label: "Identity associated with changed behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "Narrative arc stage 5; explicit identity claim reserved for the 3-month point."
+
+  - id: smoking.identity.reflection-week1
+    type: exercise
+    title: Finish the line
+    steps:
+      - "One week in. Finish this line:"
+      - "\"I am someone who...\""
+      - "Write whatever is true. We will keep it safe and show it back to you later."
+    bcttv1:
+      - { code: "13.5", label: "Identity associated with changed behaviour" }
+      - { code: "15.3", label: "Focus on past success" }
+    com_b: [reflective-motivation]
+    evidence_note: "Milestone identity reflection (PRD §5.1); user-authored, replayed at later milestones."
+
+  - id: smoking.identity.reflection-month1
+    type: exercise
+    title: Look how far
+    slots: [week1_reflection]
+    steps:
+      - "A month ago you wrote this:"
+      - "\"{week1_reflection}\""
+      - "Is it more true now, or less?"
+      - "Add one new line for the next month to read."
+    bcttv1:
+      - { code: "13.5", label: "Identity associated with changed behaviour" }
+      - { code: "2.2", label: "Feedback on behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "Replays the user's own words; the arc is theirs, not ours."
+
+  - id: smoking.identity.tell-someone
+    type: message
+    title: Say it out loud
+    body: >
+      A quiet power move: tell one person you have stopped smoking.
+      Saying it out loud makes it more real. And it recruits a backer.
+      Who gets the news?
+    bcttv1:
+      - { code: "3.1", label: "Social support (unspecified)" }
+      - { code: "13.5", label: "Identity associated with changed behaviour" }
+    com_b: [social-opportunity, reflective-motivation]
+    evidence_note: "Public commitment, framed as optional."
+
+  - id: smoking.identity.story-slot-template
+    type: story_slot
+    title: Ex-smoker story
+    slots: [storyteller_first_name, storyteller_context, story_body]
+    body: >
+      {storyteller_first_name}, {storyteller_context}:
+      "{story_body}"
+    bcttv1:
+      - { code: "16.3", label: "Vicarious consequences" }
+      - { code: "15.1", label: "Verbal persuasion about capability" }
+    com_b: [reflective-motivation, social-opportunity]
+    evidence_note: >
+      SLOT ONLY — no story text ships in this pack. Real ex-smoker stories must be
+      sourced, consented and provenance-recorded before filling (no fabricated
+      testimonials; matched by demographic similarity per PRD §5.1 [D]).
+
+  - id: smoking.identity.story-library-intro
+    type: message
+    title: People like you did this
+    body: >
+      Real stories from people who quit. Different lives, same climb.
+      Read one when the day feels long.
+    bcttv1:
+      - { code: "16.3", label: "Vicarious consequences" }
+    com_b: [reflective-motivation]
+    evidence_note: "Library entry card; renders only when consented stories exist (empty-state hides it)."

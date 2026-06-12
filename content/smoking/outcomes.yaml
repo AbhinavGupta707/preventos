@@ -1,0 +1,159 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+# OUTCOME WORDINGS: these question texts feed Russell-Standard-compatible
+# outcome definitions (WP8.1). Final wording is signed in the clinical
+# parameter sheet (WP10.3) — treat every body below as provisional.
+# Scoring/definition logic (e.g. the Russell Standard ≤5 cigarettes
+# allowance) lives in the outcomes engine, never in copy.
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: outcomes
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "Russell Standard (public): self-reported abstinence definitions for smoking-cessation outcomes"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web, push]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.outcomes.honesty-framing
+    type: info_card
+    title: Why we ask straight questions
+    body: >
+      Now and then we ask exactly how it is going. Smoked or not.
+      Honest answers help you most. They shape your support.
+      Nobody here judges. A true "yes, I smoked" is worth more
+      than a kind lie. Your answer, your data, your quit.
+    bcttv1:
+      - { code: "2.3", label: "Self-monitoring of behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "Relapse-sensitive prompting frame (PRD §5.1): reduce social-desirability bias before outcome asks."
+
+  - id: smoking.outcomes.check-4-week
+    type: outcome_prompt
+    title: Four-week check
+    outcome_ref: smoking.russell-standard.4-week
+    body: >
+      It has been four weeks since your quit day.
+      Since then, have you smoked at all, even a single puff?
+    options:
+      - "No, nothing at all"
+      - "A puff or a few cigarettes, then stopped again"
+      - "Yes, I am smoking again"
+    bcttv1:
+      - { code: "2.3", label: "Self-monitoring of behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: >
+      4-week status check. Maps to Russell-Standard 4-week self-report quit
+      (primary KPI, PRD §5.1); the middle option exists so the ≤5-cigarettes
+      allowance can be applied by the outcomes engine, not by the user's guess.
+
+  - id: smoking.outcomes.check-7-day
+    type: outcome_prompt
+    title: Quick check-in
+    outcome_ref: smoking.point-prevalence.7-day
+    body: >
+      Quick one. In the last seven days, have you smoked at all,
+      even a single puff?
+    options:
+      - "No"
+      - "Yes"
+    bcttv1:
+      - { code: "2.3", label: "Self-monitoring of behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "7-day point-prevalence self-report; used for trajectory between anchor checks."
+
+  - id: smoking.outcomes.check-12-week
+    type: outcome_prompt
+    title: Twelve-week check
+    outcome_ref: smoking.russell-standard.12-week
+    body: >
+      Twelve weeks since your quit day. The big picture matters here.
+      Since week four, have you smoked at all, even a single puff?
+    options:
+      - "No, nothing at all"
+      - "A puff or a few cigarettes, then stopped again"
+      - "Yes, I am smoking again"
+    bcttv1:
+      - { code: "2.3", label: "Self-monitoring of behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "12-week sustained-abstinence check (PRD outcome set)."
+
+  - id: smoking.outcomes.check-6-month
+    type: outcome_prompt
+    title: Six-month check
+    outcome_ref: smoking.russell-standard.6-month
+    body: >
+      Six months on. One straight question, like always.
+      Since your last check, have you smoked at all, even a single puff?
+    options:
+      - "No, nothing at all"
+      - "A puff or a few cigarettes, then stopped again"
+      - "Yes, I am smoking again"
+    bcttv1:
+      - { code: "2.3", label: "Self-monitoring of behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "6-month sustained-abstinence check (PRD outcome set)."
+
+  - id: smoking.outcomes.cigs-per-day
+    type: outcome_prompt
+    title: Daily count
+    outcome_ref: smoking.cigs-per-day.trajectory
+    body: >
+      About how many cigarettes a day are you smoking at the moment?
+      Your real number, whatever it is.
+    bcttv1:
+      - { code: "2.3", label: "Self-monitoring of behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: >
+      Cigarettes/day trajectory (reduction pathway + post-lapse tracking).
+      Free-number consumption measure for the outcomes engine — NOT a rendering
+      of the banded HSI item, which renders verbatim from packages/instruments.
+
+  - id: smoking.outcomes.still-quit-positive
+    type: message
+    title: On the record
+    slots: [weeks_since_quit]
+    body: >
+      Logged. {weeks_since_quit} weeks smoke-free, on the record.
+      This is the number that proves your quit, in your words.
+    bcttv1:
+      - { code: "2.2", label: "Feedback on behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "Post-answer acknowledgement (abstinent path)."
+
+  - id: smoking.outcomes.still-quit-lapsed
+    type: message
+    title: Thanks for the straight answer
+    body: >
+      Thank you for telling it straight. That took honesty.
+      Nothing here resets. Your days won are still yours.
+      When you want to go again, the door is open and the tools are out.
+    bcttv1:
+      - { code: "13.2", label: "Framing/reframing" }
+      - { code: "3.1", label: "Social support (unspecified)" }
+    com_b: [reflective-motivation]
+    evidence_note: "Post-answer acknowledgement (smoking-again path); feeds re-engagement ladder (WP5.3)."
+
+  - id: smoking.outcomes.no-response-gentle
+    type: message
+    title: Still here
+    body: >
+      We asked how it is going and heard nothing back. All good.
+      Life gets loud. When you have ten seconds, tap and tell us.
+      Whatever the answer is, it helps.
+    bcttv1:
+      - { code: "7.1", label: "Prompts/cues" }
+    com_b: [reflective-motivation]
+    evidence_note: >
+      Relapse-sensitive repeated prompt: non-response often hides a lapse;
+      tone stays warm to keep the honesty channel open. Retry cadence is rules.

@@ -1,0 +1,169 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: withdrawal
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "NCSCT standard treatment programme (public): withdrawal-oriented behavioural support, symptom timelines"
+    - "NHS Better Health: Quit Smoking (public): recovery timeline facts"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.withdrawal.what-to-expect
+    type: info_card
+    title: What the first weeks feel like
+    body: >
+      Quitting stirs things up for a while. Here is the honest map.
+
+      Days 1 to 3: the loudest days. Strong urges, short temper.
+      This is your body starting to reset. It is working, not breaking.
+
+      Week 1 to 2: urges get shorter and further apart.
+      Sleep and mood can wobble. That settles.
+
+      Week 3 to 4: most people feel the fog lift.
+      Cravings become rare visitors, not flatmates.
+
+      Every symptom on this list fades. Smoking is the only thing
+      that keeps them coming back.
+    bcttv1:
+      - { code: "5.1", label: "Information about health consequences" }
+      - { code: "13.2", label: "Framing/reframing" }
+    com_b: [psychological-capability, reflective-motivation]
+    evidence_note: "NCSCT withdrawal timeline; symptoms framed as recovery signs, not punishment."
+
+  - id: smoking.withdrawal.cope-irritability
+    type: info_card
+    title: Short fuse?
+    body: >
+      Snappy today? That is withdrawal talking, not you.
+      It peaks early and fades within a couple of weeks.
+      What helps: tell people close to you it is temporary.
+      Move your body. Use your fast aid. Be a bit kind to yourself.
+    bcttv1:
+      - { code: "11.2", label: "Reduce negative emotions" }
+      - { code: "3.1", label: "Social support (unspecified)" }
+    com_b: [psychological-capability, automatic-motivation]
+    evidence_note: "Irritability coping card."
+
+  - id: smoking.withdrawal.cope-focus
+    type: info_card
+    title: Foggy head?
+    body: >
+      Hard to focus this week? Very common, and it passes.
+      What helps: shorter work bursts with small breaks.
+      Water, fresh air, a quick walk.
+      Big decisions can wait a few days if they can.
+    bcttv1:
+      - { code: "11.2", label: "Reduce negative emotions" }
+      - { code: "1.2", label: "Problem solving" }
+    com_b: [psychological-capability]
+    evidence_note: "Concentration-dip coping card."
+
+  - id: smoking.withdrawal.cope-hunger
+    type: info_card
+    title: Hungrier than usual?
+    body: >
+      Quitting can turn the appetite up for a while. Normal.
+      What helps: crunchy snacks on hand, like fruit or carrot sticks.
+      Drink water first; thirst wears a hunger mask.
+      Your body is recalibrating. Give it decent fuel.
+    bcttv1:
+      - { code: "11.2", label: "Reduce negative emotions" }
+      - { code: "8.2", label: "Behaviour substitution" }
+    com_b: [psychological-capability, physical-capability]
+    evidence_note: "Appetite-increase coping card; weight talk deliberately light-touch and non-moralising."
+
+  - id: smoking.withdrawal.cope-sleep
+    type: info_card
+    title: Sleep gone weird?
+    body: >
+      Sleep can wobble in the first weeks. Light nights, odd dreams.
+      It settles as your body finds its new rhythm.
+      What helps: same bedtime, less caffeine after lunch,
+      screens down a notch in the evening.
+      Using a patch at night? A pharmacist can suggest tweaks.
+    bcttv1:
+      - { code: "11.2", label: "Reduce negative emotions" }
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+    com_b: [psychological-capability]
+    evidence_note: "Sleep-disruption coping; cross-links to NRT sleep side-effect card. No sleep-treatment claims."
+
+  - id: smoking.withdrawal.cope-cough
+    type: info_card
+    title: Coughing more, not less?
+    body: >
+      Strange but true: some people cough a bit more at first.
+      Your airways are waking up and clearing out. It is a cleaning crew.
+      It usually settles within a few weeks.
+      Warm drinks help. If it goes on and on, or worries you, see your GP.
+    bcttv1:
+      - { code: "5.1", label: "Information about health consequences" }
+      - { code: "13.2", label: "Framing/reframing" }
+    com_b: [psychological-capability]
+    evidence_note: "Recovery-cough card; persistent-symptom GP signpost included."
+
+  - id: smoking.withdrawal.cope-low-mood
+    type: info_card
+    title: Feeling flat?
+    contraindications: []
+    body: >
+      A flat or low patch after quitting is common. It usually lifts
+      within a couple of weeks.
+      What helps: daylight, movement, people you like, small wins.
+      If the low feeling sticks around for more than two weeks,
+      or feels heavy, that matters. Talk to your GP.
+      It is a normal thing to ask help with.
+    bcttv1:
+      - { code: "11.2", label: "Reduce negative emotions" }
+      - { code: "3.1", label: "Social support (unspecified)" }
+    com_b: [psychological-capability, reflective-motivation]
+    evidence_note: >
+      Low-mood card with explicit two-week GP threshold. mood_flagged users also
+      get the signposting.yaml mood atom (rules pairing). Tier-1 risk content is
+      the safety package's job, never this pack's.
+
+  - id: smoking.withdrawal.cravings-shrink
+    type: info_card
+    title: The shrinking visitor
+    body: >
+      Here is the pattern nobody tells you.
+      Cravings do not stay the same. They shrink.
+      Week one: long and loud. Week three: short and quiet.
+      Month three: rare, and gone in seconds.
+      Every craving you do not feed makes the next one smaller.
+    bcttv1:
+      - { code: "13.2", label: "Framing/reframing" }
+      - { code: "15.1", label: "Verbal persuasion about capability" }
+    com_b: [reflective-motivation, psychological-capability]
+    evidence_note: "Extinction trajectory in plain words; core withdrawal-oriented support message."
+
+  - id: smoking.withdrawal.body-recovery
+    type: info_card
+    title: What your body is doing right now
+    body: >
+      From the moment you stop, your body gets to work.
+
+      20 minutes: pulse already settling.
+      48 hours: taste and smell coming back.
+      72 hours: breathing feels easier.
+      2 to 12 weeks: blood moving better, walks feel lighter.
+      1 year: a much healthier heart than if you had kept smoking.
+
+      All of this is yours. It started the second you stopped.
+    bcttv1:
+      - { code: "5.1", label: "Information about health consequences" }
+    com_b: [reflective-motivation]
+    evidence_note: "NHS public recovery timeline; gain-framed, no disease-scare."

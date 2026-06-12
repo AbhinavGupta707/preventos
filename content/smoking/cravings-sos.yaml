@@ -1,0 +1,233 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+# All atoms in this module must be bundled OFFLINE in-app (rescue is
+# offline-capable — plan §2.1; E13 analogue for craving rescue).
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: cravings-sos
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "NHS Better Health: Quit Smoking (public guidance): cravings pass in about 5 minutes"
+    - "NCSCT standard treatment programme (public): withdrawal-oriented behavioural support"
+    - "Urge surfing: mindfulness-based relapse-prevention technique (public domain descriptions)"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.cravings.sos-opener
+    type: message
+    title: Craving hit?
+    body: >
+      OK. A craving is here. You pressed the button. That was the right move.
+      Cravings rise, peak, then fade. Most pass in about five minutes.
+      Pick a tool. We will ride it out together.
+    bcttv1:
+      - { code: "11.2", label: "Reduce negative emotions" }
+      - { code: "15.1", label: "Verbal persuasion about capability" }
+    com_b: [psychological-capability, automatic-motivation]
+    evidence_note: "Rescue entry copy; NHS craving-duration fact."
+
+  - id: smoking.cravings.urge-surf-90s
+    type: audio_script
+    title: Ride the wave (quick)
+    duration_seconds: 90
+    script: >
+      [calm, slow voice. pauses marked with (...)]
+
+      A craving is here. That is OK. You do not have to fight it. (...)
+
+      A craving is like a wave. It rises. It peaks. It falls.
+      You are going to surf it, not smoke it. (...)
+
+      Where do you feel it? Your chest? Your mouth? Your hands?
+      Just notice it. Like you are watching the weather. (...)
+
+      Now breathe in slowly. (...) And out, even slower. (...)
+
+      The wave is already changing. It cannot stay. Waves never do. (...)
+
+      Breathe in. (...) And out. (...)
+
+      You are still here. You did not smoke. The wave is passing. (...)
+
+      That is one more craving beaten. They get weaker every time. You don't.
+    bcttv1:
+      - { code: "11.2", label: "Reduce negative emotions" }
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+    com_b: [psychological-capability, automatic-motivation]
+    evidence_note: "Urge-surfing micro-version; 90s variant per PRD §5.1 [TS]."
+
+  - id: smoking.cravings.urge-surf-3m
+    type: audio_script
+    title: Ride the wave
+    duration_seconds: 180
+    script: >
+      [calm, slow voice. pauses marked with (...)]
+
+      Welcome. A craving is here, and you came to the right place. (...)
+
+      First, get comfortable if you can. Sitting or standing is fine. (...)
+
+      A craving is a wave. It rises, it peaks, it falls.
+      No wave lasts. Not one, ever. Your job is just to watch this one. (...)
+
+      Find the feeling in your body. Maybe your chest. Your throat.
+      Your hands. Don't push it away. Just find it. (...)
+
+      Give it a shape in your mind. Is it tight? Warm? Buzzing?
+      Just describe it to yourself. Like a scientist. Curious, not scared. (...)
+
+      Now bring in your breath. In through your nose, slow. (...)
+      Out through your mouth, slower. (...)
+
+      Again. In. (...) And out. (...)
+
+      Check the feeling again. Has it moved? Changed? Faded a little?
+      Cravings always change when you watch them. (...)
+
+      One more breath. In. (...) And out. (...)
+
+      The wave is falling now. You surfed it. You did not smoke. (...)
+
+      Remember this feeling. You can do this every single time.
+      Each wave you surf makes the next one smaller.
+    bcttv1:
+      - { code: "11.2", label: "Reduce negative emotions" }
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+    com_b: [psychological-capability, automatic-motivation]
+    evidence_note: "Standard urge-surfing body-scan structure; 3-minute variant."
+
+  - id: smoking.cravings.urge-surf-5m
+    type: audio_script
+    title: Ride the wave (long)
+    duration_seconds: 300
+    script: >
+      [calm, slow voice. pauses marked with (...). longer pauses (......)]
+
+      Hello. Take a second to settle. You are safe, and this will pass. (......)
+
+      A craving feels urgent. Like it must be obeyed right now.
+      But here is the truth. A craving is just a signal. An old alarm
+      going off in your brain. You do not have to answer it. (......)
+
+      Let's look at it together. Where is it in your body? (...)
+      Chest? Jaw? Stomach? Hands? Find the strongest spot. (......)
+
+      Now study it. Is it tight or loose? Hot or cool? Still or moving?
+      You are watching it, not fighting it. Watching is enough. (......)
+
+      Now your breath. Breathe in through your nose. Two. Three. Four. (...)
+      Hold it gently. (...) Now out through your mouth. Slow.
+      Two. Three. Four. Five. Six. (......)
+
+      Again. In. Two. Three. Four. (...) Out. Two. Three. Four. Five. Six. (......)
+
+      As you breathe, picture the wave. It rose fast, didn't it?
+      It felt huge. But look now. Is it still rising? Or has it peaked? (......)
+
+      Waves peak. Then they fall. Every time. This one too. (......)
+
+      One more slow breath. In. (...) And out. (......)
+
+      Now check again. The spot in your body. Softer? Smaller?
+      Even a little? That is the wave going back out to sea. (......)
+
+      Here is what just happened. Your brain rang the old alarm.
+      And you stood still. You let it ring. And it stopped on its own. (...)
+
+      That is the whole secret. Cravings that get answered stay strong.
+      Cravings that get surfed fade away. (......)
+
+      You just made every future craving a little weaker.
+      Well done. Carry on with your day.
+    bcttv1:
+      - { code: "11.2", label: "Reduce negative emotions" }
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+      - { code: "13.2", label: "Framing/reframing" }
+    com_b: [psychological-capability, automatic-motivation]
+    evidence_note: "Extended urge-surf with psychoeducation (extinction framing in plain words); 5-minute variant."
+
+  - id: smoking.cravings.breathing-pacer
+    type: audio_script
+    title: Slow breathing
+    duration_seconds: 120
+    script: >
+      [paced voice, matches on-screen pacer animation]
+
+      Let's slow everything down. Just follow the circle.
+
+      Breathe in. Two. Three. Four. (...)
+      And out. Two. Three. Four. Five. Six. (...)
+
+      [repeat cycle ~10 times with the pacer]
+
+      In. Two. Three. Four. (...)
+      Out. Two. Three. Four. Five. Six. (...)
+
+      [closing]
+      Good. Your body is calmer now. The craving has less to grab onto.
+    bcttv1:
+      - { code: "11.2", label: "Reduce negative emotions" }
+    com_b: [automatic-motivation, physical-capability]
+    evidence_note: "Slow-paced breathing (longer exhale); pacer animation is UI, script is the audio layer."
+
+  - id: smoking.cravings.delay-timer-start
+    type: message
+    title: Start the clock
+    body: >
+      Deal: do not smoke for the next five minutes. That is all.
+      Cravings fade in about five minutes. Watch it happen.
+      Start the timer. Do anything else. We will tell you when time is up.
+    bcttv1:
+      - { code: "8.2", label: "Behaviour substitution" }
+      - { code: "11.2", label: "Reduce negative emotions" }
+    com_b: [automatic-motivation, psychological-capability]
+    evidence_note: "Delay technique; five-minute craving fact (NHS)."
+
+  - id: smoking.cravings.delay-timer-mid
+    type: message
+    title: Halfway
+    body: >
+      Halfway there. The craving has already peaked.
+      It is on the way down now, even if it does not feel like it yet.
+      Hold on. You are winning.
+    bcttv1:
+      - { code: "15.1", label: "Verbal persuasion about capability" }
+    com_b: [automatic-motivation]
+    evidence_note: "Mid-timer encouragement."
+
+  - id: smoking.cravings.delay-timer-end
+    type: message
+    title: Time's up
+    body: >
+      Five minutes. Done. You are still here. You did not smoke.
+      That craving is gone, and you beat it.
+      Each one you beat makes the next one weaker. That is just how brains work.
+    bcttv1:
+      - { code: "2.2", label: "Feedback on behaviour" }
+      - { code: "15.3", label: "Focus on past success" }
+    com_b: [reflective-motivation, automatic-motivation]
+    evidence_note: "Completion reinforcement; extinction explained in plain words."
+
+  - id: smoking.cravings.crave-passed
+    type: message
+    title: One more win
+    slots: [craves_beaten_total]
+    body: >
+      Logged. That is {craves_beaten_total} cravings beaten so far.
+      Every single one made you stronger and the habit weaker.
+    bcttv1:
+      - { code: "2.2", label: "Feedback on behaviour" }
+      - { code: "10.4", label: "Social reward" }
+    com_b: [reflective-motivation]
+    evidence_note: "Tally feedback after any rescue tool completes."

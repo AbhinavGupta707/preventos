@@ -1,0 +1,181 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: onboarding
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "NCSCT standard treatment programme (public guidance): quit-date setting, abrupt cessation, not-a-puff rule"
+    - "NHS Better Health: Quit Smoking (public guidance)"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.onboarding.welcome
+    type: message
+    title: Welcome to QuitKit
+    body: >
+      Good to have you here. You are in charge of this quit.
+      We bring the tools. You make the choices.
+      There is no judging here. Ever.
+    bcttv1:
+      - { code: "3.1", label: "Social support (unspecified)" }
+    com_b: [reflective-motivation]
+    evidence_note: "Autonomy-supportive framing per PRD §1.3 product principles."
+
+  - id: smoking.onboarding.pathway-choice
+    type: info_card
+    title: Two ways to quit
+    body: >
+      There are two good ways to do this. You pick.
+
+      1. Pick a quit day. You stop fully on that day. Soon is best.
+
+      2. Cut down first. You smoke less each week. Then you stop.
+
+      Both can work. Stopping on a quit day works for most people.
+      You can change your mind later. That is fine.
+    bcttv1:
+      - { code: "1.1", label: "Goal setting (behaviour)" }
+      - { code: "9.2", label: "Pros and cons" }
+    com_b: [reflective-motivation, psychological-capability]
+    evidence_note: >
+      NCSCT: abrupt cessation with a set quit date is the standard programme;
+      NICE NG209 supports gradual reduction for people not ready to stop at once.
+
+  - id: smoking.onboarding.quit-date-guidance
+    type: message
+    title: Picking your quit day
+    body: >
+      Pick a day in the next two weeks. Soon works best.
+      A calm day is better than a hard one.
+      Many people pick a day off, or a Monday.
+      Your call.
+    bcttv1:
+      - { code: "1.1", label: "Goal setting (behaviour)" }
+      - { code: "1.4", label: "Action planning" }
+    com_b: [reflective-motivation]
+    evidence_note: "NCSCT: set a quit date within ~2 weeks of the decision to quit."
+
+  - id: smoking.onboarding.prep-checklist
+    type: checklist
+    title: Get ready for quit day
+    items:
+      - "Tell people you trust. Ask them to back you up."
+      - "Get rid of cigarettes, lighters and ashtrays the night before."
+      - "Plan your stop-smoking aid. A patch plus gum or spray works well."
+      - "Save our craving tools where you can find them fast."
+      - "Plan your first morning. What will you do instead of smoking?"
+      - "Write down your main reason to quit. Keep it close."
+    bcttv1:
+      - { code: "1.4", label: "Action planning" }
+      - { code: "12.1", label: "Restructuring the physical environment" }
+      - { code: "12.3", label: "Avoidance/reducing exposure to cues for the behaviour" }
+      - { code: "3.2", label: "Social support (practical)" }
+    com_b: [psychological-capability, physical-opportunity, social-opportunity]
+    evidence_note: "NCSCT pre-quit session content: preparation, cue removal, social support, medication planning."
+
+  - id: smoking.onboarding.not-a-puff
+    type: info_card
+    title: The one rule that helps most
+    body: >
+      From your quit day, the aim is simple. Not a single puff.
+
+      Why? One puff wakes the cravings up again. It makes the next
+      days harder, not easier.
+
+      This is not about being perfect. It is about giving your brain
+      a clean break. If a slip happens, we will help you get back up.
+    bcttv1:
+      - { code: "13.2", label: "Framing/reframing" }
+      - { code: "4.1", label: "Instruction on how to perform the behaviour" }
+    com_b: [psychological-capability, reflective-motivation]
+    evidence_note: "NCSCT 'not a puff' rule — core of the standard treatment programme. Non-moralising phrasing."
+
+  - id: smoking.onboarding.dependence-check-intro
+    type: message
+    title: Two quick questions
+    instrument_ref: hsi
+    body: >
+      Two quick questions about your smoking.
+      They help us shape your plan. There are no wrong answers.
+    bcttv1:
+      - { code: "2.3", label: "Self-monitoring of behaviour" }
+    com_b: [psychological-capability]
+    evidence_note: >
+      Intro card only. HSI items render verbatim from packages/instruments
+      (safety invariant 2) — never from this pack.
+
+  - id: smoking.onboarding.why-quit-reflection
+    type: exercise
+    title: Your reason
+    steps:
+      - "Take a moment. Why quit now?"
+      - "Maybe money. Maybe health. Maybe family. Maybe just being free."
+      - "Write your reason in one line."
+      - "We will show it back to you when things get hard."
+    slots: []
+    bcttv1:
+      - { code: "9.2", label: "Pros and cons" }
+      - { code: "13.5", label: "Identity associated with changed behaviour" }
+    com_b: [reflective-motivation]
+    evidence_note: "MI-consistent values elicitation; reason is user-authored, not imposed."
+
+  - id: smoking.onboarding.dual-user-note
+    type: info_card
+    title: You vape too?
+    body: >
+      Lots of people smoke and vape. That is common.
+
+      Right now, quitting cigarettes is the big win for your health.
+      Many people keep vaping while they stop smoking. That is OK.
+
+      If you want to stop vaping later, we can help with that too.
+    bcttv1:
+      - { code: "1.1", label: "Goal setting (behaviour)" }
+      - { code: "13.2", label: "Framing/reframing" }
+    com_b: [reflective-motivation]
+    evidence_note: >
+      NHS/NCSCT position: vaping is substantially less harmful than smoking and is
+      used as a quit aid; prioritise smoking abstinence for dual users. Routing into
+      Exhale is a rules concern (dual-user routing), not content.
+
+  - id: smoking.onboarding.first-day-plan
+    type: message
+    title: Your first morning
+    body: >
+      The first morning is the big one.
+      Change the routine. Shower first. New mug. Different chair.
+      Put your patch on before your feet hit the floor, if you use one.
+      Keep your fast aid close. Gum, spray or lozenge.
+      You only have to win one morning. Then the next.
+    bcttv1:
+      - { code: "1.4", label: "Action planning" }
+      - { code: "8.4", label: "Habit reversal" }
+      - { code: "11.1", label: "Pharmacological support" }
+    com_b: [psychological-capability, automatic-motivation]
+    evidence_note: "NCSCT: first cigarette of the day is the strongest conditioned cue; morning routine disruption."
+
+  - id: smoking.onboarding.support-promise
+    type: message
+    title: What we will do
+    body: >
+      Here is our side of the deal.
+      We check in when it helps, not when it nags.
+      We bring a rescue tool that works in seconds.
+      If you slip, we help you learn from it. No lectures.
+      You can change your plan any time.
+    bcttv1:
+      - { code: "3.1", label: "Social support (unspecified)" }
+    com_b: [reflective-motivation, social-opportunity]
+    evidence_note: "Sets burden-budget and no-shame expectations; aligns with JITAI single-budget rule (plan §2.1)."

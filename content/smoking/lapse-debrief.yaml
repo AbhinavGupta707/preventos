@@ -1,0 +1,137 @@
+# =============================================================================
+# DRAFT — PENDING CLINICAL SIGN-OFF
+# QuitKit (smoking) content pack — PreventOS. Not for real users until a
+# sign-off entry exists in compliance/ (safety invariant 3).
+# =============================================================================
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: lapse-debrief
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "Relapse-prevention model (Marlatt; public literature): abstinence violation effect, lapse vs relapse"
+    - "NCSCT standard treatment programme (public): managing lapses without abandoning the quit"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.lapse.opener
+    type: message
+    title: About last night
+    body: >
+      You logged a cigarette. Thank you for being honest. That takes guts.
+      First thing: a slip is a moment. It is not the end of your quit.
+      One cigarette does not undo your progress. Giving up does.
+      When you are ready, let's spend two minutes learning from it.
+    bcttv1:
+      - { code: "13.2", label: "Framing/reframing" }
+      - { code: "3.1", label: "Social support (unspecified)" }
+    com_b: [reflective-motivation]
+    evidence_note: "Morning-after opener; zero shame, honesty reinforced (PRD: emotionally-safe logging)."
+
+  - id: smoking.lapse.ave-reframe
+    type: info_card
+    title: One slip is not who you are
+    body: >
+      Here is a trap many people fall into.
+      They slip once. Then they think: "I've blown it. I'm a smoker again.
+      May as well carry on."
+
+      That thought is the real danger. Not the cigarette.
+
+      The truth: one slip means one slip. Nothing more.
+      People who treat a slip as a lesson, not a verdict, go on to quit.
+    bcttv1:
+      - { code: "13.2", label: "Framing/reframing" }
+      - { code: "13.5", label: "Identity associated with changed behaviour" }
+    com_b: [reflective-motivation, psychological-capability]
+    evidence_note: "Abstinence violation effect, defused in plain words."
+
+  - id: smoking.lapse.debrief-flow
+    type: exercise
+    title: The two-minute debrief
+    steps:
+      - "What happened? Just the facts. No blame."
+      - "Where were you? Who was there? What time was it?"
+      - "What did the cigarette do for you, right then? Calm? A break? Fitting in?"
+      - "Did it deliver? Was it what you wanted?"
+      - "Next time that moment comes, what could you do instead?"
+      - "Want to turn that into an if-then plan? One tap."
+    bcttv1:
+      - { code: "1.2", label: "Problem solving" }
+      - { code: "2.3", label: "Self-monitoring of behaviour" }
+      - { code: "1.4", label: "Action planning" }
+    com_b: [psychological-capability, reflective-motivation]
+    evidence_note: >
+      Functional-analysis debrief (what the cigarette did) per PRD §5.1 morning-after
+      protocol; output routes into the if-then builder.
+
+  - id: smoking.lapse.streak-repair
+    type: message
+    title: Your days are safe
+    slots: [days_won_total]
+    body: >
+      Important: you have won {days_won_total} smoke-free days.
+      Those days are yours. They do not reset. They never will.
+      A slip pauses the streak. It does not delete it.
+      Today is a new day to add to the pile.
+    bcttv1:
+      - { code: "15.3", label: "Focus on past success" }
+      - { code: "13.2", label: "Framing/reframing" }
+    com_b: [reflective-motivation]
+    evidence_note: "Days-won never resets (plan §2.1 universal relapse engine); copy makes the mechanic explicit."
+
+  - id: smoking.lapse.recommit
+    type: message
+    title: Back on it
+    body: >
+      Ready to carry on? Good.
+      The not-a-puff rule starts again right now. Clean break, take two.
+      Your plans are still here. Your tools are still here. So are we.
+    bcttv1:
+      - { code: "1.1", label: "Goal setting (behaviour)" }
+      - { code: "15.1", label: "Verbal persuasion about capability" }
+    com_b: [reflective-motivation]
+    evidence_note: "Recommitment close of the debrief flow."
+
+  - id: smoking.lapse.repeat-support
+    type: message
+    title: Let's change something
+    body: >
+      A few slips in the same week. That is not a willpower problem.
+      It is a plan problem. Plans are easier to fix than willpower.
+      Some things that help:
+      Check your stop-smoking aid. Many people use too little.
+      Look at where the slips happen. Same place? Same time?
+      Talk it through with the coach. Five minutes, no lecture.
+    bcttv1:
+      - { code: "1.2", label: "Problem solving" }
+      - { code: "11.1", label: "Pharmacological support" }
+      - { code: "3.1", label: "Social support (unspecified)" }
+    com_b: [psychological-capability, reflective-motivation]
+    evidence_note: >
+      Repeated-lapse pathway: reframe to plan/medication review (NCSCT: check NRT
+      underdosing), never blame. Trigger threshold is a rules concern.
+
+  - id: smoking.lapse.full-relapse-door-open
+    type: message
+    title: The door is open
+    body: >
+      Back to smoking for a while? OK. It happens to most people
+      before a quit sticks. Each try teaches you something real.
+      You now know more about your triggers than ever.
+      Whenever you want, we start again. Better armed this time.
+      No queue, no telling-off. Just press start.
+    bcttv1:
+      - { code: "15.3", label: "Focus on past success" }
+      - { code: "13.2", label: "Framing/reframing" }
+    com_b: [reflective-motivation]
+    evidence_note: >
+      Re-engagement ladder copy (WP5.3); most successful quitters report multiple
+      attempts — normalised without minimising.
