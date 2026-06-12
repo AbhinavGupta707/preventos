@@ -9,3 +9,4 @@ coverage/
 *.log
 .expo/
 .next/
+.claude/worktrees/
