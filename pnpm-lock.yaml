@@ -262,6 +262,22 @@ importers:
         specifier: ^3.2.4
         version: 3.2.6(@types/node@22.19.21)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
 
+  packages/instruments:
+    dependencies:
+      '@preventos/shared':
+        specifier: workspace:*
+        version: link:../shared
+    devDependencies:
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.19.21
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.6(@types/node@22.19.21)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
+
   packages/shared:
     devDependencies:
       typescript:
