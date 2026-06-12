@@ -33,6 +33,7 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 | WS3 | Web (3.1 + 3.2) (wave 2) | open | — | apps/web; claims lint applies to marketing copy |
 | SVC | Services assembly (apps/api + apps/worker) (wave 2) | open | — | Wires spine packages; consumes events dispatcher + scheduler |
 | WS8 | Outcomes, analytics & evidence (8.1–8.4) (wave 2) | open | — | events + auth(k-anon) ready |
+| AV.2 | Companion state engine (avatar) | open | — | **Parallel-safe now** — pure package; see plan WS-AV; AV.1 character design is an owner/design action |
 
 Statuses: open → claimed(session/branch) → in_review(PR) → done(evidence).
 
