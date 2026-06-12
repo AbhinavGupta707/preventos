@@ -23,5 +23,7 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 Everything not listed is blocked behind the spine (see plan §7 dependency notes) — add rows as
 WPs unblock. Statuses: open → claimed(session/branch) → in_review(PR) → done(evidence).
 
+| 4.1 | Content-atom schema & store | **done** | main (spine session) | `@preventos/content`: zod schema matching the drafted pack shape (meta+defaults+atoms, bcttv1 tags, COM-B, slots); untagged atoms rejected; status normalisation (draft-pending-clinical-sign-off→draft); draft content unservable in production (no override by design); deterministic catalog hash for cohort pinning; sequences validated; repo-wide content gate test active in CI; 14/14 tests. Content sessions: run `pnpm --filter @preventos/content test` after rebasing on main to validate your pack |
+
 ## Session log
 - 2026-06-12 · spine session: plan v3 adopted; WP1.1a built and verified; repo initialized.

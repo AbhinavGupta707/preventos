@@ -1,0 +1,56 @@
+# DRAFT — PENDING CLINICAL SIGN-OFF (test fixture mirroring the drafted pack shape)
+meta:
+  pack: smoking
+  programme: QuitKit
+  module: lapse-debrief
+  status: draft-pending-clinical-sign-off
+  schema: preventos.content-atom/0.1-draft
+  language: en-GB
+  sources:
+    - "NCSCT standard treatment programme (public)"
+  defaults:
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    vertical: smoking
+    contraindications: []
+
+atoms:
+  - id: smoking.lapse.opener
+    type: message
+    title: About last night
+    body: >
+      You logged a cigarette. Thank you for being honest. That takes guts.
+    bcttv1:
+      - { code: "13.2", label: "Framing/reframing" }
+    com_b: [reflective-motivation]
+    evidence_note: "Morning-after opener; zero shame."
+
+  - id: smoking.lapse.streak-repair
+    type: message
+    title: Your days are safe
+    slots: [days_won_total]
+    body: >
+      Important: you have won {days_won_total} smoke-free days. They are yours. A slip cannot take them away.
+    channel_variants:
+      push: "Your {days_won_total} days are safe. A slip can't take them. Open for a 2-minute reset."
+    bcttv1:
+      - { code: "13.5", label: "Identity associated with changed behaviour" }
+    com_b: [reflective-motivation]
+
+  - id: smoking.lapse.debrief-flow
+    type: exercise
+    title: The two-minute debrief
+    steps:
+      - "What happened? Just the facts. No blame."
+      - "Next time that moment comes, what could you do instead?"
+    bcttv1:
+      - { code: "1.2", label: "Problem solving" }
+    com_b: [psychological-capability]
+
+sequences:
+  - id: smoking.lapse.morning-after
+    steps:
+      - { atom: smoking.lapse.opener }
+      - { atom: smoking.lapse.streak-repair, delay_hours: 0.5 }
+      - { atom: smoking.lapse.debrief-flow, delay_hours: 1 }
