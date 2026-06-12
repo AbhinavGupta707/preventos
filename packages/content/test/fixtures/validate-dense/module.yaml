@@ -1,0 +1,20 @@
+meta:
+  pack: smoking
+  module: fixture
+  status: draft
+  schema: preventos.content-atom/0.1
+  defaults:
+    reading_age: 9
+    vertical: smoking
+atoms:
+  - id: smoking.fixture.dense
+    type: info_card
+    title: Dense
+    body: >
+      Notwithstanding the aforementioned considerations, implementation of
+      comprehensive behavioural modification methodologies necessitates
+      substantial organisational infrastructure investment alongside
+      multidisciplinary stakeholder collaboration frameworks.
+    bcttv1:
+      - { code: "5.1", label: "Information about health consequences" }
+    com_b: [psychological-capability]

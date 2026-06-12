@@ -1,0 +1,15 @@
+meta:
+  pack: smoking
+  module: fixture
+  status: draft
+  schema: preventos.content-atom/0.1
+  defaults:
+    vertical: smoking
+atoms:
+  - id: smoking.fixture.hello
+    type: message
+    title: Hello
+    body: "You can do this. One day at a time."
+    bcttv1:
+      - { code: "3.1", label: "Social support (unspecified)" }
+    com_b: [reflective-motivation]
