@@ -14,7 +14,7 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 | V.2c | Exhale content pack — content drafting | open | — | **Parallel-safe now** (`content/vaping/`) |
 | V.3c | Steady content pack — content drafting | open | — | **Parallel-safe now** (`content/alcohol/`); include hard-stop referral scripts |
 | V.4c | Nightshift content pack — content drafting | open | — | **Parallel-safe now** (`content/sleep/`); no treatment-claim language |
-| 7.1c | Safety risk corpus (~800 labelled cases) | open | — | **Parallel-safe now** (`tools/red-team/corpus/`); incl. hard negatives |
+| 7.1c | Safety risk corpus (~800 labelled cases) | **claimed** | wp/7.1c-safety-corpus | In progress 2026-06-12; tier scheme {0,1,2} defined in corpus README (assumption recorded) |
 | 10.1 | Clinical reviewer brief & engagement pack | open | — | **Parallel-safe now** (`compliance/`) |
 | 10.4 | Instrument licensing audit (SCI vs ISI etc.) | open | — | **Parallel-safe now** (`compliance/`) |
 | 10.6 | Privacy pack drafts (DPIAs, policy, ToS) | open | — | **Parallel-safe now** (`compliance/`) |
