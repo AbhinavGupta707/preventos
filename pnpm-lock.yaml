@@ -29,6 +29,12 @@ importers:
 
   apps/console:
     dependencies:
+      '@preventos/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@preventos/outcomes':
+        specifier: workspace:*
+        version: link:../../packages/outcomes
       next:
         specifier: ^15.5.6
         version: 15.5.19(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -51,6 +57,9 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.6(@types/node@22.19.21)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
 
   apps/mobile:
     dependencies:
@@ -255,6 +264,28 @@ importers:
       pg:
         specifier: ^8.16.0
         version: 8.21.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.6(@types/node@22.19.21)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
+
+  packages/outcomes:
+    dependencies:
+      '@preventos/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@preventos/shared':
+        specifier: workspace:*
+        version: link:../shared
+      zod:
+        specifier: ^3.25.0
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.19.21
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
