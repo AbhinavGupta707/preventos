@@ -10,12 +10,16 @@ Drive the PreventOS build to its next concrete outcome with zero unnecessary int
 2. Target = `$ARGUMENTS` if given (a WP id like `1.2`, or a milestone like `M0` meaning: loop
    WPs until that milestone's exit criteria pass). Otherwise: the next WP that is unblocked by
    the dependency notes, not claimed in PROGRESS.md, and highest-leverage for the current milestone.
-3. Claim it in PROGRESS.md (status `claimed`, your session/branch) BEFORE writing code. If the
-   target touches spine packages (`domain`, `db`, `events`, `consent`, `decisions`) and another
-   session holds an active spine claim — stop and report the conflict instead of proceeding.
+3. Check live claims (`git fetch origin && git branch -r` — a pushed `wp/<id>-*` branch is a
+   claim). If the target is already claimed, or it touches spine packages (`domain`, `db`,
+   `events`, `consent`, `decisions`) while another session holds an active spine claim — stop
+   and report the conflict instead of proceeding.
 
 ## Execute
-4. Branch `wp/<id>-<slug>` off `main` (skip branching only if no remote exists).
+4. Spine work: stay on the root checkout. Anything else (assume other sessions may be active):
+   isolate in a git worktree (EnterWorktree tool, or `git worktree add ../preventos-wp<id>
+   -b wp/<id>-<slug>`) and push the branch immediately — that publishes your claim. Also mark
+   your row in PROGRESS.md (status `claimed`); it lands on main with your PR.
 5. Follow `CLAUDE.md` conventions: TDD, strict TS, import boundaries, files ≤400 lines.
    The WP's acceptance criteria in the plan are the contract — build to them, all of them.
 6. Do NOT pause to ask about anything reversible inside the repo. Make the smallest safe

@@ -26,10 +26,14 @@ Plan of record: `IMPLEMENTATION_PLAN.md` (v3). Live work ledger: `PROGRESS.md`.
 5. Sleep copy never makes treatment claims (claims register lints this).
 
 ## Multi-session protocol
-1. Before starting work, claim your work package in `PROGRESS.md` (status + branch).
+1. Check live claims before starting: `git fetch origin && git branch -r` — a pushed
+   `wp/<id>-*` branch IS the claim on that work package. Also read `PROGRESS.md` on main.
 2. Core-spine packages (`domain`, `db`, `events`, `consent`, `decisions`) — ONE session at a
-   time. Check PROGRESS.md for an active claim before touching them.
+   time; the spine session works directly on the root checkout.
 3. Parallel-safe areas: `content/*`, `compliance/*`, `apps/web`, `apps/mobile`, `apps/console`,
    `tools/*` — provided no other session has claimed the same directory.
-4. Branch per work package (`wp/<id>-<slug>`), PR to `main`, `pnpm verify` green before PR.
-5. Update PROGRESS.md with evidence when done. PROGRESS.md is the shared truth across sessions.
+4. Parallel sessions NEVER switch branches in the shared root checkout. Isolate in a worktree
+   (EnterWorktree tool, or `git worktree add ../preventos-wp<id> -b wp/<id>-<slug>`), then push
+   the branch immediately — that publishes your claim.
+5. PR to `main` with `pnpm verify` green; update your `PROGRESS.md` row (status + evidence) in
+   the same PR. PROGRESS.md on main is the shared truth across sessions.
