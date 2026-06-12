@@ -3,7 +3,9 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 import type { BfoSection, Vertical } from "@preventos/domain";
-import { daysWon } from "@preventos/decisions";
+// Deep import: the decisions index pulls in node:crypto (ruleSetHash), which
+// React Native lacks. The relapse module is platform-neutral.
+import { daysWon } from "@preventos/decisions/src/relapse";
 
 import type { SpendProfile } from "../core/savings";
 import type { ChoreographyEvent, ChoreographyState } from "../core/pushChoreography";
