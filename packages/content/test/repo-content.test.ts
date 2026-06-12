@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { buildCatalog } from "../src/catalog.js";
-import { loadPackDir } from "../src/load.js";
+import { loadAllPacks, loadPackDir } from "../src/load.js";
 
 const REPO_CONTENT = path.join(fileURLToPath(new URL("../../..", import.meta.url)), "content");
 
@@ -13,8 +13,11 @@ const REPO_CONTENT = path.join(fileURLToPath(new URL("../../..", import.meta.url
  * coverage. The migration session must shrink this set to empty; when a pack
  * validates cleanly this test FAILS until it is removed from the list, so the
  * ratchet only ever tightens.
+ *
+ * EMPTY since WP4.2m: all four packs validate against the canonical schema.
+ * Nothing may ever be added back.
  */
-const LEGACY_PACKS = new Set(["alcohol", "sleep", "smoking", "vaping"]);
+const LEGACY_PACKS = new Set<string>([]);
 
 async function packDirs(): Promise<string[]> {
   try {
@@ -49,5 +52,13 @@ describe("repo content packs", () => {
       const catalog = buildCatalog(loaded.atoms, loaded.sequences);
       expect(catalog.ok, `pack "${dir}" must form a consistent catalog`).toBe(true);
     }
+  });
+
+  it("all packs together form one catalog (no cross-pack id collisions)", async () => {
+    const loaded = await loadAllPacks(REPO_CONTENT);
+    expect(loaded.errors).toEqual([]);
+    expect(loaded.atoms.length).toBeGreaterThanOrEqual(300);
+    const catalog = buildCatalog(loaded.atoms, loaded.sequences);
+    expect(catalog.ok, catalog.ok ? "" : catalog.error).toBe(true);
   });
 });

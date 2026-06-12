@@ -149,8 +149,9 @@ export const rawAtomSchema = z
     if (atom.type === "menu" && atom.items === undefined) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: "menu atoms must carry items" });
     }
-    if (atom.type === "outcome_prompt" && (atom.outcome_ref === undefined || atom.options === undefined)) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "outcome_prompt atoms must carry outcome_ref and options" });
+    // options stay optional: free-response measures (e.g. cigarettes/day) are prompts too.
+    if (atom.type === "outcome_prompt" && atom.outcome_ref === undefined) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "outcome_prompt atoms must carry an outcome_ref" });
     }
     const declared = new Set(atom.slots ?? []);
     const texts = [

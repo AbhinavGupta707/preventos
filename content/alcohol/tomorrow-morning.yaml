@@ -1,137 +1,113 @@
 meta:
   pack: alcohol
-  file: tomorrow-morning
-  status: DRAFT
-  version: 0.1.0
-  signoff: null
-  notes: >
-    Prospective consequence salience ("tomorrow-morning framing"): shift the
-    decision moment from tonight's first drink to tomorrow's first hour. Always
-    framed as what the user GAINS tomorrow, never what tonight costs them.
-    Countdown copy fires before learned risk windows (JITAI, WP5.2 wiring).
+  programme: Steady
+  module: tomorrow-morning
+  status: draft
+  schema: preventos.content-atom/0.1
+  version: "0.1.0"
+  language: en-GB
+  defaults:
+    vertical: alcohol
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    contraindications: [dependence-flagged]
+  # Prospective consequence salience ("tomorrow-morning framing"): shift the
+  # decision moment from tonight's first drink to tomorrow's first hour. Always
+  # framed as what the user GAINS tomorrow, never what tonight costs them.
+  # Countdown copy fires before learned risk windows (JITAI, WP5.2 wiring).
 
 atoms:
-  # ---- Evening intention prompts ------------------------------------------
-  - id: steady.tm.evening.intention
-    kind: microcopy
-    surface: tomorrow-morning.evening-prompt
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Evening intention prompts
+  - id: alcohol.tm.evening.intention
+    type: microcopy
     body: "How do you want tomorrow morning to feel?"
 
-  - id: steady.tm.evening.intention-options
-    kind: microcopy
-    surface: tomorrow-morning.evening-prompt
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.tm.evening.intention-options
+    type: microcopy
     body: |
       Clear-headed at {{wake_time}}
       Up before the kids, not after
       Actually making that {{morning_commitment}}
       Just… not rough
       Something else
+    slots: [wake_time, morning_commitment]
 
-  - id: steady.tm.evening.intention-set
-    kind: microcopy
-    surface: tomorrow-morning.evening-prompt
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.tm.evening.intention-set
+    type: microcopy
     body: >
       Set. Tonight's choices belong to tomorrow's {{morning_goal}} — we'll
       check in with you in the morning.
+    slots: [morning_goal]
 
-  # ---- Pre-window countdowns (learned risk windows) ------------------------
-  - id: steady.tm.countdown.friday
-    kind: microcopy
-    surface: tomorrow-morning.countdown
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Pre-window countdowns (learned risk windows)
+  - id: alcohol.tm.countdown.friday
+    type: microcopy
     body: >
       Friday evening's coming up — usually a bigger one for you. Saturday
       morning is yours to spend in advance: what do you want it to look like?
 
-  - id: steady.tm.countdown.payday
-    kind: microcopy
-    surface: tomorrow-morning.countdown
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.tm.countdown.payday
+    type: microcopy
     body: >
       Payday tonight. Past paydays have run to about {{typical_window_units}}
       units. If tonight went how YOU planned it instead — what would tomorrow
       morning get back?
+    slots: [typical_window_units]
 
-  - id: steady.tm.countdown.learned-window
-    kind: microcopy
-    surface: tomorrow-morning.countdown
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.tm.countdown.learned-window
+    type: microcopy
     body: >
       Heads up — {{window_label}} tends to be when drinks stack up. You've got
       {{hours_to_window}} hours to decide tonight's shape before it decides
       for you. Tomorrow-you votes now.
+    slots: [window_label, hours_to_window]
 
-  - id: steady.tm.countdown.with-plan
-    kind: microcopy
-    surface: tomorrow-morning.countdown
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.tm.countdown.with-plan
+    type: microcopy
     body: >
       {{window_label}} ahead. Your plan from last time: "{{saved_plan_summary}}".
       Still good, or want to tweak it?
+    slots: [window_label, saved_plan_summary]
 
-  # ---- Mid-evening nudge (only if user opted in) ---------------------------
-  - id: steady.tm.midpoint.check
-    kind: microcopy
-    surface: tomorrow-morning.midpoint
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Mid-evening nudge (only if user opted in)
+  - id: alcohol.tm.midpoint.check
+    type: microcopy
     body: >
       Quick one, as requested: you're {{units_so_far}} units in. Tomorrow's
       {{morning_goal}} is still on the table. Whatever you choose, log it.
+    slots: [units_so_far, morning_goal]
 
-  # ---- Morning loop-closers -------------------------------------------------
-  - id: steady.tm.morning.kept
-    kind: microcopy
-    surface: tomorrow-morning.morning-close
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Morning loop-closers
+  - id: alcohol.tm.morning.kept
+    type: microcopy
     body: >
       Morning. Last night you wanted: {{morning_goal}}. You got it. That
       feeling right now? That was a decision, not luck.
+    slots: [morning_goal]
 
-  - id: steady.tm.morning.partial
-    kind: microcopy
-    surface: tomorrow-morning.morning-close
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.tm.morning.partial
+    type: microcopy
     body: >
       Morning. Last night went bigger than planned — and you still showed up
       here, which is the part that compounds. How's the morning treating you,
       honestly? Logging it takes ten seconds.
 
-  - id: steady.tm.morning.reflection
-    kind: microcopy
-    surface: tomorrow-morning.morning-close
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.tm.morning.reflection
+    type: microcopy
     body: >
       One question, for your own data: this morning, do you feel better,
       worse, or about the same as you expected last night?
 
-  - id: steady.tm.morning.bank-it
-    kind: microcopy
-    surface: tomorrow-morning.morning-close
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.tm.morning.bank-it
+    type: microcopy
     body: >
       Want to save how this morning feels? Next time a big night is on the
       cards, we'll show you your own words.
 
-  - id: steady.tm.morning.banked-replay
-    kind: microcopy
-    surface: tomorrow-morning.countdown
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.tm.morning.banked-replay
+    type: microcopy
     body: >
       Before tonight kicks off — a note from a previous morning-after you:
       "{{banked_morning_note}}"
+    slots: [banked_morning_note]

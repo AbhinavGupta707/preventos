@@ -10,7 +10,7 @@ meta:
   programme: QuitKit
   module: milestones
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "NHS Better Health: Quit Smoking (public): recovery timeline facts used in milestone pegs"

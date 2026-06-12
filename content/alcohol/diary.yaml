@@ -1,196 +1,144 @@
 meta:
   pack: alcohol
-  file: diary
-  status: DRAFT
-  version: 0.1.0
-  signoff: null
-  tone-rules: >
-    Never shame. No red ink, no warning triangles on ordinary entries, no
-    "over your limit!" alarms. Logging a drink is neutral data capture — the
-    user is doing the hard thing by looking. Every acknowledgement rewards
-    honesty, not abstinence. Words banned on diary surfaces: failed, ruined,
-    wasted, bad, guilty, slipped up, naughty, cheat.
+  programme: Steady
+  module: diary
+  status: draft
+  schema: preventos.content-atom/0.1
+  version: "0.1.0"
+  language: en-GB
+  defaults:
+    vertical: alcohol
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    contraindications: [dependence-flagged]
+  # Tone rules: Never shame. No red ink, no warning triangles on ordinary entries, no
+  # "over your limit!" alarms. Logging a drink is neutral data capture — the
+  # user is doing the hard thing by looking. Every acknowledgement rewards
+  # honesty, not abstinence. Words banned on diary surfaces: failed, ruined,
+  # wasted, bad, guilty, slipped up, naughty, cheat.
 
 atoms:
-  # ---- Quick-log ----------------------------------------------------------
-  - id: steady.diary.quicklog.title
-    kind: microcopy
-    surface: diary.quicklog
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Quick-log
+  - id: alcohol.diary.quicklog.title
+    type: microcopy
     body: "What did you have?"
 
-  - id: steady.diary.quicklog.subtitle
-    kind: microcopy
-    surface: diary.quicklog
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.quicklog.subtitle
+    type: microcopy
     body: "Tap to log — takes about five seconds."
 
-  - id: steady.diary.quicklog.confirm
-    kind: microcopy
-    surface: diary.quicklog
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.quicklog.confirm
+    type: microcopy
     body: "Logged. That's the whole job done."
 
-  - id: steady.diary.quicklog.confirm-variant-2
-    kind: microcopy
-    surface: diary.quicklog
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.quicklog.confirm-variant-2
+    type: microcopy
     body: "Got it. Honest logging is what makes this work."
 
-  - id: steady.diary.quicklog.add-another
-    kind: microcopy
-    surface: diary.quicklog
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.quicklog.add-another
+    type: microcopy
     body: "Add another from the same round?"
 
-  # ---- Retro-fill mercy ---------------------------------------------------
-  - id: steady.diary.retrofill.prompt
-    kind: microcopy
-    surface: diary.retrofill
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Retro-fill mercy
+  - id: alcohol.diary.retrofill.prompt
+    type: microcopy
     body: >
       Yesterday got away from you? Fill it in now. There's no penalty for
       logging late — the picture just gets more accurate.
 
-  - id: steady.diary.retrofill.rough-is-fine
-    kind: microcopy
-    surface: diary.retrofill
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.retrofill.rough-is-fine
+    type: microcopy
     body: >
       Can't remember exactly? A rough guess beats a blank. "About four pints"
       is genuinely useful data.
 
-  - id: steady.diary.retrofill.confirm
-    kind: microcopy
-    surface: diary.retrofill
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.retrofill.confirm
+    type: microcopy
     body: "Backfilled. Thanks for keeping the record honest."
 
-  - id: steady.diary.retrofill.multi-day
-    kind: microcopy
-    surface: diary.retrofill
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.retrofill.multi-day
+    type: microcopy
     body: >
       A few days missing? You can fill them in one at a time, or just mark a
       day "drank, not sure how much". Both are fine. Gaps are normal — what
       matters is picking the thread back up.
 
-  # ---- Post-log acknowledgements (heavier entries) ------------------------
-  - id: steady.diary.ack.heavy-night-same-evening
-    kind: microcopy
-    surface: diary.acknowledgement
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Post-log acknowledgements (heavier entries)
+  - id: alcohol.diary.ack.heavy-night-same-evening
+    type: microcopy
     body: >
       Logged. No judgement here — tonight's entry is just information, and
       you're the one brave enough to write it down.
 
-  - id: steady.diary.ack.heavy-night-next-morning
-    kind: microcopy
-    surface: diary.acknowledgement
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.ack.heavy-night-next-morning
+    type: microcopy
     body: >
       Thanks for logging last night. Big nights happen. If you want to look at
       what was going on around it, the debrief is there — and if you'd rather
       just move on, that's fine too.
 
-  - id: steady.diary.ack.ordinary
-    kind: microcopy
-    surface: diary.acknowledgement
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.ack.ordinary
+    type: microcopy
     body: "Noted. {{week_units_so_far}} units so far this week."
+    slots: [week_units_so_far]
 
-  # ---- Drink-free days & streak language ----------------------------------
-  - id: steady.diary.dfd.logged
-    kind: microcopy
-    surface: diary.drink-free-day
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Drink-free days & streak language
+  - id: alcohol.diary.dfd.logged
+    type: microcopy
     body: "Drink-free day logged. {{dfd_count_this_week}} this week."
+    slots: [dfd_count_this_week]
 
-  - id: steady.diary.dfd.streak
-    kind: microcopy
-    surface: diary.drink-free-day
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.dfd.streak
+    type: microcopy
     body: >
       {{dfd_streak}} drink-free days in a row. Streaks are nice, but the total
       is what counts — and yours is growing.
+    slots: [dfd_streak]
 
-  - id: steady.diary.dfd.streak-ended
-    kind: microcopy
-    surface: diary.drink-free-day
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.dfd.streak-ended
+    type: microcopy
     body: >
       The run of drink-free days has ended — the days themselves still count,
       and nothing about them is undone. Total this month: {{dfd_count_month}}.
+    slots: [dfd_count_month]
 
-  # ---- Empty states & editing ---------------------------------------------
-  - id: steady.diary.empty.today
-    kind: microcopy
-    surface: diary.empty-state
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Empty states & editing
+  - id: alcohol.diary.empty.today
+    type: microcopy
     body: "Nothing logged today yet. Drinking or not, a quick entry keeps the picture whole."
 
-  - id: steady.diary.empty.first-run
-    kind: microcopy
-    surface: diary.empty-state
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.empty.first-run
+    type: microcopy
     body: >
       This diary is for you, not for us. It works best when it's honest —
       and it's never used to tell you off.
 
-  - id: steady.diary.edit.confirm
-    kind: microcopy
-    surface: diary.edit
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.edit.confirm
+    type: microcopy
     body: "Updated. Corrections are part of honest logging."
 
-  - id: steady.diary.delete.confirm
-    kind: microcopy
-    surface: diary.edit
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.delete.confirm
+    type: microcopy
     body: "Entry removed."
 
-  # ---- Weekly review (neutral trend voice) ---------------------------------
-  - id: steady.diary.weekly.summary
-    kind: microcopy
-    surface: diary.weekly-review
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Weekly review (neutral trend voice)
+  - id: alcohol.diary.weekly.summary
+    type: microcopy
     body: >
       This week: {{week_units}} units across {{drinking_days}} drinking days,
       {{dfd_count_this_week}} drink-free. Last week was {{prev_week_units}}.
       You decide what to make of it — want to look closer?
+    slots: [week_units, drinking_days, dfd_count_this_week, prev_week_units]
 
-  - id: steady.diary.weekly.trend-down
-    kind: microcopy
-    surface: diary.weekly-review
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.weekly.trend-down
+    type: microcopy
     body: "That's {{delta_units}} units fewer than last week. Your doing, your credit."
+    slots: [delta_units]
 
-  - id: steady.diary.weekly.trend-up
-    kind: microcopy
-    surface: diary.weekly-review
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.diary.weekly.trend-up
+    type: microcopy
     body: >
       A heavier week than last — {{delta_units}} units more. Worth a minute to
       think about what was different? No verdict either way.
+    slots: [delta_units]

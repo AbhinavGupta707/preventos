@@ -8,7 +8,7 @@ meta:
   programme: QuitKit
   module: reduction
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "NICE NG209 (public guidance): harm-reduction / cut-down-to-quit approaches, with NRT support"

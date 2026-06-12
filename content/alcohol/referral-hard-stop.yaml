@@ -1,39 +1,41 @@
 meta:
   pack: alcohol
-  file: referral-hard-stop
-  status: DRAFT
-  version: 0.1.0
-  signoff: null
-  safety-invariant: >
-    CLAUDE.md invariant 4 — alcohol dependence indicators trigger a hard stop
-    plus referral; there is NO in-app reduction pathway for dependence-flagged
-    users. Every atom in this file must hold simultaneously:
-    (1) NO moderation offer — no unit caps, no drink-free-day goals, no
-        cutting-down framing, no "track and see" alternative;
-    (2) NO detox/taper instructions — we warn that stopping suddenly can be
-        dangerous and route to medical support; we never prescribe how to
-        reduce or withdraw;
-    (3) warm and shame-safe — being routed out is presented as the app being
-        the wrong tool, never the person being the wrong kind of user;
-    (4) deterministic delivery — these screens are rendered by the rules
-        engine before any LLM involvement; the coach never improvises here.
-  forbidden-language: >
-    Lint targets (WP4.2 / WP6.3 fences): "cut down", "cut back", "drink less",
-    "moderation", "unit cap", "drink-free day goal", "reduce gradually",
-    "taper", "wean", "detox at home", "track your drinking instead".
-  service-directory-note: >
-    Phone numbers and URLs below are DRAFT and must be re-verified against the
-    live services at sign-off (G3), then re-checked on every pack release.
-    Local-service lookup ({{local_service_name}} etc.) is resolved at runtime
-    from the commissioned service directory, postcode-based.
+  programme: Steady
+  module: referral-hard-stop
+  status: draft
+  schema: preventos.content-atom/0.1
+  version: "0.1.0"
+  language: en-GB
+  defaults:
+    vertical: alcohol
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    contraindications: []
+  # INVARIANT 4: alcohol dependence indicators → hard stop + referral.
+  # NO in-app reduction pathway for dependence-flagged users.
+  # Every atom in this file:
+  # (1) NO moderation offer — no unit caps, no drink-free-day goals, no
+  #     cutting-down framing, no "track and see" alternative;
+  # (2) NO detox/taper instructions — we warn that stopping suddenly can be
+  #     dangerous and route to medical support; we never prescribe how to
+  #     reduce or withdraw;
+  # (3) warm and shame-safe — being routed out is presented as the app being
+  #     the wrong tool, never the person being the wrong kind of user;
+  # (4) deterministic delivery — these screens are rendered by the rules
+  #     engine before any LLM involvement; the coach never improvises here.
+  # Forbidden language: "cut down", "cut back", "drink less", "moderation",
+  # "unit cap", "drink-free day goal", "reduce gradually", "taper", "wean",
+  # "detox at home", "track your drinking instead".
+  # Phone numbers and URLs below are DRAFT and must be re-verified against the
+  # live services at sign-off (G3), then re-checked on every pack release.
+  # Local-service lookup ({{local_service_name}} etc.) is resolved at runtime
+  # from the commissioned service directory, postcode-based.
 
 atoms:
   # ---- The hard-stop screen itself ---------------------------------------------
-  - id: steady.hardstop.screen.main
-    kind: script
-    surface: hardstop.screen
-    audience: dependence-flagged
-    contraindications: []
+  - id: alcohol.hardstop.screen.main
+    type: message
     body: >
       Thanks for answering honestly — that took something, and it matters.
       Your answers suggest alcohol has a stronger grip right now than an app
@@ -41,24 +43,22 @@ atoms:
       it's a medical situation with good, well-trodden treatment — and people
       come back from exactly where you are, every day. The right next step is
       a conversation with a professional, and we'll help you have it.
+    bcttv1: [{ code: "11.2", label: "Reduce negative emotions" }]
+    com_b: [reflective-motivation]
 
-  - id: steady.hardstop.screen.why-not-app
-    kind: script
-    surface: hardstop.screen
-    audience: dependence-flagged
-    contraindications: []
+  - id: alcohol.hardstop.screen.why-not-app
+    type: message
     body: >
       Why we're not offering you the in-app programme: when the body has
       adapted to regular drinking, an app's self-guided advice can be
       unhelpful — and in some cases unsafe. You deserve support that's built
       for where you actually are, with people who do this professionally.
       This isn't a closed door; it's the right door.
+    bcttv1: [{ code: "11.2", label: "Reduce negative emotions" }]
+    com_b: [reflective-motivation]
 
-  - id: steady.hardstop.screen.do-not-stop-suddenly
-    kind: script
-    surface: hardstop.screen
-    audience: dependence-flagged
-    contraindications: []
+  - id: alcohol.hardstop.screen.do-not-stop-suddenly
+    type: message
     body: >
       One important thing to know today: if you've been drinking heavily
       every day, stopping all at once can be dangerous — for some people it
@@ -66,24 +66,23 @@ atoms:
       to keep things as they are; it's the reason to involve a professional,
       who can make changing safe. If you ever experience shaking, confusion,
       hallucinations or a seizure after stopping, call 999.
+    bcttv1: [{ code: "5.1", label: "Information on consequences" }]
+    com_b: [reflective-motivation]
 
-  # ---- Referral routes -------------------------------------------------------------
-  - id: steady.hardstop.routes.menu
-    kind: script
-    surface: hardstop.routes
-    audience: dependence-flagged
-    contraindications: []
+  # ---- Referral routes
+  - id: alcohol.hardstop.routes.menu
+    type: message
     body: |
       Three good ways to start — pick whichever feels most doable:
       · Your GP. Say "I'd like help with my drinking." That sentence is enough; they hear it often and take it seriously.
       · Your local alcohol service: {{local_service_name}}, {{local_service_phone}} — free, confidential, NHS-funded, self-referral (no GP needed).
       · Drinkline, free and confidential, right now: 0300 123 1110 (weekdays 9am–8pm, weekends 11am–4pm).
+    slots: [local_service_name, local_service_phone]
+    bcttv1: [{ code: "3.1", label: "Social support (unspecified)" }]
+    com_b: [social-opportunity]
 
-  - id: steady.hardstop.routes.what-happens-when-you-call
-    kind: script
-    surface: hardstop.routes
-    audience: dependence-flagged
-    contraindications: []
+  - id: alcohol.hardstop.routes.what-happens-when-you-call
+    type: message
     body: >
       What actually happens when you contact {{local_service_name}}: a
       friendly first chat (phone or drop-in), a few questions about your
@@ -92,12 +91,12 @@ atoms:
       help with changing your drinking. It's free, it's confidential, and it
       doesn't go on some public record. Thousands of people walk through
       that door every week; you'd be in good company.
+    slots: [local_service_name]
+    bcttv1: [{ code: "3.1", label: "Social support (unspecified)" }]
+    com_b: [social-opportunity]
 
-  - id: steady.hardstop.routes.more-options
-    kind: script
-    surface: hardstop.routes
-    audience: dependence-flagged
-    contraindications: []
+  - id: alcohol.hardstop.routes.more-options
+    type: message
     body: |
       More support, whenever you want it:
       · Alcoholics Anonymous — 0800 9177 650, help@aamail.org. Meetings everywhere, no appointment, just turn up.
@@ -106,70 +105,68 @@ atoms:
       · Find your nearest service — FRANK, 0300 123 6600 or talktofrank.com
       · If someone's drinking affects you at home: Al-Anon 0800 0086 811
       · Struggling with how you feel tonight: Samaritans, 116 123, free, 24/7.
+    bcttv1: [{ code: "3.1", label: "Social support (unspecified)" }]
+    com_b: [social-opportunity]
 
-  - id: steady.hardstop.routes.warm-handoff
-    kind: script
-    surface: hardstop.routes
-    audience: dependence-flagged
-    contraindications: []
+  - id: alcohol.hardstop.routes.warm-handoff
+    type: message
     body: >
       Want us to make this easier? We can show {{local_service_name}}'s
       opening hours and directions, save the number to your phone, or set a
       gentle reminder for a time you choose. Making the call is yours;
       removing the faff is ours.
+    slots: [local_service_name]
+    bcttv1: [{ code: "1.4", label: "Action planning" }]
+    com_b: [reflective-motivation]
 
-  # ---- What the app does now (signpost-only mode) ------------------------------------
-  - id: steady.hardstop.mode.what-changes
-    kind: script
-    surface: hardstop.mode
-    audience: dependence-flagged
-    contraindications: []
+  # ---- What the app does now (signpost-only mode)
+  - id: alcohol.hardstop.mode.what-changes
+    type: message
     body: >
       What this app will do from here: keep your support contacts one tap
       away, remind you about appointments if you ask, and stay out of the
       way. What it won't do is run you through a cutting-down programme —
       that wouldn't be safe or fair to you. If you start working with a
       service, we can support alongside them.
+    bcttv1: [{ code: "12.1", label: "Restructuring the physical environment" }]
+    com_b: [physical-opportunity]
 
-  - id: steady.hardstop.mode.adjunct-offer
-    kind: script
-    surface: hardstop.mode
-    audience: dependence-flagged
-    contraindications: []
+  - id: alcohol.hardstop.mode.adjunct-offer
+    type: message
     body: >
       Already working with a service, or about to? We can help around the
       edges: appointment reminders, a place to note what you want to say in
       sessions, and support between visits — always alongside your keyworker,
       never instead of them.
+    bcttv1: [{ code: "3.1", label: "Social support (unspecified)" }]
+    com_b: [social-opportunity]
 
-  # ---- Re-engagement & return paths ----------------------------------------------------
-  - id: steady.hardstop.return.gentle-check
-    kind: script
-    surface: hardstop.return
-    audience: dependence-flagged
-    contraindications: []
+  # ---- Re-engagement & return paths
+  - id: alcohol.hardstop.return.gentle-check
+    type: message
     body: >
       Just checking in — no pressure and no homework. The numbers are still
       here whenever you want them. If you've taken a step, however small,
       we'd love to know. If not, you're still welcome here.
+    bcttv1: [{ code: "2.3", label: "Self-monitoring of behaviour" }]
+    com_b: [psychological-capability]
 
-  - id: steady.hardstop.return.took-a-step
-    kind: script
-    surface: hardstop.return
-    audience: dependence-flagged
-    contraindications: []
+  - id: alcohol.hardstop.return.took-a-step
+    type: message
     body: >
       You contacted {{contacted_service_name}} — that's the hardest step in
       the whole chain, and you've done it. Whatever happens next happens
       with proper support behind you. Genuinely well done.
+    slots: [contacted_service_name]
+    bcttv1: [{ code: "10.1", label: "Material incentive (outcome)" }]
+    com_b: [automatic-motivation]
 
-  - id: steady.hardstop.return.not-yet
-    kind: script
-    surface: hardstop.return
-    audience: dependence-flagged
-    contraindications: []
+  - id: alcohol.hardstop.return.not-yet
+    type: message
     body: >
       Not ready yet — that's human, and you're not on a clock. People often
       circle a decision like this for a while before making it. The door
       stays open, the numbers stay saved, and so does your place here.
       One small option if you want it: just save the number today.
+    bcttv1: [{ code: "11.2", label: "Reduce negative emotions" }]
+    com_b: [reflective-motivation]

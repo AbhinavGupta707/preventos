@@ -8,7 +8,7 @@ meta:
   programme: QuitKit
   module: withdrawal
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "NCSCT standard treatment programme (public): withdrawal-oriented behavioural support, symptom timelines"

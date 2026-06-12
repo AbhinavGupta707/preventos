@@ -13,7 +13,7 @@ meta:
   programme: QuitKit
   module: outcomes
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "Russell Standard (public): self-reported abstinence definitions for smoking-cessation outcomes"

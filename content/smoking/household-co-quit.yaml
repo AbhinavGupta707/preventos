@@ -10,7 +10,7 @@ meta:
   programme: QuitKit
   module: household-co-quit
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "PRD §5.1 [BS]: partner/household co-quit mode; smoke-free-home pathway for parents"

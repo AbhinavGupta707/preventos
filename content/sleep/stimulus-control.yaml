@@ -1,253 +1,392 @@
-# DRAFT — Nightshift: stimulus-control coaching (WP V.4c)
-# Framing rules + claims blocklist: see README.md. Sign-off required before release.
-pack: sleep
-module: stimulus-control
-id: sleep.sc
-status: DRAFT
-version: 0.1.0
-
+meta:
+  pack: sleep
+  programme: Nightshift
+  module: stimulus-control
+  status: draft
+  schema: preventos.content-atom/0.1
+  defaults:
+    vertical: sleep
+    reading_age: 9
+    tone: autonomy-supportive
+    channels:
+    - app
+    - web
+    contraindications: []
 atoms:
-  - id: sleep.sc.intro
-    status: DRAFT
-    type: message
-    title: Why bed and sleep belong together
-    bct: ["4.1", "13.2"]
-    com_b: [psychological-capability]
-    reading_age: 9
-    channels: [in_app]
-    tone: autonomy-supportive
-    contraindications: []
-    body: |
-      Your brain is always learning by association. If bed is where you scroll,
-      worry, watch and toss, your brain slowly learns "bed = awake".
+- id: sleep.sc.intro
+  type: message
+  title: Why bed and sleep belong together
+  bcttv1:
+  - code: '4.1'
+    label: Instruction on how to perform a behaviour
+  - code: '13.2'
+    label: Framing/reframing
+  com_b:
+  - psychological-capability
+  reading_age: 9
+  channels:
+  - app
+  tone: autonomy-supportive
+  contraindications: []
+  body: 'Your brain is always learning by association. If bed is where you scroll,
 
-      The good news: that learning works both ways. Over the next few weeks,
-      we'll help you rebuild the link between your bed and sleepiness — so
-      that getting into bed starts to feel like a cue to switch off, not a
-      place where the night begins to go wrong.
+    worry, watch and toss, your brain slowly learns "bed = awake".
 
-      None of this needs to be perfect. Each small repeat strengthens the link.
 
-  - id: sleep.sc.bed-is-for-sleep
-    status: DRAFT
-    type: exercise
-    title: Bed is for sleep (and intimacy) only
-    bct: ["12.1", "8.3"]
-    com_b: [automatic-motivation, physical-opportunity]
-    reading_age: 9
-    channels: [in_app, push]
-    tone: practical
-    contraindications: []
-    body: |
-      This week's habit: use your bed only for sleep and intimacy.
+    The good news: that learning works both ways. Over the next few weeks,
 
-      Everything else — phone, TV, eating, working, worrying — happens
-      somewhere else. A chair, the sofa, another room if you have one.
+    we''ll help you rebuild the link between your bed and sleepiness — so
 
-      If you live in one room, mark the difference another way: sit on top of
-      the covers for awake-time, get under them only when you're sleepy.
-    tone_variants:
-      warm-challenge: |
-        Honest question: how much of your time in bed is actually spent
-        asleep? If the answer is "not much", your bed has picked up some
-        side jobs — phone office, worry HQ, late-night cinema. This week,
-        let's make it redundant at all of them. Bed keeps one job: sleep.
+    that getting into bed starts to feel like a cue to switch off, not a
 
-  - id: sleep.sc.same-wake-time
-    status: DRAFT
-    type: exercise
-    title: One anchor — the same wake time every day
-    bct: ["1.1", "8.3"]
-    com_b: [reflective-motivation, automatic-motivation]
-    reading_age: 9
-    channels: [in_app, push]
-    tone: autonomy-supportive
-    contraindications: [profile:shift-worker] # variant: sleep.shift.anchor-sleep
-    body: |
-      If you change only one thing, make it this: get up at the same time
-      every day — workdays, weekends, good nights and rough ones.
+    place where the night begins to go wrong.
 
-      A steady wake time is the anchor your body clock sets itself by. Lie-ins
-      after a bad night feel kind, but they push your rhythm later and make
-      the next night harder.
 
-      Pick a wake time you can genuinely keep seven days a week. We'll use it
-      as the fixed end of your sleep window.
+    None of this needs to be perfect. Each small repeat strengthens the link.
 
-  - id: sleep.sc.leave-bed-when-awake
-    status: DRAFT
-    type: exercise
-    title: If you're wide awake, get up
-    bct: ["4.1", "12.1"]
-    com_b: [psychological-capability, automatic-motivation]
-    reading_age: 9
-    channels: [in_app, audio]
-    tone: autonomy-supportive
-    contraindications: []
-    related: [sleep.rescue.get-up-walkthrough]
-    body: |
-      Lying in bed wide awake, willing yourself to sleep, teaches your brain
-      that bed is a place to be frustrated.
+    '
+- id: sleep.sc.bed-is-for-sleep
+  type: exercise
+  title: Bed is for sleep (and intimacy) only
+  bcttv1:
+  - code: '12.1'
+    label: Restructuring the physical environment
+  - code: '8.3'
+    label: Habit formation
+  com_b:
+  - automatic-motivation
+  - physical-opportunity
+  reading_age: 9
+  channels:
+  - app
+  - push
+  tone: practical
+  contraindications: []
+  body: 'This week''s habit: use your bed only for sleep and intimacy.
 
-      So here's the move: if you've been awake long enough to feel annoyed
-      about it — don't check the clock, the feeling is enough — get up. Go
-      somewhere dim and comfortable. Do something genuinely boring. Come back
-      to bed only when your eyes feel heavy.
 
-      You might do this three times in a night at first. That's not failure —
-      that's the practice working. Each round teaches your brain the same
-      simple lesson: bed is where sleeping happens.
+    Everything else — phone, TV, eating, working, worrying — happens
 
-  - id: sleep.sc.buffer-zone
-    status: DRAFT
-    type: exercise
-    title: The wind-down hour
-    bct: ["1.4", "12.1"]
-    com_b: [physical-opportunity, automatic-motivation]
-    reading_age: 9
-    channels: [in_app, push]
-    tone: practical
-    contraindications: [profile:shift-worker] # variant: sleep.shift.post-shift-winddown
-    related: [sleep.audio.body-scan, sleep.audio.day-shutdown]
-    body: |
-      Your mind needs a runway, not a cliff edge. Going straight from emails,
-      arguments or doom-scrolling into bed asks your brain to do an emergency
-      stop it isn't built for.
+    somewhere else. A chair, the sofa, another room if you have one.
 
-      Build a buffer: the last hour before bed is for low-effort, low-light,
-      pleasant things. Stretching, a paper book, a shower, quiet music, one of
-      the wind-down audios in this app.
 
-      It doesn't matter much what you choose. It matters that it's the same
-      most nights — repetition is what turns a routine into a cue.
+    If you live in one room, mark the difference another way: sit on top of
 
-  - id: sleep.sc.bedroom-environment
-    status: DRAFT
-    type: message
-    title: Cool, dark, quiet — close enough is good enough
-    bct: ["12.1"]
-    com_b: [physical-opportunity]
-    reading_age: 9
-    channels: [in_app]
-    tone: practical
-    contraindications: []
-    body: |
-      The sleep-friendly bedroom basics: cooler than the rest of your home,
-      as dark as you can get it, as quiet as you can make it.
+    the covers for awake-time, get under them only when you''re sleepy.
 
-      Cheap fixes beat perfect ones: an eye mask beats new curtains, earplugs
-      beat moving house, cracking a window beats a smart thermostat.
+    '
+  tone_variants:
+    warm-challenge: 'Honest question: how much of your time in bed is actually spent
 
-      Don't chase a perfect setup — a "good enough" room with a solid routine
-      beats a perfect room with a chaotic one.
+      asleep? If the answer is "not much", your bed has picked up some
 
-  - id: sleep.sc.caffeine-timing
-    status: DRAFT
-    type: message
-    title: Caffeine has a long tail
-    bct: ["4.1", "12.3"]
-    com_b: [psychological-capability]
-    reading_age: 9
-    channels: [in_app, push]
-    tone: practical
-    contraindications: [profile:shift-worker] # variant: sleep.shift.caffeine-on-shift
-    body: |
-      Caffeine hangs around far longer than the buzz does — roughly half of
-      your 3pm coffee is still in your system mid-evening.
+      side jobs — phone office, worry HQ, late-night cinema. This week,
 
-      You don't have to give it up. Just move it earlier: try keeping caffeine
-      to before lunchtime for two weeks and see what your diary says. Decaf,
-      herbal tea or just a hot drink ritual cover the afternoon habit.
+      let''s make it redundant at all of them. Bed keeps one job: sleep.
 
-  - id: sleep.sc.naps
-    status: DRAFT
-    type: message
-    title: Skip the nap, bank the sleepiness
-    bct: ["12.3", "4.1"]
-    com_b: [reflective-motivation]
-    reading_age: 9
-    channels: [in_app, push]
-    tone: autonomy-supportive
-    contraindications: [profile:shift-worker, flag:occupation-safety]
-    # Shift workers get sleep.shift.strategic-nap instead. Users flagged by the
-    # occupation safety screen keep naps as a safety tool — never discourage.
-    body: |
-      Sleepiness is fuel for tonight. A daytime nap spends some of that fuel
-      early, which can leave tonight's sleep shallower and more broken.
+      '
+- id: sleep.sc.same-wake-time
+  type: exercise
+  title: One anchor — the same wake time every day
+  bcttv1:
+  - code: '1.1'
+    label: Goal setting (behaviour)
+  - code: '8.3'
+    label: Habit formation
+  com_b:
+  - reflective-motivation
+  - automatic-motivation
+  reading_age: 9
+  channels:
+  - app
+  - push
+  tone: autonomy-supportive
+  contraindications:
+  - profile:shift-worker
+  body: 'If you change only one thing, make it this: get up at the same time
 
-      While you're rebuilding your sleep pattern, try to ride out the dip —
-      daylight, a walk, a glass of water — and save the sleepiness for bed.
+    every day — workdays, weekends, good nights and rough ones.
 
-      One exception matters more than any sleep habit: if you're fighting to
-      stay awake before driving or doing anything where dozing off is
-      dangerous, stop and rest first. Safety always wins.
 
-  - id: sleep.sc.morning-light
-    status: DRAFT
-    type: message
-    title: Morning light sets the clock
-    bct: ["4.1", "8.3"]
-    com_b: [physical-opportunity, automatic-motivation]
-    reading_age: 9
-    channels: [in_app, push]
-    tone: practical
-    contraindications: [profile:shift-worker] # variant: sleep.shift.light-timing
-    body: |
-      Daylight in the first hour after waking is the strongest signal your
-      body clock gets. It tells your rhythm "the day starts now" — which, hours
-      later, helps sleepiness arrive on time.
+    A steady wake time is the anchor your body clock sets itself by. Lie-ins
 
-      Ten minutes outside beats an hour by a bright window. Coffee on the
-      step, walking part of the commute, breakfast near the brightest window
-      you have — pick whichever is easiest to repeat.
+    after a bad night feel kind, but they push your rhythm later and make
 
-  - id: sleep.sc.clock-out-of-sight
-    status: DRAFT
-    type: message
-    title: Turn the clock around
-    bct: ["12.1", "12.3"]
-    com_b: [automatic-motivation]
-    reading_age: 9
-    channels: [in_app, push]
-    tone: practical
-    contraindications: []
-    related: [sleep.rescue.no-clocks]
-    body: |
-      Checking the time at night never helps. "3:47" instantly becomes maths —
-      hours left, hours lost — and maths is the opposite of drifting off.
+    the next night harder.
 
-      Turn the clock to the wall. Put the phone face-down out of reach. If
-      you wake in the night, the time is a piece of information you don't
-      need; your alarm will do its job either way.
 
-  - id: sleep.sc.nudge-winddown
-    status: DRAFT
-    type: message
-    title: (Push) Wind-down nudge
-    bct: ["7.1"]
-    com_b: [automatic-motivation]
-    reading_age: 9
-    channels: [push]
-    tone: autonomy-supportive
-    contraindications: []
-    body: |
-      Runway time. Lights lower, screens down — tonight's wind-down starts now.
-    tone_variants:
-      practical: |
-        Wind-down hour. Dim the lights, park the phone, pick your routine.
-      warm-challenge: |
-        You know how this film ends if you keep scrolling. Lights down, runway on.
+    Pick a wake time you can genuinely keep seven days a week. We''ll use it
 
-  - id: sleep.sc.nudge-consistency-win
-    status: DRAFT
-    type: message
-    title: (Push) Wake-time streak acknowledgement
-    bct: ["10.4", "15.1"]
-    com_b: [reflective-motivation]
-    reading_age: 9
-    channels: [push]
-    tone: autonomy-supportive
-    contraindications: []
-    body: |
-      Same wake time five days running — that's the anchor doing its job.
-      Your body clock notices repetition long before you feel the difference.
+    as the fixed end of your sleep window.
+
+    '
+- id: sleep.sc.leave-bed-when-awake
+  type: exercise
+  title: If you're wide awake, get up
+  bcttv1:
+  - code: '4.1'
+    label: Instruction on how to perform a behaviour
+  - code: '12.1'
+    label: Restructuring the physical environment
+  com_b:
+  - psychological-capability
+  - automatic-motivation
+  reading_age: 9
+  channels:
+  - app
+  - audio
+  tone: autonomy-supportive
+  contraindications: []
+  body: 'Lying in bed wide awake, willing yourself to sleep, teaches your brain
+
+    that bed is a place to be frustrated.
+
+
+    So here''s the move: if you''ve been awake long enough to feel annoyed
+
+    about it — don''t check the clock, the feeling is enough — get up. Go
+
+    somewhere dim and comfortable. Do something genuinely boring. Come back
+
+    to bed only when your eyes feel heavy.
+
+
+    You might do this three times in a night at first. That''s not failure —
+
+    that''s the practice working. Each round teaches your brain the same
+
+    simple lesson: bed is where sleeping happens.
+
+    '
+- id: sleep.sc.buffer-zone
+  type: exercise
+  title: The wind-down hour
+  bcttv1:
+  - code: '1.4'
+    label: Action planning
+  - code: '12.1'
+    label: Restructuring the physical environment
+  com_b:
+  - physical-opportunity
+  - automatic-motivation
+  reading_age: 9
+  channels:
+  - app
+  - push
+  tone: practical
+  contraindications:
+  - profile:shift-worker
+  body: 'Your mind needs a runway, not a cliff edge. Going straight from emails,
+
+    arguments or doom-scrolling into bed asks your brain to do an emergency
+
+    stop it isn''t built for.
+
+
+    Build a buffer: the last hour before bed is for low-effort, low-light,
+
+    pleasant things. Stretching, a paper book, a shower, quiet music, one of
+
+    the wind-down audios in this app.
+
+
+    It doesn''t matter much what you choose. It matters that it''s the same
+
+    most nights — repetition is what turns a routine into a cue.
+
+    '
+- id: sleep.sc.bedroom-environment
+  type: message
+  title: Cool, dark, quiet — close enough is good enough
+  bcttv1:
+  - code: '12.1'
+    label: Restructuring the physical environment
+  com_b:
+  - physical-opportunity
+  reading_age: 9
+  channels:
+  - app
+  tone: practical
+  contraindications: []
+  body: 'The sleep-friendly bedroom basics: cooler than the rest of your home,
+
+    as dark as you can get it, as quiet as you can make it.
+
+
+    Cheap fixes beat perfect ones: an eye mask beats new curtains, earplugs
+
+    beat moving house, cracking a window beats a smart thermostat.
+
+
+    Don''t chase a perfect setup — a "good enough" room with a solid routine
+
+    beats a perfect room with a chaotic one.
+
+    '
+- id: sleep.sc.caffeine-timing
+  type: message
+  title: Caffeine has a long tail
+  bcttv1:
+  - code: '4.1'
+    label: Instruction on how to perform a behaviour
+  - code: '12.3'
+    label: Avoidance/reducing exposure to cues for the behaviour
+  com_b:
+  - psychological-capability
+  reading_age: 9
+  channels:
+  - app
+  - push
+  tone: practical
+  contraindications:
+  - profile:shift-worker
+  body: 'Caffeine hangs around far longer than the buzz does — roughly half of
+
+    your 3pm coffee is still in your system mid-evening.
+
+
+    You don''t have to give it up. Just move it earlier: try keeping caffeine
+
+    to before lunchtime for two weeks and see what your diary says. Decaf,
+
+    herbal tea or just a hot drink ritual cover the afternoon habit.
+
+    '
+- id: sleep.sc.naps
+  type: message
+  title: Skip the nap, bank the sleepiness
+  bcttv1:
+  - code: '12.3'
+    label: Avoidance/reducing exposure to cues for the behaviour
+  - code: '4.1'
+    label: Instruction on how to perform a behaviour
+  com_b:
+  - reflective-motivation
+  reading_age: 9
+  channels:
+  - app
+  - push
+  tone: autonomy-supportive
+  contraindications:
+  - profile:shift-worker
+  - flag:occupation-safety
+  body: 'Sleepiness is fuel for tonight. A daytime nap spends some of that fuel
+
+    early, which can leave tonight''s sleep shallower and more broken.
+
+
+    While you''re rebuilding your sleep pattern, try to ride out the dip —
+
+    daylight, a walk, a glass of water — and save the sleepiness for bed.
+
+
+    One exception matters more than any sleep habit: if you''re fighting to
+
+    stay awake before driving or doing anything where dozing off is
+
+    dangerous, stop and rest first. Safety always wins.
+
+    '
+- id: sleep.sc.morning-light
+  type: message
+  title: Morning light sets the clock
+  bcttv1:
+  - code: '4.1'
+    label: Instruction on how to perform a behaviour
+  - code: '8.3'
+    label: Habit formation
+  com_b:
+  - physical-opportunity
+  - automatic-motivation
+  reading_age: 9
+  channels:
+  - app
+  - push
+  tone: practical
+  contraindications:
+  - profile:shift-worker
+  body: 'Daylight in the first hour after waking is the strongest signal your
+
+    body clock gets. It tells your rhythm "the day starts now" — which, hours
+
+    later, helps sleepiness arrive on time.
+
+
+    Ten minutes outside beats an hour by a bright window. Coffee on the
+
+    step, walking part of the commute, breakfast near the brightest window
+
+    you have — pick whichever is easiest to repeat.
+
+    '
+- id: sleep.sc.clock-out-of-sight
+  type: message
+  title: Turn the clock around
+  bcttv1:
+  - code: '12.1'
+    label: Restructuring the physical environment
+  - code: '12.3'
+    label: Avoidance/reducing exposure to cues for the behaviour
+  com_b:
+  - automatic-motivation
+  reading_age: 9
+  channels:
+  - app
+  - push
+  tone: practical
+  contraindications: []
+  body: 'Checking the time at night never helps. "3:47" instantly becomes maths —
+
+    hours left, hours lost — and maths is the opposite of drifting off.
+
+
+    Turn the clock to the wall. Put the phone face-down out of reach. If
+
+    you wake in the night, the time is a piece of information you don''t
+
+    need; your alarm will do its job either way.
+
+    '
+- id: sleep.sc.nudge-winddown
+  type: message
+  title: (Push) Wind-down nudge
+  bcttv1:
+  - code: '7.1'
+    label: Prompts/cues
+  com_b:
+  - automatic-motivation
+  reading_age: 9
+  channels:
+  - push
+  tone: autonomy-supportive
+  contraindications: []
+  body: 'Runway time. Lights lower, screens down — tonight''s wind-down starts now.
+
+    '
+  tone_variants:
+    practical: 'Wind-down hour. Dim the lights, park the phone, pick your routine.
+
+      '
+    warm-challenge: 'You know how this film ends if you keep scrolling. Lights down, runway on.
+
+      '
+- id: sleep.sc.nudge-consistency-win
+  type: message
+  title: (Push) Wake-time streak acknowledgement
+  bcttv1:
+  - code: '10.4'
+    label: Social reward
+  - code: '15.1'
+    label: Verbal persuasion about capability
+  com_b:
+  - reflective-motivation
+  reading_age: 9
+  channels:
+  - push
+  tone: autonomy-supportive
+  contraindications: []
+  body: 'Same wake time five days running — that''s the anchor doing its job.
+
+    Your body clock notices repetition long before you feel the difference.
+
+    '

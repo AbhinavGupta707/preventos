@@ -83,5 +83,5 @@ atom_shape:
   framing: list # subset of framing.allowed
   contraindications: list # subset of contraindications_defined
   status: draft # every atom individually stamped
-  body: markdown # user-facing copy; {{slot}} variables allowed
+  body: markdown # user-facing copy; {slot} variables allowed
   slots: map # slot name -> description, optional

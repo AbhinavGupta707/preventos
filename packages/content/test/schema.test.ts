@@ -95,7 +95,7 @@ describe("WP4.2m type vocabulary", () => {
     expect(rawAtomSchema.safeParse({ ...jitai, trigger_window: undefined }).success).toBe(false);
   });
 
-  it("outcome_prompt requires outcome_ref and options", () => {
+  it("outcome_prompt requires outcome_ref; options are optional (free-response measures)", () => {
     const prompt = {
       id: "smoking.outcomes.check-7-day",
       type: "outcome_prompt",
@@ -106,7 +106,7 @@ describe("WP4.2m type vocabulary", () => {
       com_b: ["reflective-motivation"],
     };
     expect(rawAtomSchema.safeParse(prompt).success).toBe(true);
-    expect(rawAtomSchema.safeParse({ ...prompt, options: undefined }).success).toBe(false);
+    expect(rawAtomSchema.safeParse({ ...prompt, options: undefined }).success).toBe(true);
     expect(rawAtomSchema.safeParse({ ...prompt, outcome_ref: undefined }).success).toBe(false);
   });
 

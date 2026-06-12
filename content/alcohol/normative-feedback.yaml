@@ -1,112 +1,115 @@
 meta:
   pack: alcohol
-  file: normative-feedback
-  status: DRAFT
-  version: 0.1.0
-  signoff: null
-  notes: >
-    Personalised normative feedback ("people your age in your area actually
-    drink..."). Templates with data slots — a real normative dataset must be
-    wired before activation; slots without data must suppress the whole atom,
-    never render placeholders.
-  display-rules:
-    - >
-      BOOMERANG GUARD: descriptive norms are only shown when the user's intake
-      is ABOVE the reference norm. Telling lighter drinkers they drink less
-      than average licenses an increase. Below-norm users get the affirmation
-      atom (norm.below.affirm) with no comparative figures.
-    - "Norms are descriptive, never moralising. The fact does the work; copy stays flat."
-    - "All comparative atoms contraindicated for dependence-flagged users (no moderation framing)."
-    - "Data provenance (survey, year, n) must be available behind an info tap."
+  programme: Steady
+  module: normative-feedback
+  status: draft
+  schema: preventos.content-atom/0.1
+  version: "0.1.0"
+  language: en-GB
+  defaults:
+    vertical: alcohol
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    contraindications: [dependence-flagged]
+  # Personalised normative feedback ("people your age in your area actually
+  # drink..."). Templates with data slots — a real normative dataset must be
+  # wired before activation; slots without data must suppress the whole atom,
+  # never render placeholders.
+  # Display rules:
+  # BOOMERANG GUARD: descriptive norms are only shown when the user's intake
+  # is ABOVE the reference norm. Telling lighter drinkers they drink less
+  # than average licenses an increase. Below-norm users get the affirmation
+  # atom (norm.below.affirm) with no comparative figures.
+  # Norms are descriptive, never moralising. The fact does the work; copy stays flat.
+  # All comparative atoms contraindicated for dependence-flagged users (no moderation framing).
+  # Data provenance (survey, year, n) must be available behind an info tap.
 
 atoms:
-  # ---- Perception vs reality --------------------------------------------------
-  - id: steady.norm.perception-check
-    kind: feedback-template
-    surface: norms.perception
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Perception vs reality
+  - id: alcohol.norm.perception-check
+    type: message
     body: >
       Before we show you the numbers — a guess: out of 10 people your age in
       {{region_label}}, how many do you reckon drank more than {{week_units}}
       units last week?
+    slots: [region_label, week_units]
+    bcttv1: [{ code: "2.3", label: "Self-monitoring of behaviour" }]
+    com_b: [psychological-capability]
 
-  - id: steady.norm.perception-reveal
-    kind: feedback-template
-    surface: norms.perception
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.norm.perception-reveal
+    type: message
     body: >
       You guessed {{user_guess}} in 10. The survey data says about
       {{actual_above_count}} in 10. Most people picture everyone else drinking
       more than they really do — the "everyone drinks like this" feeling is
       usually the loudest 20% of the room.
+    slots: [user_guess, actual_above_count]
+    bcttv1: [{ code: "6.2", label: "Social comparison" }]
+    com_b: [reflective-motivation]
 
-  # ---- Above-norm comparative (the core normative atom) -----------------------
-  - id: steady.norm.above.weekly
-    kind: feedback-template
-    surface: norms.comparison
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Above-norm comparative (the core normative atom)
+  - id: alcohol.norm.above.weekly
+    type: message
     body: >
       Your last 4 weeks averaged {{avg_week_units}} units. For
       {{age_band}}-year-olds in {{region_label}}, the typical week is about
       {{norm_week_units}} units — meaning you're drinking more than around
       {{percentile}}% of people like you. Not a verdict — just a truer mirror
       than a night out provides.
+    slots: [avg_week_units, age_band, region_label, norm_week_units, percentile]
+    bcttv1: [{ code: "6.2", label: "Social comparison" }]
+    com_b: [reflective-motivation]
 
-  - id: steady.norm.above.heavy-days
-    kind: feedback-template
-    surface: norms.comparison
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.norm.above.heavy-days
+    type: message
     body: >
       Heavy days (6+ units in a day): you logged {{user_heavy_days}} last
       month. The typical figure for your age group is {{norm_heavy_days}}.
       It's the pattern, not any single night, that this is pointing at.
+    slots: [user_heavy_days, norm_heavy_days]
+    bcttv1: [{ code: "6.2", label: "Social comparison" }]
+    com_b: [reflective-motivation]
 
-  - id: steady.norm.above.reframe
-    kind: feedback-template
-    surface: norms.comparison
-    audience: all
-    contraindications: [dependence-flagged]
+  - id: alcohol.norm.above.reframe
+    type: message
     body: >
       Worth knowing: "{{percentile}}th percentile" isn't a character
       reference. It mostly means your routines — the after-work pint, the
       Friday pattern — are doing the deciding. Routines can be redesigned;
       that's literally what this app is for.
+    slots: [percentile]
+    bcttv1: [{ code: "8.2", label: "Behaviour substitution" }]
+    com_b: [reflective-motivation]
 
-  # ---- Below-norm path (NO comparative figures — boomerang guard) -------------
-  - id: steady.norm.below.affirm
-    kind: feedback-template
-    surface: norms.comparison
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Below-norm path (NO comparative figures — boomerang guard)
+  - id: alcohol.norm.below.affirm
+    type: message
     body: >
       We looked at your pattern against the survey data and there's nothing
       here to flag. Whatever you're doing is working — the diary will tell
       you if that changes.
+    bcttv1: [{ code: "10.1", label: "Material incentive (outcome)" }]
+    com_b: [automatic-motivation]
 
-  # ---- Spend mirror -------------------------------------------------------------
-  - id: steady.norm.spend.mirror
-    kind: feedback-template
-    surface: norms.spend
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Spend mirror
+  - id: alcohol.norm.spend.mirror
+    type: message
     body: >
       At your logged pace, alcohol is costing you roughly £{{est_month_spend}}
       a month — about £{{est_year_spend}} a year. Against your savings goal
       ({{savings_goal_label}}), that's {{goal_fraction}} of it, every year,
       on autopilot.
+    slots: [est_month_spend, est_year_spend, savings_goal_label, goal_fraction]
+    bcttv1: [{ code: "5.1", label: "Information on consequences" }]
+    com_b: [reflective-motivation]
 
-  # ---- Provenance ----------------------------------------------------------------
-  - id: steady.norm.provenance
-    kind: microcopy
-    surface: norms.info
-    audience: all
-    contraindications: []
+  # ---- Provenance
+  - id: alcohol.norm.provenance
+    type: microcopy
     body: >
       Where these numbers come from: {{data_source_name}} ({{data_source_year}},
       {{data_source_n}} respondents), matched to your age band and region.
       Self-reported surveys under-count a bit — the real norms are, if
       anything, lower.
+    slots: [data_source_name, data_source_year, data_source_n]

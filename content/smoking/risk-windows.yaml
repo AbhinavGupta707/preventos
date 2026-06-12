@@ -12,7 +12,7 @@ meta:
   programme: QuitKit
   module: risk-windows
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "PRD §5.1 [D] risk-window JITAI: learned windows incl. first-cigarette time, commute, after-work, payday, post-meal, drinking occasions"

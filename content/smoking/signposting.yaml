@@ -12,7 +12,7 @@ meta:
   programme: QuitKit
   module: signposting
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "PRD §5.1 escalation: pregnancy → specialist services; MH deterioration → mood pathway/GP; chest-pain-type red flags → urgent-care signposting"

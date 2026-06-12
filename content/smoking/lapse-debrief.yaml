@@ -8,7 +8,7 @@ meta:
   programme: QuitKit
   module: lapse-debrief
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "Relapse-prevention model (Marlatt; public literature): abstinence violation effect, lapse vs relapse"

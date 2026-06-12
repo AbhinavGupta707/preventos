@@ -9,7 +9,7 @@ meta:
   programme: QuitKit
   module: cravings-menus
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "NHS Better Health: Quit Smoking (public guidance): craving coping ideas, 4Ds"

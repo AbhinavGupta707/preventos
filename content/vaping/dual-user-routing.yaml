@@ -1,47 +1,52 @@
-# Exhale — dual-user routing copy (WPV.2c)
-# STATUS: DRAFT — not user-deliverable without compliance/ sign-off entry.
-# PRD §5.2 / plan §2.2: dual users (vape + smoke) route into QuitKit (5.1)
-# logic — smoking machinery leads, vaping is handled inside that plan. The
-# routing *rules* live in the WPV.2 rules half; this file is every piece of
-# user-facing copy the routing needs. Detection happens at Exhale intake.
-# Contraindication: dual_user_unrouted blocks all taper content (puff budget,
-# strength ladder) until routing resolves — tapering nicotine while still
-# smoking sends users in circles.
-pack: vaping
-file: dual-user-routing
-status: DRAFT
-version: 0.1.0
+meta:
+  pack: vaping
+  programme: Exhale
+  module: dual-user-routing
+  status: draft
+  schema: preventos.content-atom/0.1
+  version: "0.1.0"
+  language: en-GB
+  defaults:
+    vertical: vaping
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    contraindications: []
 
 atoms:
-  - id: vap-dual-001
-    type: flow
+  - id: vaping.dualuser.intake-detection
+    type: screen_script
     title: "Dual-use detection at intake"
-    audience: adult
-    framing: [autonomy]
-    contraindications: []
-    status: draft
-    steps:
+    questions:
       - key: q_smoke
-        copy: "Quick one — do you also smoke cigarettes at all, even occasionally?"
-        options: ["no, just vape", "yes, sometimes", "yes, daily"]
-      - key: q_pattern
-        when: q_smoke != "no, just vape"
-        copy: "How do the two fit together for you?"
+        prompt: "Quick one — do you also smoke cigarettes at all, even occasionally?"
         options:
-          - "vape mostly, smoke socially / when drinking"
-          - "smoke mostly, vape where I can't smoke"
-          - "honestly, pretty evenly mixed"
-      - key: route
-        when: q_smoke != "no, just vape"
-        copy: routes to vap-dual-002 (routing explanation)
+          - id: no-just-vape
+            label: "no, just vape"
+          - id: yes-sometimes
+            label: "yes, sometimes"
+          - id: yes-daily
+            label: "yes, daily"
+      - key: q_pattern
+        when: "q_smoke != 'no-just-vape'"
+        prompt: "How do the two fit together for you?"
+        options:
+          - id: vape-mostly-smoke-social
+            label: "vape mostly, smoke socially / when drinking"
+          - id: smoke-mostly-vape-restricted
+            label: "smoke mostly, vape where I can't smoke"
+          - id: evenly-mixed
+            label: "honestly, pretty evenly mixed"
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "7.1"
+        label: "Prompt/cues"
+    com_b:
+      - reflective-motivation
 
-  - id: vap-dual-002
-    type: coaching_card
+  - id: vaping.dualuser.why-start-with-cigarettes
+    type: info_card
     title: "Why we're starting with the cigarettes"
-    audience: adult
-    framing: [autonomy, performance, savings]
-    contraindications: []
-    status: draft
     body: |
       Since both are in the picture, we'll run your plan through our smoking
       programme — with the vaping handled inside it. Here's the honest
@@ -50,21 +55,23 @@ atoms:
       Cigarettes and vapes feed the same nicotine loop, so two separate
       plans just chase each other in circles. One plan that sees both wins.
       And the order matters: getting the cigarettes out first is the bigger
-      win for your fitness, skin, breath — and your wallet ({{combined_spend}}
+      win for your fitness, skin, breath — and your wallet ({combined_spend}
       a week across both, by your numbers).
 
       Nothing you told us gets re-asked. Same app, same coach — the plan
       just gets smarter about you.
     slots:
-      combined_spend: weekly combined cigarette + vape spend from savings rail
+      - combined_spend
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "5.1"
+        label: "Information about health consequences"
+    com_b:
+      - reflective-motivation
 
-  - id: vap-dual-003
-    type: coaching_card
+  - id: vaping.dualuser.vape-role-during-smoking-quit
+    type: info_card
     title: "Your vape's role during the smoking quit"
-    audience: adult
-    framing: [autonomy]
-    contraindications: []
-    status: draft
     body: |
       While we work on the cigarettes, the vape isn't today's battle. For
       now it's a holding position — many people lean on it through the
@@ -75,14 +82,16 @@ atoms:
       *increase* the strength you buy. Once the cigarettes are gone and
       stable — usually a few weeks after your quit date — the vaping plan
       unlocks: budget, ladder, the lot. One hill at a time.
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "1.4"
+        label: "Action planning"
+    com_b:
+      - psychological-capability
 
-  - id: vap-dual-004
-    type: coaching_card
+  - id: vaping.dualuser.social-smoker-mostly-vaper
+    type: info_card
     title: "Social smoker, mostly vaper (light-pattern variant)"
-    audience: adult
-    framing: [autonomy, appearance]
-    contraindications: []
-    status: draft
     body: |
       Your pattern — vaping daily, cigarettes mostly social — gets a
       targeted version: we put if-then plans around your smoking occasions
@@ -93,16 +102,18 @@ atoms:
       quietly re-anchoring the daily habit, and they'd undo your taper's
       momentum with it. The Friday-evening check-in is where we hold that
       line.
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "1.2"
+        label: "Problem solving"
+    com_b:
+      - social-opportunity
 
-  - id: vap-dual-005
-    type: script
+  - id: vaping.dualuser.handover-cigarettes-stable
+    type: message
     title: "Handover moment: cigarettes stable, vaping plan unlocks (coach copy)"
-    audience: adult
-    framing: [autonomy, performance, savings]
-    contraindications: []
-    status: draft
     body: |
-      {{smoke_free_days}} days without a cigarette — that's the hard
+      {smoke_free_days} days without a cigarette — that's the hard
       yards done, and you did them.
 
       The vape carried some of that load, credit where due. Now it's the
@@ -113,15 +124,17 @@ atoms:
 
       Want to look at it now, or shall I check back in a week?
     slots:
-      smoke_free_days: days since last cigarette from relapse engine
+      - smoke_free_days
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "2.2"
+        label: "Feedback on behaviour"
+    com_b:
+      - reflective-motivation
 
-  - id: vap-dual-006
-    type: coaching_card
+  - id: vaping.dualuser.smoking-resumed-mid-taper
+    type: info_card
     title: "Started smoking again mid-taper (re-routing copy)"
-    audience: adult
-    framing: [autonomy]
-    contraindications: []
-    status: draft
     body: |
       You logged some cigarettes — thank you for the honesty; that's the
       move that keeps the plan real.
@@ -131,3 +144,9 @@ atoms:
       tapering the vape while smoke is back in the mix just moves nicotine
       between pockets. Your days won stand. We sort the cigarettes, then
       pick the ladder back up exactly where you left it.
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "1.2"
+        label: "Problem solving"
+    com_b:
+      - psychological-capability
