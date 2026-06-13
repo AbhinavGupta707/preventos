@@ -41,7 +41,6 @@ Statuses: open → claimed(session/branch) → in_review(PR) → done(evidence).
 ## Session log
 - 2026-06-12 · spine session: plan v3 adopted; WP1.1a built and verified; repo initialized.
 - 2026-06-12 · V.4c session (worktree): Nightshift content pack drafted under wellbeing framing (E16); claims blocklist seeded in content/sleep/README.md pending WP4.2 lint/WP10.10 register.
-<<<<<<< HEAD
 - 2026-06-12 · SVC session (worktree wp/svc-services): platform services assembled (apps/api, apps/worker, tools/journey-sim); Demo A loop proven end-to-end over HTTP against Postgres.
 - 2026-06-12 · 4.2m session (worktree): content pipeline + canonical migration + instruments registry; ratchet emptied; claims lint live in CI.
 - 2026-06-13 · WS7 session (worktree wp/ws7-safety-subsystem): `@preventos/safety` classifier + crisis flows + escalation queue, `apps/crisis-static`, WP7.4 red-team harness/ratchet. Tier-1 recall 1.00 on 843 cases; runtime-proven. Assumption: corpus tier {0,1,2} adopted; resource phone numbers flagged for G3.
