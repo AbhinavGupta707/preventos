@@ -45,6 +45,11 @@ const RIGHTING_REFLEX_PATTERNS: readonly RegExp[] = [
   /\blike i (said|told you)\b/,
   /\bwhy did(n'?t)? you\b/,
   /\bdon'?t you (care|want|realise|realize)\b/,
+  // Bare imperatives that command rather than evoke ("Stop scrolling.", "Try
+  // meditation."), at the start of the reply or a sentence. The verb list is
+  // deliberately tight (unambiguous commands) to avoid flagging legitimate
+  // open questions or reflections.
+  /(^|[.!?]\s)(stop|try|start|avoid|quit|practice)\b/,
 ];
 
 const REFLECTION_MARKERS: readonly string[] = [

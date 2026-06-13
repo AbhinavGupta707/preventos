@@ -75,4 +75,16 @@ describe("WP6.2 — coach MI-adherence eval (Fake provider, no key)", () => {
     expect(result.reply).toBe(good.reply);
     expect(result.score.adherent).toBe(true);
   });
+
+  it("EVERY corpus reply reaches the rubric verbatim — no case is silently bypassed or substituted", async () => {
+    // Guards the eval against a future claims-fence rule that would substitute a
+    // corpus reply (post-filter) or a classifier change that would crisis-bypass
+    // it: either would score a fallback message and distort the rate undetected.
+    const provider = new FakeCoachProvider(corpusResponder(MI_CORPUS));
+    const report = await runMiEval({ provider, claimsFences: fences });
+    for (const c of MI_CORPUS) {
+      const result = report.results.find((r) => r.id === c.id)!;
+      expect(result.reply, `${c.id} must pass through the pipeline unchanged`).toBe(c.reply);
+    }
+  });
 });

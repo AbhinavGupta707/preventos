@@ -7,10 +7,16 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { forwardFunnelEvent } from "../../../lib/marketing";
 
+// Mirrors the authoritative apps/api funnelEventSchema so the NDJSON fallback path
+// enforces the same allow-list (coded scalars only, ≤10 keys) — the privacy
+// control holds even when the domain store is unreachable. See the privacy audit.
 const eventSchema = z.object({
   name: z.enum(["waitlist_joined", "savings_calculated", "sleep_debt_calculated", "programme_page_cta_clicked"]),
   path: z.string().max(200),
-  properties: z.record(z.union([z.string().max(100), z.number()])).default({}),
+  properties: z
+    .record(z.union([z.string().max(100), z.number()]))
+    .default({})
+    .refine((p) => Object.keys(p).length <= 10, "too many properties"),
 });
 
 export async function POST(request: Request): Promise<NextResponse> {

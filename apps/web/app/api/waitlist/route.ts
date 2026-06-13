@@ -14,8 +14,11 @@ import { forwardWaitlist } from "../../../lib/marketing";
 const parsedHops = Number.parseInt(process.env["RATE_LIMIT_TRUSTED_PROXIES"] ?? "1", 10);
 const TRUSTED_PROXY_HOPS = Number.isNaN(parsedHops) ? 1 : parsedHops;
 
+// Mirrors the authoritative apps/api waitlistSignupSchema so the NDJSON fallback
+// path can never persist a record the domain store would reject (email ≤254 per
+// RFC 5321). See compliance/privacy/marketing-funnel-privacy-audit.md.
 const signupSchema = z.object({
-  email: z.string().trim().email("Please enter a valid email address."),
+  email: z.string().trim().email("Please enter a valid email address.").max(254),
   programme: z.enum(["quitkit", "exhale", "steady", "nightshift", "unsure"]).default("unsure"),
   website: z.literal("").or(z.undefined()), // honeypot: any value rejects
 });
