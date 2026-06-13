@@ -8,7 +8,7 @@ meta:
   programme: QuitKit
   module: triggers
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "NCSCT standard treatment programme (public): identifying smoking cues, coping planning"
@@ -33,32 +33,34 @@ atoms:
     evidence_note: "One-tap trigger logging (PRD §5.1 [TS]); options come from the taxonomy atom."
 
   - id: smoking.triggers.taxonomy
-    type: info_card
+    type: screen_script
     title: Common triggers
-    options:
-      - { key: coffee, label: "Coffee or tea" }
-      - { key: alcohol, label: "A drink" }
-      - { key: after-meal, label: "After eating" }
-      - { key: stress, label: "Stress" }
-      - { key: boredom, label: "Boredom" }
-      - { key: driving, label: "Driving" }
-      - { key: work-break, label: "Break at work" }
-      - { key: phone, label: "Scrolling my phone" }
-      - { key: others-smoking, label: "Seeing someone smoke" }
-      - { key: morning, label: "First thing in the morning" }
-      - { key: phone-call, label: "On a phone call" }
-      - { key: waiting, label: "Waiting around" }
-      - { key: argument, label: "After an argument" }
-      - { key: other, label: "Something else" }
-    body: >
-      Most cravings have a trigger. Spot yours and you can plan for them.
+    questions:
+      - key: trigger
+        prompt: >
+          Most cravings have a trigger. Spot yours and you can plan for them.
+        options:
+          - { id: coffee, label: "Coffee or tea" }
+          - { id: alcohol, label: "A drink" }
+          - { id: after-meal, label: "After eating" }
+          - { id: stress, label: "Stress" }
+          - { id: boredom, label: "Boredom" }
+          - { id: driving, label: "Driving" }
+          - { id: work-break, label: "Break at work" }
+          - { id: phone, label: "Scrolling my phone" }
+          - { id: others-smoking, label: "Seeing someone smoke" }
+          - { id: morning, label: "First thing in the morning" }
+          - { id: phone-call, label: "On a phone call" }
+          - { id: waiting, label: "Waiting around" }
+          - { id: argument, label: "After an argument" }
+          - { id: other, label: "Something else" }
     bcttv1:
       - { code: "2.3", label: "Self-monitoring of behaviour" }
       - { code: "1.2", label: "Problem solving" }
     com_b: [psychological-capability]
     evidence_note: >
       Trigger taxonomy doubles as the logging option set and the risk-window
-      learning vocabulary (rules layer reads the keys).
+      learning vocabulary (rules layer reads the option ids).
 
   - id: smoking.triggers.top3-reveal
     type: message

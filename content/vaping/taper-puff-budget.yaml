@@ -1,22 +1,22 @@
-# Exhale — puff-budget taper content (WPV.2c)
-# STATUS: DRAFT — not user-deliverable without compliance/ sign-off entry.
-# Puff budgets are the volume axis of tapering (the other axis is nicotine
-# strength — see taper-strength-ladder.yaml). Numeric step-down rules and
-# adherence-aware re-planning live in the WPV.2 rules half; this file is the
-# user-facing copy and the plan-template shapes those rules fill in.
-pack: vaping
-file: taper-puff-budget
-status: DRAFT
-version: 0.1.0
+meta:
+  pack: vaping
+  programme: Exhale
+  module: taper-puff-budget
+  status: draft
+  schema: preventos.content-atom/0.1
+  version: "0.1.0"
+  language: en-GB
+  defaults:
+    vertical: vaping
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    contraindications: []
 
 atoms:
-  - id: vap-budget-001
-    type: coaching_card
+  - id: vaping.budget.how-budget-works
+    type: info_card
     title: "How a puff budget works"
-    audience: adult
-    framing: [autonomy, savings]
-    contraindications: [dual_user_unrouted]
-    status: draft
     body: |
       A puff budget turns "vape less" — which is vague and loseable — into a
       daily number you can actually win.
@@ -28,45 +28,36 @@ atoms:
 
       The budget is a tool, not a judge. Going over doesn't reset anything —
       it's data that tells us where the plan needs reinforcing.
+    contraindications:
+      - dual_user_unrouted
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "1.1"
+        label: "Goal setting (behaviour)"
+    com_b:
+      - reflective-motivation
 
-  - id: vap-budget-002
+  - id: vaping.budget.plan-shape
     type: plan_template
     title: "Puff-budget plan shape"
-    audience: adult
-    framing: [autonomy]
-    contraindications: [dual_user_unrouted]
-    status: draft
-    notes: filled by WPV.2 taper rules; copy strings below are the user-visible surface
-    fields:
-      baseline_daily_puffs: integer # measured over a 3-day observation window, not self-estimated
-      step_percent: integer # default 10–15% per step, user-tunable
-      step_interval_days: integer # default 7, user-tunable
-      floor_before_quit_day: integer # budget level at which a quit date is proposed
-      hard_windows: list # user-nominated times where budget is pre-reserved
-    copy:
-      observation_intro: |
-        First 3 days: just vape normally and log it. No targets yet — we
-        need your true baseline, not your hopeful one. Plans built on real
-        numbers survive; plans built on guilt don't.
-      plan_proposal: |
-        Your baseline is about {{baseline_daily_puffs}} puffs a day. Here's
-        the proposed path: down {{step_percent}}% every {{step_interval_days}}
-        days. That pace is deliberately unheroic — each step should feel
-        like a stretch, not a cliff. You can tune both numbers.
-      daily_status: |
-        Today's budget: {{remaining}} of {{today_budget}} left.
-      step_down_day: |
-        Step-down day. New daily budget: {{today_budget}} (was
-        {{previous_budget}}). You've already proven you can live at the old
-        level — this is the same move again, one notch lower.
+    body: |
+      Filled by WPV.2 taper rules; copy strings below are the user-visible surface.
+      Fields: baseline_daily_puffs (integer), step_percent (integer),
+      step_interval_days (integer), floor_before_quit_day (integer),
+      hard_windows (list).
+    contraindications:
+      - dual_user_unrouted
+    tone: autonomy-supportive
+    evidence_note: "Baseline measured over 3-day observation window, not self-estimated; step_percent default 10–15% per step, user-tunable; step_interval_days default 7, user-tunable; hard_windows user-nominated times where budget is pre-reserved."
+    bcttv1:
+      - code: "1.1"
+        label: "Goal setting (behaviour)"
+    com_b:
+      - reflective-motivation
 
-  - id: vap-budget-003
-    type: coaching_card
+  - id: vaping.budget.spending-well
+    type: info_card
     title: "Spending your budget well"
-    audience: adult
-    framing: [autonomy, performance]
-    contraindications: []
-    status: draft
     body: |
       Not all puffs cost the same. Autopilot puffs (kettle's boiling, screen
       loading) give you almost nothing — you barely notice them happening.
@@ -74,17 +65,19 @@ atoms:
 
       Strategy: spend your budget like money. Cut the autopilot puffs first —
       you won't miss them — and keep cover for your genuinely hard windows
-      ({{hard_windows}}). Same budget, much easier day.
+      ({hard_windows}). Same budget, much easier day.
     slots:
-      hard_windows: user-nominated hard windows from plan
+      - hard_windows
+    tone: practical
+    bcttv1:
+      - code: "1.2"
+        label: "Problem solving"
+    com_b:
+      - psychological-capability
 
-  - id: vap-budget-004
-    type: coaching_card
+  - id: vaping.budget.over-budget-today
+    type: info_card
     title: "Over budget today — read this, don't spiral"
-    audience: adult
-    framing: [autonomy]
-    contraindications: []
-    status: draft
     body: |
       You went over. Here's what that does to your progress: nothing, by
       itself. One over-budget day is a data point, not a verdict — the plan
@@ -93,17 +86,19 @@ atoms:
       What we do with it: look at *where* the extra puffs went. A rough day
       at work? A social evening? That's the plan telling us which window
       needs reinforcement before the next step down. Days won so far:
-      {{days_won}} — still yours, still counting.
+      {days_won} — still yours, still counting.
     slots:
-      days_won: streak from universal relapse engine
+      - days_won
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "2.3"
+        label: "Self-monitoring of behaviour"
+    com_b:
+      - reflective-motivation
 
-  - id: vap-budget-005
-    type: coaching_card
+  - id: vaping.budget.repeatedly-over
+    type: info_card
     title: "Repeatedly over? The plan adjusts, not you"
-    audience: adult
-    framing: [autonomy]
-    contraindications: []
-    status: draft
     body: |
       Three over-budget days in a row means the plan is mis-sized, not that
       you're failing. The fix is mechanical: we hold this step for another
@@ -113,42 +108,52 @@ atoms:
       What we don't do: pretend the slips didn't happen, or tear up the plan
       in disgust. The budget that gets you there is the one you can actually
       keep.
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "1.2"
+        label: "Problem solving"
+    com_b:
+      - reflective-motivation
 
-  - id: vap-budget-006
-    type: coaching_card
+  - id: vaping.budget.ttfv-moving
+    type: info_card
     title: "Your TTFV is moving (milestone copy)"
-    audience: adult
-    framing: [performance, autonomy]
-    contraindications: []
-    status: draft
     body: |
       Quiet milestone worth noticing: your first vape of the day has moved
-      from {{ttfv_start}} to {{ttfv_now}} after waking.
+      from {ttfv_start} to {ttfv_now} after waking.
 
       That number is the closest thing to a dependence gauge that exists,
       and yours is heading the right way. The morning is becoming yours
       again — coffee first, world first, vape later. Eventually: not at all.
     slots:
-      ttfv_start: time-to-first-vape at baseline
-      ttfv_now: current time-to-first-vape
+      - ttfv_start
+      - ttfv_now
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "2.2"
+        label: "Feedback on behaviour"
+    com_b:
+      - reflective-motivation
 
-  - id: vap-budget-007
-    type: coaching_card
+  - id: vaping.budget.approaching-floor
+    type: info_card
     title: "Approaching the floor: choosing your quit day"
-    audience: adult
-    framing: [autonomy, savings, appearance]
-    contraindications: []
-    status: draft
     body: |
-      You're down to {{today_budget}} puffs a day — from {{baseline_daily_puffs}}.
+      You're down to {today_budget} puffs a day — from {baseline_daily_puffs}.
       At this level, the last step is smaller than any step you've already
       taken. You've done the hard part; this is the victory lap.
 
       Pick a quit day in the next two weeks. You'll keep every tool — the
       menus, the rescue button, the debriefs all stay. The only thing that
       changes is the budget reads zero, the counter reads "days won", and
-      the {{weekly_spend}} a week stops leaving your account for good.
+      the {weekly_spend} a week stops leaving your account for good.
     slots:
-      today_budget: current daily budget
-      baseline_daily_puffs: baseline from plan
-      weekly_spend: computed weekly vape spend from savings rail
+      - today_budget
+      - baseline_daily_puffs
+      - weekly_spend
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "1.1"
+        label: "Goal setting (behaviour)"
+    com_b:
+      - reflective-motivation

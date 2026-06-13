@@ -8,7 +8,7 @@ meta:
   programme: QuitKit
   module: onboarding
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "NCSCT standard treatment programme (public guidance): quit-date setting, abrupt cessation, not-a-puff rule"
@@ -68,9 +68,9 @@ atoms:
     evidence_note: "NCSCT: set a quit date within ~2 weeks of the decision to quit."
 
   - id: smoking.onboarding.prep-checklist
-    type: checklist
+    type: exercise
     title: Get ready for quit day
-    items:
+    steps:
       - "Tell people you trust. Ask them to back you up."
       - "Get rid of cigarettes, lighters and ashtrays the night before."
       - "Plan your stop-smoking aid. A patch plus gum or spray works well."
@@ -105,7 +105,6 @@ atoms:
   - id: smoking.onboarding.dependence-check-intro
     type: message
     title: Two quick questions
-    instrument_ref: hsi
     body: >
       Two quick questions about your smoking.
       They help us shape your plan. There are no wrong answers.

@@ -12,7 +12,7 @@ meta:
   programme: QuitKit
   module: nrt
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "NCSCT (public): combination NRT, common usage errors (underdosing, stopping early), gum chew-and-park technique"

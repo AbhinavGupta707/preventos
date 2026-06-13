@@ -8,7 +8,7 @@ meta:
   programme: QuitKit
   module: identity
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "PRD §5.1 [D]: identity-shift programme — 'becoming a non-smoker' narrative arc"
@@ -127,7 +127,7 @@ atoms:
     evidence_note: "Public commitment, framed as optional."
 
   - id: smoking.identity.story-slot-template
-    type: story_slot
+    type: message
     title: Ex-smoker story
     slots: [storyteller_first_name, storyteller_context, story_body]
     body: >

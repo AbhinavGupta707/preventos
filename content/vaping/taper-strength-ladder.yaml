@@ -1,51 +1,47 @@
-# Exhale — nicotine-strength step-down ladder content (WPV.2c)
-# STATUS: DRAFT — not user-deliverable without compliance/ sign-off entry.
-# The strength ladder is the chemistry axis of tapering: same routine, weaker
-# liquid. It pairs with the puff budget (volume axis) — default sequencing is
-# strength-first for heavy users (routine intact, chemistry down), volume-first
-# for light users. Sequencing rules live in the WPV.2 rules half.
-# Product-level equivalence ("what do I actually buy?") is resolved through the
-# product-mapping database (product-mapping.yaml).
-pack: vaping
-file: taper-strength-ladder
-status: DRAFT
-version: 0.1.0
+meta:
+  pack: vaping
+  programme: Exhale
+  module: taper-strength-ladder
+  status: draft
+  schema: preventos.content-atom/0.1
+  version: "0.1.0"
+  language: en-GB
+  defaults:
+    vertical: vaping
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    contraindications: []
 
-# Ladder definitions consumed by taper rules. Strengths in mg/ml. UK/EU legal
-# ceiling is 20 mg/ml (TPD), which is also where most disposables and salt pods
-# sit — hence rung 1.
-ladders:
-  - id: salt_standard
-    label: "Nicotine salt (pods / disposables)"
-    rungs_mg_ml: [20, 10, 5, 0]
-    notes: >
-      Salt formulations dominate pods and disposables. 10 and 5 are widely
-      available in pod ranges; below 5 the practical move is usually a switch
-      to freebase or straight to 0. Gaps are intentionally even-feeling, not
-      even-numbered — perceived step size matters more than arithmetic.
-  - id: freebase_standard
-    label: "Freebase e-liquid (refillable tanks)"
-    rungs_mg_ml: [18, 12, 6, 3, 0]
-    notes: >
-      Freebase 18/12/6/3/0 is the long-standing retail ladder and nearly every
-      refillable range stocks it. Finer-grained than salts — refillable users
-      get gentler steps for free.
-  - id: disposable_to_pod_bridge
-    label: "Disposable → refillable bridge"
-    rungs_mg_ml: [20, 10, 5, 0]
-    notes: >
-      Disposables rarely exist below 20 mg/ml; the realistic first step for a
-      disposable user is a pod device at 10 mg/ml. This rung sequence assumes
-      that device switch at rung 2 — the product mapper proposes the device.
+data:
+  ladders:
+    - id: salt_standard
+      label: "Nicotine salt (pods / disposables)"
+      rungs_mg_ml: [20, 10, 5, 0]
+      notes: >
+        Salt formulations dominate pods and disposables. 10 and 5 are widely
+        available in pod ranges; below 5 the practical move is usually a switch
+        to freebase or straight to 0. Gaps are intentionally even-feeling, not
+        even-numbered — perceived step size matters more than arithmetic.
+    - id: freebase_standard
+      label: "Freebase e-liquid (refillable tanks)"
+      rungs_mg_ml: [18, 12, 6, 3, 0]
+      notes: >
+        Freebase 18/12/6/3/0 is the long-standing retail ladder and nearly every
+        refillable range stocks it. Finer-grained than salts — refillable users
+        get gentler steps for free.
+    - id: disposable_to_pod_bridge
+      label: "Disposable → refillable bridge"
+      rungs_mg_ml: [20, 10, 5, 0]
+      notes: >
+        Disposables rarely exist below 20 mg/ml; the realistic first step for a
+        disposable user is a pod device at 10 mg/ml. This rung sequence assumes
+        that device switch at rung 2 — the product mapper proposes the device.
 
 atoms:
-  - id: vap-ladder-001
-    type: coaching_card
+  - id: vaping.ladder.how-it-works
+    type: info_card
     title: "How the strength ladder works"
-    audience: adult
-    framing: [autonomy]
-    contraindications: [dual_user_unrouted]
-    status: draft
     body: |
       The strength ladder lowers the nicotine, not the ritual. Same device,
       same moments, same hand-to-mouth — weaker liquid. Most people find a
@@ -56,35 +52,43 @@ atoms:
       step down. No white-knuckling between rungs: if a step was too sharp,
       we step back up and re-cut it. The ladder only goes one place, and
       arriving slowly still counts as arriving.
+    contraindications:
+      - dual_user_unrouted
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "1.1"
+        label: "Goal setting (behaviour)"
+    com_b:
+      - reflective-motivation
 
-  - id: vap-ladder-002
-    type: coaching_card
+  - id: vaping.ladder.next-rung-proposal
+    type: info_card
     title: "Your next rung (step-down proposal copy)"
-    audience: adult
-    framing: [autonomy, performance]
-    contraindications: [dual_user_unrouted]
-    status: draft
     body: |
-      You've been steady at {{current_strength}} mg/ml for {{weeks_on_rung}}
+      You've been steady at {current_strength} mg/ml for {weeks_on_rung}
       weeks — cravings settled, budget holding. That's the signal to step.
 
-      Next rung: **{{next_strength}} mg/ml**. Here's what to buy:
-      {{product_suggestions}}. Buy the new strength *before* you run out of
+      Next rung: **{next_strength} mg/ml**. Here's what to buy:
+      {product_suggestions}. Buy the new strength *before* you run out of
       the old one — step-downs fail at the till, not in the mind. Running
       out and "just grabbing the usual" is how rungs get skipped backwards.
     slots:
-      current_strength: current rung mg/ml
-      weeks_on_rung: weeks at current strength
-      next_strength: next rung mg/ml
-      product_suggestions: rendered from product-mapping database
+      - current_strength
+      - weeks_on_rung
+      - next_strength
+      - product_suggestions
+    contraindications:
+      - dual_user_unrouted
+    tone: practical
+    bcttv1:
+      - code: "1.4"
+        label: "Action planning"
+    com_b:
+      - physical-opportunity
 
-  - id: vap-ladder-003
-    type: coaching_card
+  - id: vaping.ladder.first-days-lower-rung
+    type: info_card
     title: "First days on a lower rung"
-    audience: adult
-    framing: [autonomy, performance]
-    contraindications: []
-    status: draft
     body: |
       Days 1–4 on a new rung you might notice yourself puffing a bit more —
       that's your habits probing whether the old level is still available.
@@ -94,14 +98,16 @@ atoms:
       budget is what stops "weaker liquid, more puffs" cancelling out), and
       lean on your replacement menu for the autopilot moments. By next week
       this rung will feel like the old normal — they all do.
+    tone: practical
+    bcttv1:
+      - code: "1.4"
+        label: "Action planning"
+    com_b:
+      - psychological-capability
 
-  - id: vap-ladder-004
-    type: coaching_card
+  - id: vaping.ladder.rung-too-sharp
+    type: info_card
     title: "Rung too sharp? Step back without shame"
-    audience: adult
-    framing: [autonomy]
-    contraindications: []
-    status: draft
     body: |
       If a week on the new rung still feels like a fight, the cut was too
       deep — that's a sizing problem, not a willpower problem.
@@ -111,14 +117,16 @@ atoms:
       is the cheat code); or hold here and let the puff budget do the work
       this month instead. Tapers aren't speedruns. The only failed taper is
       an abandoned one.
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "1.2"
+        label: "Problem solving"
+    com_b:
+      - reflective-motivation
 
-  - id: vap-ladder-005
-    type: coaching_card
+  - id: vaping.ladder.last-rung-zero
+    type: info_card
     title: "The last rung: zero"
-    audience: adult
-    framing: [autonomy, appearance, savings]
-    contraindications: []
-    status: draft
     body: |
       Zero-nicotine liquid is a real rung, not a joke rung. It separates the
       two things vaping welded together: the chemistry (already gone — you
@@ -128,18 +136,20 @@ atoms:
       Some people stay on zero for a few weeks and let the ritual fade;
       some find that without the nicotine the ritual quietly stops paying
       and they put the device down on their own. Either path ends the same
-      place: breath fresh, skin brighter, {{monthly_spend}} a month back in
+      place: breath fresh, skin brighter, {monthly_spend} a month back in
       your pocket, and a habit that answers to you.
     slots:
-      monthly_spend: computed monthly spend from savings rail
+      - monthly_spend
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "8.3"
+        label: "Habit formation"
+    com_b:
+      - automatic-motivation
 
-  - id: vap-ladder-006
-    type: coaching_card
+  - id: vaping.ladder.strength-budget-two-axes
+    type: info_card
     title: "Strength + budget: how the two axes combine"
-    audience: adult
-    framing: [autonomy]
-    contraindications: [dual_user_unrouted]
-    status: draft
     body: |
       You're tapering on two axes: how strong (ladder) and how much (budget).
       The rule we follow: **move one axis at a time.** A rung change and a
@@ -148,3 +158,11 @@ atoms:
       Default rhythm: step the strength, hold two weeks while the budget
       stays flat, then resume budget steps. Your plan screen always shows
       which axis is "live" this week — the other one is just holding.
+    contraindications:
+      - dual_user_unrouted
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "1.1"
+        label: "Goal setting (behaviour)"
+    com_b:
+      - psychological-capability

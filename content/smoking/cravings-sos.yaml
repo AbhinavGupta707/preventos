@@ -10,7 +10,7 @@ meta:
   programme: QuitKit
   module: cravings-sos
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "NHS Better Health: Quit Smoking (public guidance): cravings pass in about 5 minutes"
@@ -40,8 +40,7 @@ atoms:
   - id: smoking.cravings.urge-surf-90s
     type: audio_script
     title: Ride the wave (quick)
-    duration_seconds: 90
-    script: >
+    body: >
       [calm, slow voice. pauses marked with (...)]
 
       A craving is here. That is OK. You do not have to fight it. (...)
@@ -70,8 +69,7 @@ atoms:
   - id: smoking.cravings.urge-surf-3m
     type: audio_script
     title: Ride the wave
-    duration_seconds: 180
-    script: >
+    body: >
       [calm, slow voice. pauses marked with (...)]
 
       Welcome. A craving is here, and you came to the right place. (...)
@@ -110,8 +108,7 @@ atoms:
   - id: smoking.cravings.urge-surf-5m
     type: audio_script
     title: Ride the wave (long)
-    duration_seconds: 300
-    script: >
+    body: >
       [calm, slow voice. pauses marked with (...). longer pauses (......)]
 
       Hello. Take a second to settle. You are safe, and this will pass. (......)
@@ -160,8 +157,7 @@ atoms:
   - id: smoking.cravings.breathing-pacer
     type: audio_script
     title: Slow breathing
-    duration_seconds: 120
-    script: >
+    body: >
       [paced voice, matches on-screen pacer animation]
 
       Let's slow everything down. Just follow the circle.

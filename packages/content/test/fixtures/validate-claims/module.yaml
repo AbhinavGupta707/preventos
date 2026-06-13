@@ -1,0 +1,15 @@
+meta:
+  pack: sleep
+  module: fixture
+  status: draft
+  schema: preventos.content-atom/0.1
+  defaults:
+    vertical: sleep
+atoms:
+  - id: sleep.fixture.bad
+    type: message
+    title: Bad claim
+    body: "Our programme is clinically proven to treat insomnia."
+    bcttv1:
+      - { code: "3.1", label: "Social support (unspecified)" }
+    com_b: [reflective-motivation]

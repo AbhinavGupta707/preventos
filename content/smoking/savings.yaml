@@ -10,7 +10,7 @@ meta:
   programme: QuitKit
   module: savings
   status: draft-pending-clinical-sign-off
-  schema: preventos.content-atom/0.1-draft
+  schema: preventos.content-atom/0.1
   language: en-GB
   sources:
     - "PRD §5.1 [TS]: savings tracker tied to real prices the user enters, with goal-pegging"

@@ -1,132 +1,119 @@
-# Exhale — product-mapping database structure [BS] (WPV.2c)
-# STATUS: DRAFT — not user-deliverable without compliance/ sign-off entry.
-# Purpose: when the taper proposes "step down to 10 mg/ml", the user needs an
-# answer to "so what do I actually buy?" This file defines the database
-# structure the taper rules query, plus illustrative seed rows.
-#
-# SEED ROWS ARE ILLUSTRATIVE ONLY — generic product archetypes, not a real
-# catalogue. Real data needs a sourced catalogue (owner decision: licensed
-# data feed vs. curated in-house list) and a freshness process; flagged in
-# PROGRESS notes. No brand names in seeds to avoid implying endorsement.
-pack: vaping
-file: product-mapping
-status: DRAFT
-version: 0.1.0
-
-# --- Schema -------------------------------------------------------------------
-schema:
-  product:
-    id: string # slug, stable across catalogue refreshes
-    archetype: enum [disposable, pod_prefilled, pod_refillable, tank_refillable]
-    formulation: enum [salt, freebase, zero]
-    strength_mg_ml: number # 0–20 (TPD ceiling)
-    strengths_available_mg_ml: list # for ranges sold in multiple strengths
-    puffs_per_unit_approx: integer | null # disposables/pods; null for refillables
-    unit: enum [device, pod_pack, bottle_10ml]
-    typical_price_gbp: number # feeds savings rail; refreshed with catalogue
-    availability: enum [major_retail, vape_shop, online_only]
-    notes: string
-  equivalence_rule:
-    # Answers: "user is on product X at strength S — what serves rung R?"
-    from_archetype: enum # as product.archetype
-    from_formulation: enum
-    to_rung_mg_ml: number
-    candidate_filter: # query against product table
-      archetype_in: list
-      formulation_in: list
-      strength_mg_ml: number
-    transition_note_atom: string # atom id rendered alongside suggestions
-  integrity_rules:
-    - strength_mg_ml and every strengths_available entry must be ≤ 20 (TPD)
-    - every ladder rung in taper-strength-ladder.yaml must have ≥1 candidate
-      product per archetype path, else the taper UI cannot render a suggestion
-    - typical_price_gbp required (savings rail dependency)
-
-# --- Illustrative seed products (archetypes, not real SKUs) --------------------
-seed_products:
-  - id: generic-disposable-20
-    archetype: disposable
-    formulation: salt
-    strength_mg_ml: 20
-    strengths_available_mg_ml: [20]
-    puffs_per_unit_approx: 600
-    unit: device
-    typical_price_gbp: 5.99
-    availability: major_retail
-    notes: the default entry point; effectively never sold below 20
-
-  - id: generic-pod-prefilled-range
-    archetype: pod_prefilled
-    formulation: salt
-    strength_mg_ml: 10
-    strengths_available_mg_ml: [20, 10, 5]
-    puffs_per_unit_approx: 600
-    unit: pod_pack
-    typical_price_gbp: 6.50
-    availability: major_retail
-    notes: the standard disposable→pod bridge; per-puff cost roughly halves
-
-  - id: generic-pod-refillable-device
-    archetype: pod_refillable
-    formulation: salt
-    strength_mg_ml: 10
-    strengths_available_mg_ml: [20, 10, 5, 0]
-    puffs_per_unit_approx: null
-    unit: device
-    typical_price_gbp: 12.00
-    availability: vape_shop
-    notes: enables 50/50 liquid mixing for half-rungs
-
-  - id: generic-freebase-liquid-range
-    archetype: tank_refillable
-    formulation: freebase
-    strength_mg_ml: 6
-    strengths_available_mg_ml: [18, 12, 6, 3, 0]
-    puffs_per_unit_approx: null
-    unit: bottle_10ml
-    typical_price_gbp: 3.99
-    availability: vape_shop
-    notes: finest-grained ladder; cheapest per-puff path
-
-  - id: generic-zero-liquid
-    archetype: tank_refillable
-    formulation: zero
-    strength_mg_ml: 0
-    strengths_available_mg_ml: [0]
-    puffs_per_unit_approx: null
-    unit: bottle_10ml
-    typical_price_gbp: 3.49
-    availability: vape_shop
-    notes: final rung; also the mixer for half-rungs
-
-# --- Illustrative equivalence rules --------------------------------------------
-seed_equivalence_rules:
-  - from_archetype: disposable
-    from_formulation: salt
-    to_rung_mg_ml: 10
-    candidate_filter:
-      archetype_in: [pod_prefilled, pod_refillable]
-      formulation_in: [salt]
-      strength_mg_ml: 10
-    transition_note_atom: vap-product-001
-  - from_archetype: pod_prefilled
-    from_formulation: salt
-    to_rung_mg_ml: 5
-    candidate_filter:
-      archetype_in: [pod_prefilled, pod_refillable]
-      formulation_in: [salt]
-      strength_mg_ml: 5
-    transition_note_atom: vap-product-002
-
-# --- Transition copy atoms -------------------------------------------------------
-atoms:
-  - id: vap-product-001
-    type: coaching_card
-    title: "Switching from disposables to a pod"
-    audience: adult
-    framing: [savings, autonomy]
+meta:
+  pack: vaping
+  programme: Exhale
+  module: product-mapping
+  status: draft
+  schema: preventos.content-atom/0.1
+  version: "0.1.0"
+  language: en-GB
+  defaults:
+    vertical: vaping
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
     contraindications: []
-    status: draft
+
+data:
+  schema:
+    product:
+      id: string # slug, stable across catalogue refreshes
+      archetype: enum [disposable, pod_prefilled, pod_refillable, tank_refillable]
+      formulation: enum [salt, freebase, zero]
+      strength_mg_ml: number # 0–20 (TPD ceiling)
+      strengths_available_mg_ml: list # for ranges sold in multiple strengths
+      puffs_per_unit_approx: integer | null # disposables/pods; null for refillables
+      unit: enum [device, pod_pack, bottle_10ml]
+      typical_price_gbp: number # feeds savings rail; refreshed with catalogue
+      availability: enum [major_retail, vape_shop, online_only]
+      notes: string
+    equivalence_rule:
+      # Answers: "user is on product X at strength S — what serves rung R?"
+      from_archetype: enum # as product.archetype
+      from_formulation: enum
+      to_rung_mg_ml: number
+      candidate_filter: # query against product table
+        archetype_in: list
+        formulation_in: list
+        strength_mg_ml: number
+      transition_note_atom: string # atom id rendered alongside suggestions
+    integrity_rules:
+      - strength_mg_ml and every strengths_available entry must be ≤ 20 (TPD)
+      - every ladder rung in taper-strength-ladder.yaml must have ≥1 candidate
+        product per archetype path, else the taper UI cannot render a suggestion
+      - typical_price_gbp required (savings rail dependency)
+  seed_products:
+    - id: generic-disposable-20
+      archetype: disposable
+      formulation: salt
+      strength_mg_ml: 20
+      strengths_available_mg_ml: [20]
+      puffs_per_unit_approx: 600
+      unit: device
+      typical_price_gbp: 5.99
+      availability: major_retail
+      notes: the default entry point; effectively never sold below 20
+    - id: generic-pod-prefilled-range
+      archetype: pod_prefilled
+      formulation: salt
+      strength_mg_ml: 10
+      strengths_available_mg_ml: [20, 10, 5]
+      puffs_per_unit_approx: 600
+      unit: pod_pack
+      typical_price_gbp: 6.50
+      availability: major_retail
+      notes: the standard disposable→pod bridge; per-puff cost roughly halves
+    - id: generic-pod-refillable-device
+      archetype: pod_refillable
+      formulation: salt
+      strength_mg_ml: 10
+      strengths_available_mg_ml: [20, 10, 5, 0]
+      puffs_per_unit_approx: null
+      unit: device
+      typical_price_gbp: 12.00
+      availability: vape_shop
+      notes: enables 50/50 liquid mixing for half-rungs
+    - id: generic-freebase-liquid-range
+      archetype: tank_refillable
+      formulation: freebase
+      strength_mg_ml: 6
+      strengths_available_mg_ml: [18, 12, 6, 3, 0]
+      puffs_per_unit_approx: null
+      unit: bottle_10ml
+      typical_price_gbp: 3.99
+      availability: vape_shop
+      notes: finest-grained ladder; cheapest per-puff path
+    - id: generic-zero-liquid
+      archetype: tank_refillable
+      formulation: zero
+      strength_mg_ml: 0
+      strengths_available_mg_ml: [0]
+      puffs_per_unit_approx: null
+      unit: bottle_10ml
+      typical_price_gbp: 3.49
+      availability: vape_shop
+      notes: final rung; also the mixer for half-rungs
+  seed_equivalence_rules:
+    - from_archetype: disposable
+      from_formulation: salt
+      to_rung_mg_ml: 10
+      candidate_filter:
+        archetype_in: [pod_prefilled, pod_refillable]
+        formulation_in: [salt]
+        strength_mg_ml: 10
+      transition_note_atom: vaping.product.disposable-to-pod-bridge
+    - from_archetype: pod_prefilled
+      from_formulation: salt
+      to_rung_mg_ml: 5
+      candidate_filter:
+        archetype_in: [pod_prefilled, pod_refillable]
+        formulation_in: [salt]
+        strength_mg_ml: 5
+      transition_note_atom: vaping.product.stepping-to-5mg-pods
+
+atoms:
+  - id: vaping.product.disposable-to-pod-bridge
+    type: info_card
+    title: "Switching from disposables to a pod"
     body: |
       Disposables don't come in lower strengths, so your first rung down is
       also a device upgrade. A pod kit pays for itself fast — roughly half
@@ -136,14 +123,16 @@ atoms:
       two (draw and vapour vary by device) — that's the hardware, not
       withdrawal. And keep just one device. A drawer of backups at the old
       strength is a trapdoor.
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "1.4"
+        label: "Action planning"
+    com_b:
+      - physical-opportunity
 
-  - id: vap-product-002
-    type: coaching_card
+  - id: vaping.product.stepping-to-5mg-pods
+    type: info_card
     title: "Stepping to 5 mg/ml pods"
-    audience: adult
-    framing: [autonomy, savings]
-    contraindications: []
-    status: draft
     body: |
       Same pods, lower number — 5 mg/ml is stocked in most of the big pod
       ranges, so nothing about your routine changes at the till or in your
@@ -152,3 +141,9 @@ atoms:
       One honest heads-up: this is the rung where some people unconsciously
       puff more to compensate. Your puff budget is the guard rail — keep
       logging, and the two-axis plan keeps the step real.
+    tone: practical
+    bcttv1:
+      - code: "2.3"
+        label: "Self-monitoring of behaviour"
+    com_b:
+      - psychological-capability

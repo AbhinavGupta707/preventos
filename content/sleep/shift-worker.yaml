@@ -1,250 +1,309 @@
-# DRAFT — Nightshift: shift-worker protocol variants (WP V.4c)
-# Framing rules + claims blocklist: see README.md. Sign-off required before release.
-#
-# Routing: served only to profile:shift-worker. Atoms with `variant_of` REPLACE the
-# referenced standard atom for this profile (standard atoms carry the matching
-# contraindication tag). Several standard rules invert here on purpose — naps are a
-# tool, light is managed rather than maximised, and the anchor is a sleep block,
-# not a wake time.
-pack: sleep
-module: shift-worker
-id: sleep.shift
-status: DRAFT
-version: 0.1.0
-requires: [profile:shift-worker]
-
+meta:
+  pack: sleep
+  programme: Nightshift
+  module: shift-worker
+  status: draft
+  schema: preventos.content-atom/0.1
+  defaults:
+    vertical: sleep
+    reading_age: 9
+    tone: autonomy-supportive
+    channels:
+    - app
+    - web
+    contraindications: []
 atoms:
-  - id: sleep.shift.intro
-    status: DRAFT
-    type: message
-    title: This plan bends around your rota
-    bct: ["13.2", "3.1"]
-    com_b: [reflective-motivation]
-    reading_age: 9
-    channels: [in_app]
-    tone: autonomy-supportive
-    contraindications: []
-    body: |
-      Most sleep advice is written for people who sleep at night. You don't
-      always get that option — so we'll use a version built for rotas.
+- id: sleep.shift.intro
+  type: message
+  title: This plan bends around your rota
+  bcttv1:
+  - code: '13.2'
+    label: Framing/reframing
+  - code: '3.1'
+    label: Social support (unspecified)
+  com_b:
+  - reflective-motivation
+  reading_age: 9
+  channels:
+  - app
+  tone: autonomy-supportive
+  contraindications: []
+  body: 'Most sleep advice is written for people who sleep at night. You don''t
 
-      Some of it will look like the opposite of the standard advice. That's
-      deliberate. Naps become a tool. Sunlight becomes something you manage,
-      not just seek. Your anchor isn't a wake time — it's a protected block
-      of sleep that survives your changing shifts.
+    always get that option — so we''ll use a version built for rotas.
 
-      Shift work makes sleep genuinely harder. The goal here isn't a perfect
-      pattern; it's the strongest pattern your rota allows.
 
-  - id: sleep.shift.anchor-sleep
-    status: DRAFT
-    type: exercise
-    title: Anchor sleep — your fixed block
-    variant_of: sleep.sc.same-wake-time
-    bct: ["1.1", "8.3"]
-    com_b: [reflective-motivation, automatic-motivation]
-    reading_age: 9
-    channels: [in_app]
-    tone: practical
-    contraindications: []
-    body: |
-      The anchor idea: find a 3–4 hour block that you can sleep in on
-      *every* day of your current rotation — workdays and days off alike.
-      For many night workers that's roughly mid-morning, but yours depends
-      on your rota.
+    Some of it will look like the opposite of the standard advice. That''s
 
-      Protect that block like a shift. Same hours daily, dark room, phone
-      on do-not-disturb. Top up with a second sleep block wherever the
-      rota allows.
+    deliberate. Naps become a tool. Sunlight becomes something you manage,
 
-      Why it works: when part of your sleep happens at the same clock time
-      every day, your body keeps a fixed reference point even while
-      everything else moves. It's the shift-work version of a steady
-      wake time.
+    not just seek. Your anchor isn''t a wake time — it''s a protected block
 
-  - id: sleep.shift.rotation-planning
-    status: DRAFT
-    type: message
-    title: Reading your rota like a flight itinerary
-    bct: ["1.2", "1.4"]
-    com_b: [psychological-capability]
-    reading_age: 11
-    channels: [in_app]
-    tone: practical
-    contraindications: []
-    body: |
-      A rotation change is jet lag without the holiday. It helps to plan it
-      the way travellers plan time zones:
+    of sleep that survives your changing shifts.
 
-      • Moving "forwards" (days → evenings → nights) is easier on the body
-        than jumping backwards. You can't choose your rota, but knowing
-        which way you're "flying" tells you how rough the landing may be.
-      • Before a run of nights: shift your bedtime later by an hour or two
-        on the last free days, if life allows.
-      • After your last night shift: have a short morning sleep — two to
-        three hours, alarm set — then get up and live the day. It stings
-        that afternoon, but it lands you back in daytime rhythm a day
-        faster than sleeping until 4pm.
 
-      Log your shifts in the app and your plan will adjust to the pattern
-      you actually work.
+    Shift work makes sleep genuinely harder. The goal here isn''t a perfect
 
-  - id: sleep.shift.light-timing
-    status: DRAFT
-    type: exercise
-    title: Light is the lever — point it the right way
-    variant_of: sleep.sc.morning-light
-    bct: ["4.1", "12.1"]
-    com_b: [psychological-capability, physical-opportunity]
-    reading_age: 11
-    channels: [in_app]
-    tone: practical
-    contraindications: []
-    body: |
-      For shift workers, light isn't automatically your friend — it's a
-      lever, and what matters is when you pull it.
+    pattern; it''s the strongest pattern your rota allows.
 
-      During a night shift: keep your workspace as bright as you're allowed,
-      especially in the first half. Bright light tells your body "this is
-      daytime", which is exactly the message you want at 1am at work.
+    '
+- id: sleep.shift.anchor-sleep
+  type: exercise
+  title: Anchor sleep — your fixed block
+  bcttv1:
+  - code: '1.1'
+    label: Goal setting (behaviour)
+  - code: '8.3'
+    label: Habit formation
+  com_b:
+  - reflective-motivation
+  - automatic-motivation
+  reading_age: 9
+  channels:
+  - app
+  tone: practical
+  contraindications: []
+  body: 'The anchor idea: find a 3–4 hour block that you can sleep in on
 
-      On the way home after nights: now invert it. Sunglasses on for the
-      commute, even when it's overcast. Morning sun on the way home is the
-      single biggest "WAKE UP" signal there is — block it, and your sleep
-      at home comes easier.
+    *every* day of your current rotation — workdays and days off alike.
 
-      At home before your day-sleep: blackout the bedroom properly. Foil or
-      blackout film beats thin curtains. Eye mask as backup.
+    For many night workers that''s roughly mid-morning, but yours depends
 
-  - id: sleep.shift.strategic-nap
-    status: DRAFT
-    type: exercise
-    title: The strategic nap — your pre-shift tool
-    variant_of: sleep.sc.naps
-    bct: ["1.4", "4.1"]
-    com_b: [psychological-capability, physical-opportunity]
-    reading_age: 9
-    channels: [in_app, push]
-    tone: practical
-    contraindications: []
-    body: |
-      Forget "no naps" — that rule is for day-sleepers. On a night
-      schedule, the right nap is a tool, and sometimes a safety measure.
+    on your rota.
 
-      The pre-night-shift nap: 90 minutes or so in the late afternoon or
-      early evening before your shift. It takes the edge off the 4am dip
-      and you'll feel it most on the drive home.
 
-      The on-break nap, if your workplace allows one: keep it to about
-      20 minutes, set an alarm, and give yourself a few minutes to shake
-      off the fog before doing anything that needs sharp attention.
+    Protect that block like a shift. Same hours daily, dark room, phone
 
-      Napping before nights isn't cheating on your sleep plan. On nights,
-      it *is* the plan.
+    on do-not-disturb. Top up with a second sleep block wherever the
 
-  - id: sleep.shift.post-shift-winddown
-    status: DRAFT
-    type: exercise
-    title: Landing after a night shift
-    variant_of: sleep.sc.buffer-zone
-    bct: ["1.4", "12.1"]
-    com_b: [automatic-motivation, physical-opportunity]
-    reading_age: 9
-    channels: [in_app]
-    tone: practical
-    contraindications: []
-    related: [sleep.audio.body-scan]
-    body: |
-      Coming off nights, you're trying to fall asleep at the exact moment
-      the world is loudly waking up. You need a landing routine, compressed:
+    rota allows.
 
-      • Sunglasses for the trip home (see the light atom — it matters most
-        right here).
-      • Keep the homecoming dim and quiet: low lights, no news, no email.
-        A light snack is fine; a heavy meal will sit on your sleep.
-      • Straight into the wind-down: shower, curtains sealed, earplugs in,
-        one of the audio tracks on.
-      • Phone on do-not-disturb with exceptions for the people who'd need
-        you in a real emergency — that one setting saves more day-sleep
-        than anything else on this list.
 
-  - id: sleep.shift.driving-home
-    status: DRAFT
-    type: message
-    title: The drive home is the riskiest part of the shift
-    bct: ["1.2", "12.5"]
-    com_b: [psychological-capability, reflective-motivation]
-    reading_age: 9
-    channels: [in_app, push]
-    tone: warm-challenge
-    contraindications: []
-    related: [sleep.safety.sleepiness-signpost]
-    body: |
-      Straight talk, because this one matters more than any sleep habit:
-      the drive home after a night shift is the most dangerous thing most
-      shift workers do all week. Sleepiness behind the wheel doesn't feel
-      like danger — right up until it is.
+    Why it works: when part of your sleep happens at the same clock time
 
-      If your eyes are heavy before you set off: 20-minute nap in your car
-      or the staff room *before* driving. Not coffee instead — coffee plus
-      the nap, taken just before it, if you want the strongest version.
+    every day, your body keeps a fixed reference point even while
 
-      If heaviness hits mid-drive — eyelids dropping, drifting in the lane,
-      missing a turn you know: pull over somewhere safe and nap. Twenty
-      minutes makes you a different driver. No schedule beats arriving.
+    everything else moves. It''s the shift-work version of a steady
 
-      And if you're regularly fighting sleep on that drive, tell us in the
-      app — we'll adjust the plan around it, because that signal outranks
-      everything else.
+    wake time.
 
-  - id: sleep.shift.family-noise
-    status: DRAFT
-    type: message
-    title: Defending day-sleep in a daytime house
-    bct: ["3.1", "12.1"]
-    com_b: [social-opportunity, physical-opportunity]
-    reading_age: 9
-    channels: [in_app]
-    tone: practical
-    contraindications: []
-    body: |
-      Day-sleep has enemies night-sleep never meets: deliveries, school
-      runs, mowers, and the reasonable belief of everyone you live with
-      that daytime is fair game.
+    '
+- id: sleep.shift.rotation-planning
+  type: message
+  title: Reading your rota like a flight itinerary
+  bcttv1:
+  - code: '1.2'
+    label: Problem solving
+  - code: '1.4'
+    label: Action planning
+  com_b:
+  - psychological-capability
+  reading_age: 11
+  channels:
+  - app
+  tone: practical
+  contraindications: []
+  body: "A rotation change is jet lag without the holiday. It helps to plan it\nthe way travellers plan time zones:\n\n• Moving \"forwards\" (days → evenings → nights) is easier on the body\n  than jumping backwards. You can't choose your rota, but knowing\n  which way you're \"flying\" tells you how rough the landing may be.\n• Before a run of nights: shift your bedtime later by an hour or two\n  on the last free days, if life allows.\n• After your last night shift: have a short morning sleep — two to\n  three hours, alarm set — then get up and live the day. It stings\n  that afternoon, but it lands you back in daytime rhythm a day\n  faster than sleeping until 4pm.\n\nLog your shifts in the app and your plan will adjust to the pattern\nyou actually work.\n"
+- id: sleep.shift.light-timing
+  type: exercise
+  title: Light is the lever — point it the right way
+  bcttv1:
+  - code: '4.1'
+    label: Instruction on how to perform a behaviour
+  - code: '12.1'
+    label: Restructuring the physical environment
+  com_b:
+  - psychological-capability
+  - physical-opportunity
+  reading_age: 11
+  channels:
+  - app
+  tone: practical
+  contraindications: []
+  body: 'For shift workers, light isn''t automatically your friend — it''s a
 
-      What helps:
+    lever, and what matters is when you pull it.
 
-      • Make the agreement explicit. "I'm asleep 9 to 2, that's my night"
-        lands better than hoping people stay quiet. A sign on the door
-        sounds silly and works.
-      • Steady noise beats silence you can't control — a fan or white-noise
-        app masks the doorbell better than earplugs alone.
-      • Book the non-negotiables (school pickup, appointments) on the same
-        side of your anchor block each day, so the block itself never moves.
 
-      People defend your sleep better when they know exactly what they're
-      defending.
+    During a night shift: keep your workspace as bright as you''re allowed,
 
-  - id: sleep.shift.days-off
-    status: DRAFT
-    type: message
-    title: Days off — split the difference
-    bct: ["1.2", "1.4"]
-    com_b: [psychological-capability, reflective-motivation]
-    reading_age: 11
-    channels: [in_app]
-    tone: autonomy-supportive
-    contraindications: []
-    body: |
-      The days-off dilemma: flip fully back to daytime living and you
-      restart your night-shift jet lag twice a week; stay on night hours
-      and you never see your people.
+    especially in the first half. Bright light tells your body "this is
 
-      Most rotating workers do best splitting the difference: keep your
-      anchor block (it's designed to survive days off), shift the rest of
-      your sleep a few hours toward "normal", and accept being neither
-      fully a day person nor a night person on those days.
+    daytime", which is exactly the message you want at 1am at work.
 
-      It's a compromise — but it's a planned one, which beats lurching
-      between two clocks. Your anchor block is what makes the compromise
-      hold together.
+
+    On the way home after nights: now invert it. Sunglasses on for the
+
+    commute, even when it''s overcast. Morning sun on the way home is the
+
+    single biggest "WAKE UP" signal there is — block it, and your sleep
+
+    at home comes easier.
+
+
+    At home before your day-sleep: blackout the bedroom properly. Foil or
+
+    blackout film beats thin curtains. Eye mask as backup.
+
+    '
+- id: sleep.shift.strategic-nap
+  type: exercise
+  title: The strategic nap — your pre-shift tool
+  bcttv1:
+  - code: '1.4'
+    label: Action planning
+  - code: '4.1'
+    label: Instruction on how to perform a behaviour
+  com_b:
+  - psychological-capability
+  - physical-opportunity
+  reading_age: 9
+  channels:
+  - app
+  - push
+  tone: practical
+  contraindications: []
+  body: 'Forget "no naps" — that rule is for day-sleepers. On a night
+
+    schedule, the right nap is a tool, and sometimes a safety measure.
+
+
+    The pre-night-shift nap: 90 minutes or so in the late afternoon or
+
+    early evening before your shift. It takes the edge off the 4am dip
+
+    and you''ll feel it most on the drive home.
+
+
+    The on-break nap, if your workplace allows one: keep it to about
+
+    20 minutes, set an alarm, and give yourself a few minutes to shake
+
+    off the fog before doing anything that needs sharp attention.
+
+
+    Napping before nights isn''t cheating on your sleep plan. On nights,
+
+    it *is* the plan.
+
+    '
+- id: sleep.shift.post-shift-winddown
+  type: exercise
+  title: Landing after a night shift
+  bcttv1:
+  - code: '1.4'
+    label: Action planning
+  - code: '12.1'
+    label: Restructuring the physical environment
+  com_b:
+  - automatic-motivation
+  - physical-opportunity
+  reading_age: 9
+  channels:
+  - app
+  tone: practical
+  contraindications: []
+  body: "Coming off nights, you're trying to fall asleep at the exact moment\nthe world is loudly waking up. You need a landing routine, compressed:\n\n• Sunglasses for the trip home (see the light atom — it matters most\n  right here).\n• Keep the homecoming dim and quiet: low lights, no news, no email.\n  A light snack is fine; a heavy meal will sit on your sleep.\n• Straight into the wind-down: shower, curtains sealed, earplugs in,\n  one of the audio tracks on.\n• Phone on do-not-disturb with exceptions for the people who'd need\n  you in a real emergency — that one setting saves more day-sleep\n  than anything else on this list.\n"
+- id: sleep.shift.driving-home
+  type: message
+  title: The drive home is the riskiest part of the shift
+  bcttv1:
+  - code: '1.2'
+    label: Problem solving
+  - code: '12.5'
+    label: 'Unknown: 12.5'
+  com_b:
+  - psychological-capability
+  - reflective-motivation
+  reading_age: 9
+  channels:
+  - app
+  - push
+  tone: warm-challenge
+  contraindications: []
+  body: 'Straight talk, because this one matters more than any sleep habit:
+
+    the drive home after a night shift is the most dangerous thing most
+
+    shift workers do all week. Sleepiness behind the wheel doesn''t feel
+
+    like danger — right up until it is.
+
+
+    If your eyes are heavy before you set off: 20-minute nap in your car
+
+    or the staff room *before* driving. Not coffee instead — coffee plus
+
+    the nap, taken just before it, if you want the strongest version.
+
+
+    If heaviness hits mid-drive — eyelids dropping, drifting in the lane,
+
+    missing a turn you know: pull over somewhere safe and nap. Twenty
+
+    minutes makes you a different driver. No schedule beats arriving.
+
+
+    And if you''re regularly fighting sleep on that drive, tell us in the
+
+    app — we''ll adjust the plan around it, because that signal outranks
+
+    everything else.
+
+    '
+- id: sleep.shift.family-noise
+  type: message
+  title: Defending day-sleep in a daytime house
+  bcttv1:
+  - code: '3.1'
+    label: Social support (unspecified)
+  - code: '12.1'
+    label: Restructuring the physical environment
+  com_b:
+  - social-opportunity
+  - physical-opportunity
+  reading_age: 9
+  channels:
+  - app
+  tone: practical
+  contraindications: []
+  body: "Day-sleep has enemies night-sleep never meets: deliveries, school\nruns, mowers, and the reasonable belief of everyone you live with\nthat daytime is fair game.\n\nWhat helps:\n\n• Make the agreement explicit. \"I'm asleep 9 to 2, that's my night\"\n  lands better than hoping people stay quiet. A sign on the door\n  sounds silly and works.\n• Steady noise beats silence you can't control — a fan or white-noise\n  app masks the doorbell better than earplugs alone.\n• Book the non-negotiables (school pickup, appointments) on the same\n  side of your anchor block each day, so the block itself never moves.\n\nPeople defend your sleep better when they know exactly what they're\ndefending.\n"
+- id: sleep.shift.days-off
+  type: message
+  title: Days off — split the difference
+  bcttv1:
+  - code: '1.2'
+    label: Problem solving
+  - code: '1.4'
+    label: Action planning
+  com_b:
+  - psychological-capability
+  - reflective-motivation
+  reading_age: 11
+  channels:
+  - app
+  tone: autonomy-supportive
+  contraindications: []
+  body: 'The days-off dilemma: flip fully back to daytime living and you
+
+    restart your night-shift jet lag twice a week; stay on night hours
+
+    and you never see your people.
+
+
+    Most rotating workers do best splitting the difference: keep your
+
+    anchor block (it''s designed to survive days off), shift the rest of
+
+    your sleep a few hours toward "normal", and accept being neither
+
+    fully a day person nor a night person on those days.
+
+
+    It''s a compromise — but it''s a planned one, which beats lurching
+
+    between two clocks. Your anchor block is what makes the compromise
+
+    hold together.
+
+    '

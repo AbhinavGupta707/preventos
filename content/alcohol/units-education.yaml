@@ -1,43 +1,45 @@
 meta:
   pack: alcohol
-  file: units-education
-  status: DRAFT
-  version: 0.1.0
-  signoff: null
-  notes: >
-    UK-unit education. All maths must be property-tested against published UK
-    examples in the WPV.3 rules half (unit calculator); the examples below are
-    the content-side companions and MUST match the calculator's outputs.
-    Clinical reviewer to verify examples and CMO guideline framing at G3.
+  programme: Steady
+  module: units-education
+  status: draft
+  schema: preventos.content-atom/0.1
+  version: "0.1.0"
+  language: en-GB
+  defaults:
+    vertical: alcohol
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    contraindications: [dependence-flagged]
+  # UK-unit education. All maths must be property-tested against published UK
+  # examples in the WPV.3 rules half (unit calculator); the examples below are
+  # the content-side companions and MUST match the calculator's outputs.
+  # Clinical reviewer to verify examples and CMO guideline framing at G3.
 
 atoms:
-  # ---- Core concept -----------------------------------------------------------
-  - id: steady.units.what-is-a-unit
-    kind: education
-    surface: education.units
-    audience: all
-    contraindications: []
+  # ---- Core concept
+  - id: alcohol.units.what-is-a-unit
+    type: education
     body: >
       One UK unit = 10ml (8g) of pure alcohol — roughly what a healthy adult
       liver processes in an hour. Drinks don't come in units, which is why
       they're sneaky: a "glass of wine" can be anything from 1.5 to 3 units
       depending on the pour and the strength.
+    bcttv1: [{ code: "5.1", label: "Information on consequences" }]
+    com_b: [psychological-capability]
 
-  - id: steady.units.the-maths
-    kind: education
-    surface: education.units
-    audience: all
-    contraindications: []
+  - id: alcohol.units.the-maths
+    type: education
     body: >
       The only formula you need: strength (ABV %) × volume (litres) = units.
       A pint (568ml) of 5.2% lager: 5.2 × 0.568 = 3.0 units. The strength is
       on every label and pump clip — the volume is the part nobody clocks.
+    bcttv1: [{ code: "5.1", label: "Information on consequences" }]
+    com_b: [psychological-capability]
 
-  - id: steady.units.common-drinks
-    kind: education
-    surface: education.units
-    audience: all
-    contraindications: []
+  - id: alcohol.units.common-drinks
+    type: education
     body: |
       What things actually are:
       · Pint of 4% beer — 2.3 units
@@ -49,70 +51,69 @@ atoms:
       · Double (50ml) 40% spirit — 2 units
       · 440ml can of 7.5% super-strength lager — 3.3 units
       · 500ml can of 4.5% cider — 2.3 units
+    bcttv1: [{ code: "5.1", label: "Information on consequences" }]
+    com_b: [psychological-capability]
 
-  - id: steady.units.sneaky-truths
-    kind: education
-    surface: education.units
-    audience: all
-    contraindications: []
+  - id: alcohol.units.sneaky-truths
+    type: education
     body: |
       The ones that surprise people:
       · A large wine is 50% more than a medium — same "one glass" in your head.
       · Home pours run 1.5–2× pub measures. Your "couple of glasses" at home may be half a bottle.
       · "A few pints" of strong IPA (3 units each) outdrinks "a bottle of wine" night.
       · Low-alcohol ≠ no-alcohol: 0.5% is near-zero, but "session 3.4%" still adds up across a session.
+    bcttv1: [{ code: "5.1", label: "Information on consequences" }]
+    com_b: [psychological-capability]
 
-  # ---- Low-risk guidelines ------------------------------------------------------
-  - id: steady.units.cmo-guideline
-    kind: education
-    surface: education.guidelines
-    audience: all
-    contraindications: []
+  # ---- Low-risk guidelines
+  - id: alcohol.units.cmo-guideline
+    type: education
     body: >
       The UK Chief Medical Officers' low-risk guideline: no more than 14 units
       a week for both men and women, spread over three or more days, with
       several drink-free days. 14 isn't a target to drink up to — it's the
       level below which risks stay low. There's no "safe" amount, just lower
       and higher risk, and your weekly number is yours to choose.
+    bcttv1: [{ code: "5.1", label: "Information on consequences" }]
+    com_b: [reflective-motivation]
 
-  - id: steady.units.fourteen-looks-like
-    kind: education
-    surface: education.guidelines
-    audience: all
-    contraindications: []
+  - id: alcohol.units.fourteen-looks-like
+    type: education
     body: >
       14 units in real drinks: about six pints of 4% beer, or a bottle and a
       half of 13% wine — across the whole week. Saved up for one night, the
       same 14 units carries different risks: bingeing concentrates harm even
       when the weekly total looks fine.
+    bcttv1: [{ code: "5.1", label: "Information on consequences" }]
+    com_b: [reflective-motivation]
 
-  - id: steady.units.pregnancy
-    kind: education
-    surface: education.guidelines
-    audience: all
-    contraindications: []
+  - id: alcohol.units.pregnancy
+    type: education
     body: >
       Pregnant or trying? The UK guidance is clear: the safest approach is no
       alcohol at all. If that's relevant to you, your midwife or GP can talk
       it through without judgement — and this app will follow your lead.
+    contraindications: []
+    bcttv1: [{ code: "5.1", label: "Information on consequences" }]
+    com_b: [reflective-motivation]
 
-  # ---- Reflection hooks (link education → diary) -----------------------------
-  - id: steady.units.your-week-in-units
-    kind: education
-    surface: education.reflection
-    audience: all
-    contraindications: [dependence-flagged]
+  # ---- Reflection hooks (link education → diary)
+  - id: alcohol.units.your-week-in-units
+    type: education
     body: >
       Your diary says last week was {{week_units}} units. Knowing what you now
       know about pours and strengths — does that number feel about right, or
       is the diary missing a few? (Updating it is a win, not a confession.)
+    slots: [week_units]
+    bcttv1: [{ code: "2.3", label: "Self-monitoring of behaviour" }]
+    com_b: [psychological-capability]
 
-  - id: steady.units.quiz-hook
-    kind: education
-    surface: education.reflection
-    audience: all
-    contraindications: []
+  - id: alcohol.units.quiz-hook
+    type: education
     body: >
       Quick one: which has more units — a large glass of wine, or a pint of
       5% lager? ({{quiz_answer_reveal}}). Most people get this wrong, which
       is exactly why counting drinks undercounts.
+    slots: [quiz_answer_reveal]
+    bcttv1: [{ code: "2.3", label: "Self-monitoring of behaviour" }]
+    com_b: [psychological-capability]

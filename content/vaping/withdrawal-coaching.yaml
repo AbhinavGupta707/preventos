@@ -1,18 +1,22 @@
-# Exhale — withdrawal coaching atoms (WPV.2c)
-# STATUS: DRAFT — not user-deliverable without compliance/ sign-off entry.
-pack: vaping
-file: withdrawal-coaching
-status: DRAFT
-version: 0.1.0
+meta:
+  pack: vaping
+  programme: Exhale
+  module: withdrawal-coaching
+  status: draft
+  schema: preventos.content-atom/0.1
+  version: "0.1.0"
+  language: en-GB
+  defaults:
+    vertical: vaping
+    reading_age: 9
+    tone: autonomy-supportive
+    channels: [app, web]
+    contraindications: []
 
 atoms:
-  - id: vap-withdraw-001
-    type: coaching_card
+  - id: vaping.withdrawal.what-to-expect
+    type: info_card
     title: "What to expect when you cut down"
-    audience: adult
-    framing: [autonomy, performance]
-    contraindications: []
-    status: draft
     body: |
       Nicotine leaves your system fast — that's actually good news. The
       uncomfortable part is short. Most people notice the strongest pull in
@@ -25,14 +29,16 @@ atoms:
 
       Every craving you ride out makes the next one weaker. That's not a
       slogan; it's how habituation works.
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "5.1"
+        label: "Information about health consequences"
+    com_b:
+      - automatic-motivation
 
-  - id: vap-withdraw-002
-    type: coaching_card
+  - id: vaping.withdrawal.cravings-3-minute-truth
+    type: info_card
     title: "Cravings: the 3-minute truth"
-    audience: adult
-    framing: [autonomy, performance]
-    contraindications: []
-    status: draft
     body: |
       A craving feels permanent while it's happening. It isn't. Untouched,
       a craving peaks and passes in about 3–5 minutes — faster than most
@@ -46,15 +52,17 @@ atoms:
       You don't have to win an argument with the craving. You just have to
       outlast it. You always can — it has a timer and you don't.
     slots:
-      replacement_menu_link: deep link into the user's boredom-replacement menu
+      - replacement_menu_link
+    tone: practical
+    bcttv1:
+      - code: "1.4"
+        label: "Action planning"
+    com_b:
+      - psychological-capability
 
-  - id: vap-withdraw-003
-    type: coaching_card
+  - id: vaping.withdrawal.irritability
+    type: info_card
     title: "Irritability is rented, not owned"
-    audience: adult
-    framing: [autonomy]
-    contraindications: []
-    status: draft
     body: |
       Short fuse today? That's the step-down talking, not your personality.
       It's temporary chemistry, and it loosens its grip within days.
@@ -63,14 +71,16 @@ atoms:
       snappy for a few days — it's not you"). Most people respond with more
       support than you'd expect, and saying it out loud makes you more
       committed, not less.
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "3.1"
+        label: "Social support (unspecified)"
+    com_b:
+      - social-opportunity
 
-  - id: vap-withdraw-004
-    type: coaching_card
+  - id: vaping.withdrawal.foggy-focus
+    type: info_card
     title: "Foggy focus — and when it clears"
-    audience: adult
-    framing: [performance]
-    contraindications: []
-    status: draft
     body: |
       Concentration can dip for the first week after a step down. Your brain
       got used to nicotine punctuating your attention; it's relearning how to
@@ -81,14 +91,16 @@ atoms:
       best hours. By week two, most people report their focus is steadier
       than it was while vaping — no more attention tax every 40 minutes when
       the nicotine dipped.
+    tone: practical
+    bcttv1:
+      - code: "1.2"
+        label: "Problem solving"
+    com_b:
+      - physical-opportunity
 
-  - id: vap-withdraw-005
-    type: coaching_card
+  - id: vaping.withdrawal.sleep-while-stepping-down
+    type: info_card
     title: "Sleep while stepping down"
-    audience: adult
-    framing: [performance]
-    contraindications: []
-    status: draft
     body: |
       Nicotine is a stimulant, so cutting it down usually improves sleep —
       but the first few nights can be restless while your system adjusts,
@@ -99,14 +111,16 @@ atoms:
       hours before bed. Pushing your evening puffs earlier is one of the
       highest-value moves in the whole programme — it improves tonight AND
       lowers tomorrow's dependence.
+    tone: practical
+    bcttv1:
+      - code: "1.4"
+        label: "Action planning"
+    com_b:
+      - physical-opportunity
 
-  - id: vap-withdraw-006
-    type: coaching_card
+  - id: vaping.withdrawal.hungrier-than-usual
+    type: info_card
     title: "Hungrier than usual?"
-    audience: adult
-    framing: [appearance, performance]
-    contraindications: []
-    status: draft
     body: |
       Nicotine suppresses appetite, so stepping down can make you feel
       hungrier for a couple of weeks. It settles.
@@ -114,14 +128,16 @@ atoms:
       Cheap insurance: keep crunchy, low-effort things within reach —
       carrot sticks, apples, sugar-free gum, sparkling water. The hand-to-
       mouth motion does double duty as a craving replacement.
+    tone: practical
+    bcttv1:
+      - code: "8.2"
+        label: "Behaviour substitution"
+    com_b:
+      - physical-opportunity
 
-  - id: vap-withdraw-007
-    type: coaching_card
+  - id: vaping.withdrawal.morning-pull-ttfv
+    type: info_card
     title: "The morning pull (your TTFV is the dial)"
-    audience: adult
-    framing: [autonomy, performance]
-    contraindications: []
-    status: draft
     body: |
       How soon you reach for the vape after waking is the single best measure
       of how much grip nicotine has — and the single best place to loosen it.
@@ -131,15 +147,17 @@ atoms:
       win and big enough to matter — stack a few of those wins and your
       whole day's pattern shifts with it.
     slots:
-      current_ttfv: user's current time-to-first-vape, plain-language
+      - current_ttfv
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "1.1"
+        label: "Goal setting (behaviour)"
+    com_b:
+      - reflective-motivation
 
-  - id: vap-withdraw-008
-    type: coaching_card
+  - id: vaping.withdrawal.what-you-get-back
+    type: info_card
     title: "What you get back, week by week"
-    audience: adult
-    framing: [appearance, performance, savings]
-    contraindications: []
-    status: draft
     body: |
       This isn't only about giving something up. Track what's arriving:
 
@@ -149,20 +167,22 @@ atoms:
       - **Week 3–4:** workouts and stairs feel easier; breath is fresher;
         your focus stops being hostage to the next puff.
       - **Every week:** money that used to go up in vapour stays yours —
-        {{savings_to_date}} so far.
+        {savings_to_date} so far.
 
       Pick the one that matters most to you and we'll make it your milestone
       marker.
     slots:
-      savings_to_date: computed from savings rail
+      - savings_to_date
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "2.2"
+        label: "Feedback on behaviour"
+    com_b:
+      - reflective-motivation
 
-  - id: vap-withdraw-009
-    type: script
+  - id: vaping.withdrawal.rough-patch-checkin
+    type: message
     title: "Rough-patch check-in (coach prompt copy)"
-    audience: adult
-    framing: [autonomy]
-    contraindications: []
-    status: draft
     body: |
       Sounds like today's been heavier than usual. That happens on the way
       down — it doesn't undo anything you've built.
@@ -174,3 +194,9 @@ atoms:
 
       You're allowed to make the plan easier. Finishing a gentler plan beats
       abandoning a brutal one.
+    tone: autonomy-supportive
+    bcttv1:
+      - code: "1.2"
+        label: "Problem solving"
+    com_b:
+      - psychological-capability
