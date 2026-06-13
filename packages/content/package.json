@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@preventos/domain": "workspace:*",
+    "@preventos/outcomes": "workspace:*",
     "@preventos/shared": "workspace:*",
     "yaml": "^2.8.0",
     "zod": "^3.25.0"

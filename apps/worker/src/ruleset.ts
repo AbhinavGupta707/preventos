@@ -3,9 +3,13 @@ import { ruleSetSchema, type RuleSet } from "@preventos/decisions";
 /**
  * Default anchor rules for the decision tick — daily morning/evening
  * touchpoints per vertical, arbitrated into one cross-programme budget.
- * Atom refs are placeholders until the canonical content migration (WP4.2m)
- * pins real atom ids; the worker records refs, it never renders content.
- * Vertical packs will ship richer rule sets through content/ config.
+ *
+ * Every `send_atom` ref names a real atom in the content catalog and the one
+ * `schedule_check_in` ref names a recognised outcome id; the worker fails fast
+ * at boot (and CI fails) if any ref dangles — see refguard.ts. This maps onto
+ * existing pack atoms as an interim anchor set: vertical packs will ship richer
+ * rule sets through content/ config and supersede this default. The worker
+ * records refs, it never renders content.
  */
 export const DEFAULT_RULE_SET: RuleSet = ruleSetSchema.parse({
   version: "svc-default-1",
@@ -18,7 +22,7 @@ export const DEFAULT_RULE_SET: RuleSet = ruleSetSchema.parse({
         { field: "kind", op: "eq", value: "morning_anchor" },
         { field: "vertical", op: "eq", value: "smoking" },
       ],
-      then: { kind: "send_atom", ref: "smoking.anchor.morning.v0" },
+      then: { kind: "send_atom", ref: "smoking.jitai.morning-1" },
     },
     {
       id: "smoking-evening-anchor",
@@ -28,7 +32,7 @@ export const DEFAULT_RULE_SET: RuleSet = ruleSetSchema.parse({
         { field: "kind", op: "eq", value: "evening_anchor" },
         { field: "vertical", op: "eq", value: "smoking" },
       ],
-      then: { kind: "send_atom", ref: "smoking.anchor.evening.v0" },
+      then: { kind: "send_atom", ref: "smoking.jitai.after-work-1" },
     },
     {
       id: "smoking-quit-countdown",
@@ -38,7 +42,7 @@ export const DEFAULT_RULE_SET: RuleSet = ruleSetSchema.parse({
         { field: "kind", op: "eq", value: "quit_countdown" },
         { field: "vertical", op: "eq", value: "smoking" },
       ],
-      then: { kind: "send_atom", ref: "smoking.quit-countdown.v0" },
+      then: { kind: "send_atom", ref: "smoking.jitai.quit-eve" },
     },
     {
       id: "smoking-outcome-window",
@@ -48,7 +52,7 @@ export const DEFAULT_RULE_SET: RuleSet = ruleSetSchema.parse({
         { field: "kind", op: "eq", value: "outcome_window" },
         { field: "vertical", op: "eq", value: "smoking" },
       ],
-      then: { kind: "schedule_check_in", ref: "smoking.outcome.russell-28d.v0" },
+      then: { kind: "schedule_check_in", ref: "smoking.quit.russell_standard_4w" },
     },
     {
       id: "vaping-morning-anchor",
@@ -58,7 +62,7 @@ export const DEFAULT_RULE_SET: RuleSet = ruleSetSchema.parse({
         { field: "kind", op: "eq", value: "morning_anchor" },
         { field: "vertical", op: "eq", value: "vaping" },
       ],
-      then: { kind: "send_atom", ref: "vaping.anchor.morning.v0" },
+      then: { kind: "send_atom", ref: "vaping.withdrawal.morning-pull-ttfv" },
     },
     {
       id: "alcohol-morning-anchor",
@@ -68,7 +72,7 @@ export const DEFAULT_RULE_SET: RuleSet = ruleSetSchema.parse({
         { field: "kind", op: "eq", value: "morning_anchor" },
         { field: "vertical", op: "eq", value: "alcohol" },
       ],
-      then: { kind: "send_atom", ref: "alcohol.anchor.morning.v0" },
+      then: { kind: "send_atom", ref: "alcohol.norm.perception-check" },
     },
     {
       id: "alcohol-evening-anchor",
@@ -78,7 +82,7 @@ export const DEFAULT_RULE_SET: RuleSet = ruleSetSchema.parse({
         { field: "kind", op: "eq", value: "evening_anchor" },
         { field: "vertical", op: "eq", value: "alcohol" },
       ],
-      then: { kind: "send_atom", ref: "alcohol.anchor.evening.v0" },
+      then: { kind: "send_atom", ref: "alcohol.social.builder.intro" },
     },
     {
       id: "sleep-morning-diary",
@@ -88,7 +92,7 @@ export const DEFAULT_RULE_SET: RuleSet = ruleSetSchema.parse({
         { field: "kind", op: "eq", value: "morning_anchor" },
         { field: "vertical", op: "eq", value: "sleep" },
       ],
-      then: { kind: "send_atom", ref: "sleep.diary.morning-prompt.v0" },
+      then: { kind: "send_atom", ref: "sleep.sc.morning-light" },
     },
     {
       id: "sleep-evening-winddown",
@@ -98,7 +102,7 @@ export const DEFAULT_RULE_SET: RuleSet = ruleSetSchema.parse({
         { field: "kind", op: "eq", value: "evening_anchor" },
         { field: "vertical", op: "eq", value: "sleep" },
       ],
-      then: { kind: "send_atom", ref: "sleep.winddown.evening.v0" },
+      then: { kind: "send_atom", ref: "sleep.sc.nudge-winddown" },
     },
   ],
 });

@@ -1,6 +1,7 @@
 import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { OUTCOME_REF_IDS } from "@preventos/outcomes";
 import { compileClaimsRegister, loadClaimsRegister } from "./claims.js";
 import { loadSignoffRegistry } from "./signoff.js";
 import { validatePack } from "./validate.js";
@@ -37,7 +38,7 @@ async function main(args: readonly string[]): Promise<number> {
 
   let failed = false;
   for (const packDir of await resolvePackDirs(args)) {
-    const report = await validatePack(packDir, compiled, signoff);
+    const report = await validatePack(packDir, compiled, signoff, OUTCOME_REF_IDS);
     const status = report.errors.length === 0 ? "ok" : "FAIL";
     const hash = report.catalogHash === undefined ? "" : ` catalog=${report.catalogHash.slice(0, 12)}`;
     out(`[${status}] ${report.pack}: ${report.atomCount} atoms${hash}`);

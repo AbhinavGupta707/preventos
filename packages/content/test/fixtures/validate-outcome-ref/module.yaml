@@ -1,0 +1,21 @@
+meta:
+  pack: smoking
+  module: fixture
+  status: draft
+  schema: preventos.content-atom/0.1
+  defaults:
+    vertical: smoking
+atoms:
+  # Well-formed outcome_ref (passes the regex) that names no real outcome id —
+  # content:validate must reject it as a dangling reference.
+  - id: smoking.fixture.dangling-outcome
+    type: outcome_prompt
+    title: Dangling outcome ask
+    body: "How are things going since your quit day?"
+    outcome_ref: smoking.quit.does_not_exist
+    options:
+      - "Fine"
+      - "Not great"
+    bcttv1:
+      - { code: "2.3", label: "Self-monitoring of behaviour" }
+    com_b: [reflective-motivation]

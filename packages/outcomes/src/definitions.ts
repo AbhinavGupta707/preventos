@@ -163,6 +163,34 @@ export const OUTCOME_DEFINITIONS: readonly OutcomeDefinition[] = [
   SLEEP_DIARY_TRAJECTORY,
 ];
 
+/**
+ * Outcome refs the platform RECOGNISES but does not yet EVALUATE. The smoking
+ * pack's outcome prompts (PRD §5.1 outcome set) commit to follow-up measures
+ * whose clinical parameters are signed off in the WP10.3 parameter sheet, not
+ * invented here. Listing their canonical ids lets content `outcome_ref` and
+ * rule-set `schedule_check_in` refs resolve through one namespace while keeping
+ * the evaluator-backed OUTCOME_DEFINITIONS honest about what can actually be
+ * computed today. When WP10.3 lands params, the id graduates into a real
+ * OutcomeDefinition and drops out of this list.
+ */
+export const DECLARED_OUTCOME_REFS: readonly string[] = [
+  "smoking.quit.point_prevalence_7d",
+  "smoking.quit.russell_standard_12w",
+  "smoking.quit.russell_standard_6m",
+  "smoking.consumption.cigs_per_day",
+];
+
+/**
+ * The single set of outcome ids a ref may point at: every evaluable definition
+ * plus every declared-pending ref. Both the worker boot guard and
+ * `content:validate` reject refs outside this set, so a typo or a dangling
+ * reference fails fast rather than silently mis-routing an outcome.
+ */
+export const OUTCOME_REF_IDS: ReadonlySet<string> = new Set<string>([
+  ...OUTCOME_DEFINITIONS.map((d) => d.id),
+  ...DECLARED_OUTCOME_REFS,
+]);
+
 function canonicalise(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(canonicalise);
   if (value !== null && typeof value === "object") {
