@@ -1,6 +1,7 @@
 "use client";
 
 import { useAppStore, todayIso } from "../../../lib/store/app-store";
+import { syncApp } from "../../../lib/sync";
 import { DRINK_PRESETS, drinkUnits, WEEKLY_LOW_RISK_UNITS } from "../../../lib/calculators/units";
 import { dayUnits, lastSevenDates, weekSummary } from "../../../lib/diary/drinks";
 
@@ -25,6 +26,7 @@ export default function DrinkLogPage() {
         { id: `${today}-${presetId}-${current.drinkLog.length}`, date: today, label: preset.label, units },
       ],
     }));
+    syncApp({ action: "drink", date: today, units, label: preset.label });
   }
 
   function removeDrink(id: string) {

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAppStore } from "../../../lib/store/app-store";
+import { syncApp } from "../../../lib/sync";
 
 export default function ConsentPage() {
   const { state, hydrated, update, erase } = useAppStore();
@@ -15,6 +16,7 @@ export default function ConsentPage() {
       ...current,
       consent: { ...current.consent, [key]: value, updatedAt: new Date().toISOString() },
     }));
+    syncApp({ action: "consent", key, value });
   }
 
   function exportData() {

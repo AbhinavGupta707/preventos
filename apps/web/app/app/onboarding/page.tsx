@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useAppStore, todayIso } from "../../../lib/store/app-store";
+import { syncApp } from "../../../lib/sync";
 import type { AppProgramme } from "../../../lib/store/types";
 
 const PROGRAMME_OPTIONS: ReadonlyArray<{ slug: AppProgramme; label: string }> = [
@@ -33,18 +34,23 @@ export default function OnboardingPage() {
     const data = new FormData(event.currentTarget);
     const quitDate = String(data.get("quitDate") ?? "");
     const dailySpend = Number(data.get("dailySpend") ?? 0);
+    const reminders = data.get("consent-reminders") === "on";
+    const analytics = data.get("consent-analytics") === "on";
     update((current) => ({
       ...current,
       onboarded: true,
       programmes: [...programmes],
       quitDate: needsQuitDate && quitDate ? quitDate : current.quitDate,
       dailySpendGbp: dailySpend > 0 ? dailySpend : current.dailySpendGbp,
-      consent: {
-        reminders: data.get("consent-reminders") === "on",
-        analytics: data.get("consent-analytics") === "on",
-        updatedAt: new Date().toISOString(),
-      },
+      consent: { reminders, analytics, updatedAt: new Date().toISOString() },
     }));
+    syncApp({
+      action: "enrol",
+      programmes: [...programmes],
+      reminders,
+      analytics,
+      ...(needsQuitDate && quitDate ? { quitDate } : {}),
+    });
     setSaved(true);
   }
 

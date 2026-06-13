@@ -2,6 +2,7 @@
 
 import type { FormEvent } from "react";
 import { useAppStore, todayIso } from "../../../../lib/store/app-store";
+import { syncApp } from "../../../../lib/sync";
 import { sleepEntryMetrics } from "../../../../lib/diary/sleep-entry";
 import { sleepEntrySchema } from "../../../../lib/store/types";
 
@@ -29,6 +30,7 @@ export default function SleepDiaryPage() {
       ...current,
       sleepDiary: [...current.sleepDiary.filter((entry) => entry.date !== today), parsed.data],
     }));
+    syncApp({ action: "sleep", ...parsed.data });
   }
 
   return (
