@@ -40,7 +40,7 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 ### Wave 3 — from deep review (see REVIEW_FINDINGS.md for full register)
 | WP | Title | Status | Notes |
 |----|-------|--------|-------|
-| W3-WIRE | Connect apps to live API | open | web localStorage→API, mobile MockApi→fetch adapter (ApiPort), console→real events, worker handlers register. The critical path to a real end-to-end product |
+| W3-WIRE | Connect apps to live API | **claimed** | wp/w3-wire-live-api | web localStorage→API, mobile MockApi→fetch adapter (ApiPort), console→real events, worker handlers register. The critical path to a real end-to-end product |
 | W3-GUARDS | Worker fail-fast on dangling refs | open | validate rule-set atom refs + outcome_refs against catalog at boot + in CI; reconcile outcome_ref naming |
 | W3-STEADY | Alcohol hard-stop in rules engine (inv4) | open | AUDIT score → unbypassable hardstop rule + contraindication gate at contact-send + integration test; **gates Steady go-live** |
 | W3-SAFEPORT | Extract pure classifier for mobile | open | split @preventos/safety so mobile uses the 843-validated classifier, not its 11-pattern gate |
