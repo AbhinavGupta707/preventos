@@ -37,10 +37,23 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 | AV.2 | Companion state engine (avatar) | **done** | main (integration session) | `@preventos/companion`: pure `companionView(snapshot)` → mood/dialogueSlot/evolutionStage/animation. Ethical rules enforced+tested (10/10): steps aside in crisis (invisible+silent), lapse→care never blame, deterministic days-won evolution (no loot), returns governed slot ids not copy. `demo/index.html`: runnable animated SVG reference (7 moods, days-won evolution, 4s/6s breathing, reduced-motion). Rendered + verified inline |
 | AV.1/AV.3 | Companion Rive rig + app integration | open | — | AV.1 = commission Rive rig (owner/design); AV.3 = wire `companionView` into mobile home/SOS/coach + crisis step-aside re-proof |
 
+### Wave 3 — from deep review (see REVIEW_FINDINGS.md for full register)
+| WP | Title | Status | Notes |
+|----|-------|--------|-------|
+| W3-WIRE | Connect apps to live API | open | web localStorage→API, mobile MockApi→fetch adapter (ApiPort), console→real events, worker handlers register. The critical path to a real end-to-end product |
+| W3-GUARDS | Worker fail-fast on dangling refs | open | validate rule-set atom refs + outcome_refs against catalog at boot + in CI; reconcile outcome_ref naming |
+| W3-STEADY | Alcohol hard-stop in rules engine (inv4) | open | AUDIT score → unbypassable hardstop rule + contraindication gate at contact-send + integration test; **gates Steady go-live** |
+| W3-SAFEPORT | Extract pure classifier for mobile | open | split @preventos/safety so mobile uses the 843-validated classifier, not its 11-pattern gate |
+| W3-SECHARD | Bounded security hardening | open | web waitlist IP-spoof; esbuild/postcss/uuid dep bumps; event-schema enum hardening |
+| W3-DATA | Data-integrity bounded | open | enrolment(person_id) index; plan version/audit; **product decision** on diary mutability before any append-only triggers |
+| W3-TESTCI | CI/test hardening | open | serialise DB-test setup (advisory lock); app-layer verbatim + hard-stop integration tests |
+| FIXED | API safety gate + drizzle SQLi | **done** | main (integration session) | screenInboundText classifies inbound free text, tier-1→escalation case (2 tests); drizzle 0.44.2→0.45.2 |
+
 Statuses: open → claimed(session/branch) → in_review(PR) → done(evidence).
 
 ## Session log
 - 2026-06-12 · spine session: plan v3 adopted; WP1.1a built and verified; repo initialized.
+- 2026-06-13 · integration session: merged 6 wave-2 PRs (CI green), resolved @preventos/instruments collision (kept canonical, adapted mobile, fixed index-vs-score scoring bug); built @preventos/companion (AV.2) + animated demo; ran 7-dimension adversarial review (40 agents) → REVIEW_FINDINGS.md; fixed CRITICAL API safety gate + HIGH drizzle SQLi.
 - 2026-06-12 · V.4c session (worktree): Nightshift content pack drafted under wellbeing framing (E16); claims blocklist seeded in content/sleep/README.md pending WP4.2 lint/WP10.10 register.
 - 2026-06-12 · SVC session (worktree wp/svc-services): platform services assembled (apps/api, apps/worker, tools/journey-sim); Demo A loop proven end-to-end over HTTP against Postgres.
 - 2026-06-12 · 4.2m session (worktree): content pipeline + canonical migration + instruments registry; ratchet emptied; claims lint live in CI.
