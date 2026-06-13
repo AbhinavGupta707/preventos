@@ -73,3 +73,20 @@ provider, so CI and local runs never spend money. This package has no db
 dependency; a lint boundary keeps the Anthropic SDK importable only here (the
 "sole LLM path"), and the Fireworks adapter speaks plain HTTP behind the same
 `CoachLlmProvider` port.
+
+## MI-adherence eval (WP6.2)
+
+`runMiEval({ provider, claimsFences })` runs the coach over a per-vertical
+synthetic corpus (`MI_CORPUS`, ~28 tier-0 turns across smoking/vaping/alcohol/
+sleep) through the full pre→LLM→post pipeline and judges each reply with a
+deterministic motivational-interviewing rubric (`scoreMiAdherence`): brief, at
+most one open question, reflect/affirm, no righting reflex, no shame. It returns
+overall and per-vertical adherence rates plus the failing cases.
+
+The CI gate (`test/mi-eval.test.ts`) runs it against the **Fake provider** (no
+key, zero spend) and asserts overall adherence **≥ 90%**. The rubric is
+calibrated at both ends: two in-corpus replies are deliberately sub-par (a
+righting-reflex lecture, question-stacking) so the gate is a real floor, and the
+`NON_ADHERENT_CONTROLS` (clearly non-MI replies) must score 0%. The same harness
+scores a real provider — pass the Fireworks or Claude provider to `runMiEval` to
+measure a live model with the identical yardstick.
