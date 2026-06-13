@@ -93,6 +93,9 @@ importers:
       '@preventos/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@preventos/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@preventos/outcomes':
         specifier: workspace:*
         version: link:../../packages/outcomes
@@ -106,15 +109,24 @@ importers:
         specifier: 19.2.3
         version: 19.2.3(react@19.2.3)
     devDependencies:
+      '@preventos/events':
+        specifier: workspace:*
+        version: link:../../packages/events
       '@types/node':
         specifier: ^22.18.0
         version: 22.19.21
+      '@types/pg':
+        specifier: ^8.15.4
+        version: 8.20.0
       '@types/react':
         specifier: ~19.2.2
         version: 19.2.17
       '@types/react-dom':
         specifier: ~19.2.2
         version: 19.2.3(@types/react@19.2.17)
+      pg:
+        specifier: ^8.16.0
+        version: 8.21.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
