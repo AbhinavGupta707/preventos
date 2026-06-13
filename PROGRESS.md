@@ -42,7 +42,7 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 |----|-------|--------|-------|
 | W3-WIRE | Connect apps to live API | open | web localStorage→API, mobile MockApi→fetch adapter (ApiPort), console→real events, worker handlers register. The critical path to a real end-to-end product |
 | W3-GUARDS | Worker fail-fast on dangling refs | open | validate rule-set atom refs + outcome_refs against catalog at boot + in CI; reconcile outcome_ref naming |
-| W3-STEADY | Alcohol hard-stop in rules engine (inv4) | open | AUDIT score → unbypassable hardstop rule + contraindication gate at contact-send + integration test; **gates Steady go-live** |
+| W3-STEADY | Alcohol hard-stop in rules engine (inv4) | **claimed** | wp/w3-steady-alcohol-hardstop | AUDIT score → unbypassable hardstop rule + contraindication gate at contact-send + integration test; **gates Steady go-live** |
 | W3-SAFEPORT | Extract pure classifier for mobile | open | split @preventos/safety so mobile uses the 843-validated classifier, not its 11-pattern gate |
 | W3-SECHARD | Bounded security hardening | open | web waitlist IP-spoof; esbuild/postcss/uuid dep bumps; event-schema enum hardening |
 | W3-DATA | Data-integrity bounded | open | enrolment(person_id) index; plan version/audit; **product decision** on diary mutability before any append-only triggers |
