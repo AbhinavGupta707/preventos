@@ -171,6 +171,9 @@ importers:
       '@preventos/api-client':
         specifier: workspace:*
         version: link:../../packages/api-client
+      '@preventos/companion':
+        specifier: workspace:*
+        version: link:../../packages/companion
       '@preventos/decisions':
         specifier: workspace:*
         version: link:../../packages/decisions

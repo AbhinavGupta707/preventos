@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { Animated, Easing, Pressable, ScrollView, StyleSheet, View } from "react-native";
 
 import { rescueMode } from "../src/core/rescue";
-import { todayIso, useAppStore } from "../src/state/store";
+import { daysWonFor, todayIso, useAppStore } from "../src/state/store";
+import { Companion } from "../src/ui/Companion";
 import { Button, Screen, Text } from "../src/ui/primitives";
 import { color, radius, space } from "../src/ui/tokens";
 
@@ -73,10 +74,16 @@ const DISTRACTIONS: Record<"craving" | "urge", readonly string[]> = {
 
 export default function Rescue() {
   const enrolments = useAppStore((s) => s.enrolments);
+  const lapses = useAppStore((s) => s.lapses);
   const recordLapse = useAppStore((s) => s.recordLapse);
   const mode = rescueMode(
     enrolments.map((e) => e.vertical),
     new Date().getHours(),
+  );
+  const today = todayIso();
+  const companionDaysWon = enrolments.reduce(
+    (max, e) => Math.max(max, daysWonFor(e, lapses[e.vertical] ?? [], today)),
+    0,
   );
   const [secondsLeft, setSecondsLeft] = useState(180);
 
@@ -95,6 +102,13 @@ export default function Rescue() {
   return (
     <Screen background={bg} testID="rescue-screen">
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+        <Companion
+          context="sos"
+          sosBreathingActive
+          daysWon={companionDaysWon}
+          hour={new Date().getHours()}
+          accentColor={night ? color.nightAccent : color.primarySoft}
+        />
         {night ? (
           <View testID="rescue-night">
             <Text variant="title" color={ink}>

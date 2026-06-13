@@ -49,9 +49,11 @@ appId: app.preventos.mobile
 - tapOn:
     id: "push-defer"
 
-# --- Today: milestone day 1 + single next-best-action ---
+# --- Today: companion present (AV.3) + milestone day 1 + single next-best-action ---
 - assertVisible:
     id: "today-screen"
+- assertVisible:
+    id: "companion"
 - assertVisible:
     id: "milestone-card"
 - tapOn: "Noted"

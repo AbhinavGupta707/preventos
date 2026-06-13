@@ -8,6 +8,9 @@ appId: app.preventos.mobile
     id: "tab-coach"
 - assertVisible:
     id: "coach-screen"
+# AV.3: the companion is present on the coach surface during normal chat…
+- assertVisible:
+    id: "companion"
 - tapOn:
     id: "coach-input"
 - inputText: "I want to kill myself"
@@ -21,6 +24,9 @@ appId: app.preventos.mobile
     visible:
       id: "crisis-screen"
     timeout: 5000
+# …and is provably ABSENT on the crisis surface (invariant 1, presentation side).
+- assertNotVisible:
+    id: "companion"
 - assertVisible:
     id: "crisis-samaritans"
 - assertVisible: "(?s).*Call 116 123.*"

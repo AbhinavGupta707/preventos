@@ -6,6 +6,7 @@ import { api } from "../../src/api";
 import type { NextAction } from "../../src/core/nextBestAction";
 import { crossedMilestones } from "../../src/core/streaks";
 import { daysWonFor, todayIso, useAppStore } from "../../src/state/store";
+import { Companion } from "../../src/ui/Companion";
 import { Button, Card, Screen, Text } from "../../src/ui/primitives";
 import { color, space } from "../../src/ui/tokens";
 
@@ -65,10 +66,24 @@ export default function Today() {
     return null;
   }, [enrolments, lapses, milestonesAcked, today]);
 
+  // The companion reflects the person's longest active streak (cross-programme).
+  const companionDaysWon = useMemo(
+    () => enrolments.reduce((max, e) => Math.max(max, daysWonFor(e, lapses[e.vertical] ?? [], today)), 0),
+    [enrolments, lapses, today],
+  );
+
   return (
     <Screen testID="today-screen">
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         <Text variant="display">Today</Text>
+        <Companion
+          context="home"
+          daysWon={companionDaysWon}
+          hour={new Date().getHours()}
+          recentLapse={pendingDebrief}
+          diaryLoggedToday={lastCheckinDate === today}
+          milestoneJustReached={milestone !== null}
+        />
         <View style={{ height: space.md }} />
 
         {milestone ? (

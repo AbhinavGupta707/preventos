@@ -12,6 +12,8 @@ import {
 
 import { api } from "../../src/api";
 import { chatReducer, emptyChat } from "../../src/core/chat";
+import { daysWonFor, todayIso, useAppStore } from "../../src/state/store";
+import { Companion } from "../../src/ui/Companion";
 import { Screen, Text } from "../../src/ui/primitives";
 import { color, radius, space, type } from "../../src/ui/tokens";
 
@@ -22,6 +24,13 @@ export default function Coach() {
   const [state, dispatch] = useReducer(chatReducer, undefined, emptyChat);
   const [draft, setDraft] = useState("");
   const scrollRef = useRef<ScrollView>(null);
+  const enrolments = useAppStore((s) => s.enrolments);
+  const lapses = useAppStore((s) => s.lapses);
+  const today = todayIso();
+  const companionDaysWon = enrolments.reduce(
+    (max, e) => Math.max(max, daysWonFor(e, lapses[e.vertical] ?? [], today)),
+    0,
+  );
 
   // Crisis gate fired → scripted crisis flow, full-screen, nothing else.
   useEffect(() => {
@@ -57,6 +66,7 @@ export default function Coach() {
         <Text variant="caption" color={color.inkFaint}>
           Preview — the live coach arrives with a later update. In a crisis, this chat steps aside.
         </Text>
+        <Companion context="coach" daysWon={companionDaysWon} hour={new Date().getHours()} />
         <View style={{ height: space.sm }} />
 
         <ScrollView

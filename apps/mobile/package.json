@@ -5,6 +5,7 @@
   "dependencies": {
     "@expo/vector-icons": "^15.1.1",
     "@preventos/api-client": "workspace:*",
+    "@preventos/companion": "workspace:*",
     "@preventos/decisions": "workspace:*",
     "@preventos/domain": "workspace:*",
     "@preventos/instruments": "workspace:*",
