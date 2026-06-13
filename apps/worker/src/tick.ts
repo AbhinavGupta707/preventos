@@ -1,12 +1,15 @@
 import { and, desc, eq, gte, isNotNull } from "drizzle-orm";
 import { checkConsent } from "@preventos/consent";
+import { isContraindicated, type ResolvedAtom } from "@preventos/content";
 import { appendDecision, schema, type Db } from "@preventos/db";
 import {
   arbitrate,
   canSendProactive,
   decisionPoints,
   DEFAULT_BURDEN,
+  deriveAlcoholFlags,
   evaluateRules,
+  mandatoryCandidate,
   type ArbitrationState,
   type BurdenConfig,
   type Candidate,
@@ -23,6 +26,14 @@ export interface TickOptions {
   readonly burden?: BurdenConfig;
   readonly timeZone?: string;
   readonly windowMinutes?: number;
+  /**
+   * Resolves a content atom id to its resolved atom, for the invariant-4
+   * contraindication gate. `main.ts` supplies a catalog-backed resolver and fails
+   * closed at boot if the catalog is missing. Absent here, unknown atoms are
+   * treated as non-contraindicated — a dependence-flagged person is still
+   * protected by the unbypassable hard-stop that preempts before any send.
+   */
+  readonly atomFor?: (atomId: string) => ResolvedAtom | undefined;
 }
 
 export interface TickResult {
@@ -58,6 +69,24 @@ interface PersonTickContext {
   readonly timeZone: string;
   readonly windowMinutes: number;
   readonly ruleSet: RuleSet;
+  readonly atomFor: (atomId: string) => ResolvedAtom | undefined;
+}
+
+/**
+ * Invariant-4 contraindication gate: an atom is blocked when it resolves to a
+ * content atom contraindicated for one of the person's assessment flags. Unknown
+ * atoms (e.g. placeholder anchor refs absent from the catalog) are not known
+ * moderation content, so they pass — a dependence-flagged person is routed away
+ * from them by the unbypassable hard-stop before such an atom is ever chosen.
+ */
+function atomBlockedForFlags(
+  atomFor: (atomId: string) => ResolvedAtom | undefined,
+  atomId: string,
+  flags: readonly string[],
+): boolean {
+  if (flags.length === 0) return false;
+  const atom = atomFor(atomId);
+  return atom !== undefined && isContraindicated(atom, flags);
 }
 
 async function tickPerson(
@@ -96,6 +125,22 @@ async function tickPerson(
     }),
   );
 
+  // Assessment flags + AUDIT-C score drive the alcohol dependence hard-stop
+  // (invariant 4). Stored flags are authoritative; the score is re-derived too so
+  // a flagged person stays protected even if a row predates flag persistence.
+  const assessmentFlags = new Set<string>();
+  let auditScore: number | undefined;
+  for (const enrolment of enrolments) {
+    const assessment = enrolment.assessment;
+    if (assessment === null) continue;
+    for (const flag of assessment.flags) assessmentFlags.add(flag);
+    if (enrolment.vertical === "alcohol") {
+      auditScore = assessment.score;
+      for (const flag of deriveAlcoholFlags(assessment.score)) assessmentFlags.add(flag);
+    }
+  }
+  const personFlags = [...assessmentFlags];
+
   const enrolledVerticals = new Set(enrolments.map((enrolment) => enrolment.vertical));
   const due: { point: DecisionPoint; stage: string }[] = [];
   for (const enrolment of enrolments) {
@@ -127,6 +172,8 @@ async function tickPerson(
       vertical: point.vertical,
       stage,
       date: local.date,
+      flags: personFlags,
+      ...(auditScore !== undefined ? { auditScore } : {}),
     });
     policyVersion = evaluation.policyVersion;
     for (const candidate of evaluation.candidates) {
@@ -136,32 +183,53 @@ async function tickPerson(
   const candidates = [...candidateById.values()];
   if (candidates.length === 0) return "idle";
 
-  const chosen = arbitrate(candidates, arbitrationStateFrom(recentDecisions));
+  // Safety preemption (invariant 4 / E17): an unbypassable hard-stop candidate is
+  // delivered ahead of arbitration AND the burden governor — a scripted referral
+  // is core programme delivery, not a discretionary nudge, and a priority-100 rule
+  // can otherwise still lose arbitration to a never-served sibling's starvation
+  // boost. So an AUDIT-C-flagged person is always routed to the referral.
+  const mandatory = mandatoryCandidate(candidates);
+  const chosen = mandatory ?? arbitrate(candidates, arbitrationStateFrom(recentDecisions));
   if (chosen === undefined) return "idle";
 
-  const sentTodayRows = await db
-    .select({ occurredAt: schema.contactRecord.occurredAt })
-    .from(schema.contactRecord)
-    .where(
-      and(
-        eq(schema.contactRecord.personId, personId),
-        eq(schema.contactRecord.direction, "outbound"),
-        isNotNull(schema.contactRecord.decisionId),
-        gte(schema.contactRecord.occurredAt, new Date(ctx.now.getTime() - LOOKBACK_MS)),
-      ),
-    );
-  const sentToday = sentTodayRows
-    .map((row) => row.occurredAt)
-    .filter((occurredAt) => localStamp(occurredAt, ctx.timeZone).date === local.date);
+  let chosenAction: Readonly<Record<string, unknown>>;
+  let send: boolean;
+  let sentTodayCount = 0;
 
-  const consented = await checkConsent(db, personId, { purpose: "proactive_contact" });
-  const gate = consented
-    ? canSendProactive(sentToday, ctx.now, local.time, ctx.burden)
-    : ({ ok: false, error: "consent not granted" } as const);
+  if (mandatory !== undefined) {
+    chosenAction = { kind: chosen.action.kind, ref: chosen.action.ref, ruleId: chosen.ruleId, unbypassable: true };
+    send = true;
+  } else if (chosen.action.kind === "send_atom" && atomBlockedForFlags(ctx.atomFor, chosen.action.ref, personFlags)) {
+    // Defense in depth: a moderation atom contraindicated for a dependence-flagged
+    // person is never delivered, regardless of burden or consent.
+    chosenAction = { kind: "suppressed", reason: "contraindicated", candidateRuleId: chosen.ruleId, flags: personFlags };
+    send = false;
+  } else {
+    const sentTodayRows = await db
+      .select({ occurredAt: schema.contactRecord.occurredAt })
+      .from(schema.contactRecord)
+      .where(
+        and(
+          eq(schema.contactRecord.personId, personId),
+          eq(schema.contactRecord.direction, "outbound"),
+          isNotNull(schema.contactRecord.decisionId),
+          gte(schema.contactRecord.occurredAt, new Date(ctx.now.getTime() - LOOKBACK_MS)),
+        ),
+      );
+    const sentToday = sentTodayRows
+      .map((row) => row.occurredAt)
+      .filter((occurredAt) => localStamp(occurredAt, ctx.timeZone).date === local.date);
+    sentTodayCount = sentToday.length;
 
-  const chosenAction = gate.ok
-    ? { kind: chosen.action.kind, ref: chosen.action.ref, ruleId: chosen.ruleId }
-    : { kind: "suppressed", reason: gate.error, candidateRuleId: chosen.ruleId };
+    const consented = await checkConsent(db, personId, { purpose: "proactive_contact" });
+    const gate = consented
+      ? canSendProactive(sentToday, ctx.now, local.time, ctx.burden)
+      : ({ ok: false, error: "consent not granted" } as const);
+    chosenAction = gate.ok
+      ? { kind: chosen.action.kind, ref: chosen.action.ref, ruleId: chosen.ruleId }
+      : { kind: "suppressed", reason: gate.error, candidateRuleId: chosen.ruleId };
+    send = gate.ok;
+  }
 
   const decision = await appendDecision(db, {
     personId,
@@ -170,7 +238,7 @@ async function tickPerson(
       pointKeys: due.map(({ point }) => pointKey(point)),
       localTime: local.stamp,
       windowMinutes: ctx.windowMinutes,
-      sentTodayCount: sentToday.length,
+      sentTodayCount,
     },
     candidates: candidates as unknown as Readonly<Record<string, unknown>>[],
     policyVersion,
@@ -179,7 +247,7 @@ async function tickPerson(
   });
   await publish(db, "decision.made", { personId, decisionId: decision.id, vertical: chosen.vertical });
 
-  if (!gate.ok) return "suppressed";
+  if (!send) return "suppressed";
 
   if (chosen.action.kind === "send_atom") {
     const [contact] = await db
@@ -218,6 +286,7 @@ export async function runDecisionTick(db: Db, options: TickOptions): Promise<Tic
     timeZone: options.timeZone ?? "Europe/London",
     windowMinutes: options.windowMinutes ?? 60,
     ruleSet: options.ruleSet,
+    atomFor: options.atomFor ?? (() => undefined),
   };
   const active = await db.select().from(schema.enrolment).where(eq(schema.enrolment.status, "active"));
   const byPerson = new Map<string, EnrolmentRow[]>();

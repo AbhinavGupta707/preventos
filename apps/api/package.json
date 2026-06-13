@@ -16,6 +16,7 @@
     "@preventos/auth": "workspace:*",
     "@preventos/consent": "workspace:*",
     "@preventos/db": "workspace:*",
+    "@preventos/decisions": "workspace:*",
     "@preventos/domain": "workspace:*",
     "@preventos/events": "workspace:*",
     "@preventos/safety": "workspace:*",

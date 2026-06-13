@@ -44,6 +44,9 @@ importers:
       '@preventos/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@preventos/decisions':
+        specifier: workspace:*
+        version: link:../../packages/decisions
       '@preventos/domain':
         specifier: workspace:*
         version: link:../../packages/domain
@@ -249,6 +252,9 @@ importers:
       '@preventos/consent':
         specifier: workspace:*
         version: link:../../packages/consent
+      '@preventos/content':
+        specifier: workspace:*
+        version: link:../../packages/content
       '@preventos/db':
         specifier: workspace:*
         version: link:../../packages/db

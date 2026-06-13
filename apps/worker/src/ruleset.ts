@@ -1,4 +1,4 @@
-import { ruleSetSchema, type RuleSet } from "@preventos/decisions";
+import { ALCOHOL_DEPENDENCE_AUDIT_C_THRESHOLD, ruleSetSchema, type RuleSet } from "@preventos/decisions";
 
 /**
  * Default anchor rules for the decision tick — daily morning/evening
@@ -6,6 +6,11 @@ import { ruleSetSchema, type RuleSet } from "@preventos/decisions";
  * Atom refs are placeholders until the canonical content migration (WP4.2m)
  * pins real atom ids; the worker records refs, it never renders content.
  * Vertical packs will ship richer rule sets through content/ config.
+ *
+ * The alcohol dependence hard-stop (invariant 4 / E17) is unbypassable: it
+ * preempts arbitration and the burden governor so an AUDIT-C-flagged person is
+ * always routed to the scripted referral, never to a moderation atom. It routes
+ * to a real, hash-pinned referral atom (content/alcohol/referral-hard-stop.yaml).
  */
 export const DEFAULT_RULE_SET: RuleSet = ruleSetSchema.parse({
   version: "svc-default-1",
@@ -59,6 +64,17 @@ export const DEFAULT_RULE_SET: RuleSet = ruleSetSchema.parse({
         { field: "vertical", op: "eq", value: "vaping" },
       ],
       then: { kind: "send_atom", ref: "vaping.anchor.morning.v0" },
+    },
+    {
+      id: "alcohol-dependence-hardstop",
+      vertical: "alcohol",
+      priority: 100,
+      unbypassable: true,
+      when: [
+        { field: "vertical", op: "eq", value: "alcohol" },
+        { field: "auditScore", op: "gte", value: ALCOHOL_DEPENDENCE_AUDIT_C_THRESHOLD },
+      ],
+      then: { kind: "send_atom", ref: "alcohol.hardstop.screen.main" },
     },
     {
       id: "alcohol-morning-anchor",

@@ -1,8 +1,10 @@
+import { fileURLToPath } from "node:url";
 import pg from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { grantConsent } from "@preventos/consent";
+import { buildCatalog, loadPackDir, type ResolvedAtom } from "@preventos/content";
 import { createDb, createEnrolment, createPerson, runMigrations } from "@preventos/db";
-import { ruleSetHash, type BurdenConfig } from "@preventos/decisions";
+import { deriveAlcoholFlags, ruleSetHash, ruleSetSchema, type BurdenConfig, type RuleSet } from "@preventos/decisions";
 import type { PersonId } from "@preventos/domain";
 import { dispatchPending, publish } from "@preventos/events";
 import { DEFAULT_RULE_SET } from "../src/ruleset.js";
@@ -19,7 +21,30 @@ const at = (time: string) => new Date(`${today}T${time}:00Z`);
 
 const RELAXED: BurdenConfig = { maxProactivePerDay: 3, minGapMinutes: 60, quietStart: "22:00", quietEnd: "06:00" };
 
+// W3-STEADY fixtures. DEFAULT_RULE_SET already carries the unbypassable dependence
+// hard-stop; we add a moderation rule that targets a REAL contraindicated atom
+// (alcohol.norm.above.weekly) so the contraindication gate has something to block.
+const NORM_MODERATION_RULE = {
+  id: "alcohol-norm-moderation",
+  vertical: "alcohol",
+  priority: 60, // beats the anchors so, absent the hard-stop, it would win arbitration
+  when: [
+    { field: "kind", op: "eq", value: "morning_anchor" },
+    { field: "vertical", op: "eq", value: "alcohol" },
+  ],
+  then: { kind: "send_atom", ref: "alcohol.norm.above.weekly" },
+};
+const STEADY_RULES: RuleSet = ruleSetSchema.parse({
+  version: "test-steady-1",
+  rules: [...DEFAULT_RULE_SET.rules, NORM_MODERATION_RULE],
+});
+const STEADY_RULES_NO_HARDSTOP: RuleSet = ruleSetSchema.parse({
+  version: "test-steady-no-hardstop-1",
+  rules: [...DEFAULT_RULE_SET.rules.filter((rule) => rule.id !== "alcohol-dependence-hardstop"), NORM_MODERATION_RULE],
+});
+
 let handle: ReturnType<typeof createDb>;
+let atomFor: (id: string) => ResolvedAtom | undefined;
 
 async function setupPerson(
   pseudonym: string,
@@ -44,6 +69,30 @@ async function setupPerson(
   return person.id;
 }
 
+/** Enrols a person in Steady with a persisted AUDIT-C assessment (score + derived
+ *  safety flags), exactly as the enrolment API would on alcohol intake. */
+async function setupAlcoholPerson(
+  pseudonym: string,
+  auditC: number,
+  options: { proactiveConsent?: boolean } = {},
+): Promise<string> {
+  const person = await createPerson(handle.db, { pseudonym });
+  const personId = person.id as PersonId;
+  await grantConsent(handle.db, { personId, purpose: "programme_delivery" });
+  if (options.proactiveConsent !== false) {
+    await grantConsent(handle.db, { personId, purpose: "proactive_contact" });
+  }
+  await createEnrolment(handle.db, {
+    personId,
+    vertical: "alcohol",
+    status: "active",
+    stage: "acting",
+    enrolledAt: at("00:01"),
+    assessment: { instrument: "audit-c", score: auditC, flags: [...deriveAlcoholFlags(auditC)] },
+  });
+  return person.id;
+}
+
 const contactsFor = async (personId: string) =>
   (
     await handle.pool.query(
@@ -63,6 +112,15 @@ beforeAll(async () => {
   await admin.end();
   handle = createDb(TEST_URL);
   await runMigrations(handle.pool);
+
+  // Real alcohol pack → the same catalog the worker boots with, so the gate is
+  // tested against authored contraindications, not a test-local assumption.
+  const packDir = fileURLToPath(new URL("../../../content/alcohol", import.meta.url));
+  const loaded = await loadPackDir(packDir);
+  expect(loaded.errors).toEqual([]);
+  const catalog = buildCatalog(loaded.atoms, loaded.sequences);
+  if (!catalog.ok) throw new Error(catalog.error);
+  atomFor = (id) => catalog.value.byId.get(id);
 });
 
 afterAll(async () => {
@@ -210,5 +268,70 @@ describe("outbox dispatch loop", () => {
     const again = await dispatchPending(handle.pool, handlers);
     expect(seen.length).toBeGreaterThanOrEqual(1);
     expect(again.dispatched).toBe(0);
+  });
+});
+
+const atomIdsFor = async (personId: string): Promise<readonly (string | null)[]> =>
+  (await contactsFor(personId)).map((row) => row.content_atom_id as string | null);
+
+describe("alcohol dependence hard-stop (invariant 4 / E17)", () => {
+  it("aligns with the content taxonomy: moderation atoms are contraindicated, the referral is not", () => {
+    expect(atomFor("alcohol.norm.above.weekly")?.contraindications).toContain("dependence-flagged");
+    expect(atomFor("alcohol.hardstop.screen.main")?.contraindications ?? []).not.toContain("dependence-flagged");
+  });
+
+  it("routes a dependence-flagged person to the referral and NEVER the moderation atom — bypassing consent AND budget", async () => {
+    // No proactive_contact consent and a zero daily budget: both gates would
+    // suppress an ordinary nudge. The unbypassable hard-stop must send anyway.
+    const personId = await setupAlcoholPerson("steady-flagged", 12, { proactiveConsent: false });
+    const noBudget: BurdenConfig = { maxProactivePerDay: 0, minGapMinutes: 60, quietStart: "22:00", quietEnd: "06:00" };
+    await runDecisionTick(handle.db, {
+      ruleSet: STEADY_RULES,
+      now: at("08:36"),
+      timeZone: TZ,
+      burden: noBudget,
+      atomFor,
+    });
+
+    const atomIds = await atomIdsFor(personId);
+    expect(atomIds).toContain("alcohol.hardstop.screen.main");
+    expect(atomIds).not.toContain("alcohol.norm.above.weekly");
+
+    const decisions = await decisionsFor(personId);
+    expect(decisions).toHaveLength(1);
+    expect(decisions[0].chosen_action).toMatchObject({
+      kind: "send_atom",
+      ref: "alcohol.hardstop.screen.main",
+      unbypassable: true,
+    });
+  });
+
+  it("still serves the moderation atom to a non-dependent drinker (the gate does not over-block)", async () => {
+    const personId = await setupAlcoholPerson("steady-moderate", 4);
+    await runDecisionTick(handle.db, {
+      ruleSet: STEADY_RULES,
+      now: at("08:37"),
+      timeZone: TZ,
+      burden: RELAXED,
+      atomFor,
+    });
+    const atomIds = await atomIdsFor(personId);
+    expect(atomIds).toContain("alcohol.norm.above.weekly");
+    expect(atomIds).not.toContain("alcohol.hardstop.screen.main");
+  });
+
+  it("defense in depth: with the hard-stop rule removed, the contraindication gate alone blocks the moderation atom", async () => {
+    const personId = await setupAlcoholPerson("steady-defense", 11);
+    await runDecisionTick(handle.db, {
+      ruleSet: STEADY_RULES_NO_HARDSTOP,
+      now: at("08:38"),
+      timeZone: TZ,
+      burden: RELAXED,
+      atomFor,
+    });
+    expect(await contactsFor(personId)).toHaveLength(0);
+    const decisions = await decisionsFor(personId);
+    expect(decisions).toHaveLength(1);
+    expect(decisions[0].chosen_action).toMatchObject({ kind: "suppressed", reason: "contraindicated" });
   });
 });

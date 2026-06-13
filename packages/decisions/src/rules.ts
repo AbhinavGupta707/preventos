@@ -13,6 +13,13 @@ export const ruleSchema = z.object({
   id: z.string().min(1),
   vertical: z.enum(VERTICALS),
   priority: z.number().int().min(0).max(100),
+  /**
+   * Safety preemption (e.g. the alcohol dependence hard-stop, invariant 4): an
+   * unbypassable rule's candidate is chosen ahead of arbitration and is exempt
+   * from the burden governor — a scripted referral is not a discretionary nudge.
+   * Reserve for deterministic safety routes only.
+   */
+  unbypassable: z.boolean().optional(),
   when: z.array(conditionSchema).min(1),
   then: z.object({
     kind: z.enum(["send_atom", "start_sequence", "schedule_check_in", "offer_cross_enrolment"]),
@@ -52,6 +59,7 @@ export interface Candidate {
   readonly ruleId: string;
   readonly vertical: (typeof VERTICALS)[number];
   readonly priority: number;
+  readonly unbypassable: boolean;
   readonly action: Rule["then"];
 }
 
@@ -77,7 +85,13 @@ export function ruleSetHash(ruleSet: RuleSet): string {
 export function evaluateRules(ruleSet: RuleSet, context: RuleContext): Evaluation {
   const candidates = ruleSet.rules
     .filter((rule) => rule.when.every((condition) => matches(condition, context)))
-    .map((rule) => ({ ruleId: rule.id, vertical: rule.vertical, priority: rule.priority, action: rule.then }))
+    .map((rule) => ({
+      ruleId: rule.id,
+      vertical: rule.vertical,
+      priority: rule.priority,
+      unbypassable: rule.unbypassable ?? false,
+      action: rule.then,
+    }))
     .sort((a, b) => b.priority - a.priority || a.ruleId.localeCompare(b.ruleId));
   return { policyVersion: ruleSetHash(ruleSet), candidates };
 }

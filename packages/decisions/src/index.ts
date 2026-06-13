@@ -4,7 +4,12 @@ export { RELAPSE_STATES, LAPSE_DEFINITIONS, transitionRelapse, daysWon } from ".
 export type { RelapseState } from "./relapse.js";
 export { DEFAULT_BURDEN, inQuietHours, canSendProactive } from "./burden.js";
 export type { BurdenConfig } from "./burden.js";
-export { arbitrate, nextArbitrationState } from "./arbitration.js";
+export { arbitrate, mandatoryCandidate, nextArbitrationState } from "./arbitration.js";
 export type { ArbitrationState } from "./arbitration.js";
+export {
+  ALCOHOL_DEPENDENCE_AUDIT_C_THRESHOLD,
+  DEPENDENCE_FLAG,
+  deriveAlcoholFlags,
+} from "./contraindication.js";
 export { decisionPoints } from "./scheduler.js";
 export type { DecisionPoint, EnrolmentSchedule } from "./scheduler.js";

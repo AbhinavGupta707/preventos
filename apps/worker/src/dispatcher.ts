@@ -1,4 +1,5 @@
 import type pg from "pg";
+import type { ResolvedAtom } from "@preventos/content";
 import type { Db } from "@preventos/db";
 import { dispatchPending, type EventHandler, type EventType } from "@preventos/events";
 import type { RuleSet } from "@preventos/decisions";
@@ -17,6 +18,8 @@ export interface WorkerConfig {
   readonly dispatchIntervalMs?: number;
   readonly tickIntervalMs?: number;
   readonly handlers?: Partial<Record<EventType, EventHandler>>;
+  /** Catalog-backed atom resolver for the invariant-4 contraindication gate. */
+  readonly atomFor?: (atomId: string) => ResolvedAtom | undefined;
 }
 
 export interface WorkerLoops {
@@ -53,6 +56,7 @@ export function startLoops(db: Db, pool: pg.Pool, logger: LoggerLike, config: Wo
       ruleSet: config.ruleSet,
       ...(config.burden !== undefined ? { burden: config.burden } : {}),
       ...(config.timeZone !== undefined ? { timeZone: config.timeZone } : {}),
+      ...(config.atomFor !== undefined ? { atomFor: config.atomFor } : {}),
     })
       .then((result) => {
         if (result.sent + result.suppressed > 0) logger.info(result, "decision tick");

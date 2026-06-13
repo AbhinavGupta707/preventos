@@ -202,6 +202,49 @@ describe("enrolment", () => {
     });
     expect(response.statusCode).toBe(400);
   });
+
+  it("persists a dependence-flagged assessment when alcohol intake submits a high AUDIT-C (invariant 4)", async () => {
+    const { personId, token } = await signUp("api-enrol-auditc");
+    await server.inject({
+      method: "POST",
+      url: "/consents/grant",
+      headers: asUser(token),
+      payload: { purpose: "programme_delivery" },
+    });
+    const enrolled = await server.inject({
+      method: "POST",
+      url: "/enrolments",
+      headers: asUser(token),
+      payload: { vertical: "alcohol", auditC: 12 },
+    });
+    expect(enrolled.statusCode).toBe(201);
+    const { rows } = await handle.pool.query(
+      "SELECT assessment FROM core.enrolment WHERE person_id = $1 AND vertical = 'alcohol'",
+      [personId],
+    );
+    expect(rows[0].assessment).toMatchObject({ instrument: "audit-c", score: 12, flags: ["dependence-flagged"] });
+  });
+
+  it("records no dependence flag for a lower-risk AUDIT-C score", async () => {
+    const { personId, token } = await signUp("api-enrol-auditc-low");
+    await server.inject({
+      method: "POST",
+      url: "/consents/grant",
+      headers: asUser(token),
+      payload: { purpose: "programme_delivery" },
+    });
+    await server.inject({
+      method: "POST",
+      url: "/enrolments",
+      headers: asUser(token),
+      payload: { vertical: "alcohol", auditC: 4 },
+    });
+    const { rows } = await handle.pool.query(
+      "SELECT assessment FROM core.enrolment WHERE person_id = $1 AND vertical = 'alcohol'",
+      [personId],
+    );
+    expect(rows[0].assessment).toMatchObject({ instrument: "audit-c", score: 4, flags: [] });
+  });
 });
 
 describe("logging", () => {

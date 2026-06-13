@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@preventos/consent": "workspace:*",
+    "@preventos/content": "workspace:*",
     "@preventos/db": "workspace:*",
     "@preventos/decisions": "workspace:*",
     "@preventos/domain": "workspace:*",
