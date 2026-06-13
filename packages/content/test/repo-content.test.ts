@@ -1,6 +1,7 @@
 import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { OUTCOME_REF_IDS } from "@preventos/outcomes";
 import { describe, expect, it } from "vitest";
 import { buildCatalog } from "../src/catalog.js";
 import { loadAllPacks, loadPackDir } from "../src/load.js";
@@ -60,5 +61,13 @@ describe("repo content packs", () => {
     expect(loaded.atoms.length).toBeGreaterThanOrEqual(300);
     const catalog = buildCatalog(loaded.atoms, loaded.sequences);
     expect(catalog.ok, catalog.ok ? "" : catalog.error).toBe(true);
+  });
+
+  it("every real outcome_ref resolves to a recognised outcome id (no dangling refs)", async () => {
+    const loaded = await loadAllPacks(REPO_CONTENT);
+    const refs = loaded.atoms.flatMap((atom) => (atom.outcomeRef !== undefined ? [{ id: atom.id, ref: atom.outcomeRef }] : []));
+    expect(refs.length, "expected the smoking pack to carry outcome_prompt refs").toBeGreaterThan(0);
+    const dangling = refs.filter(({ ref }) => !OUTCOME_REF_IDS.has(ref));
+    expect(dangling, `dangling outcome_refs: ${JSON.stringify(dangling)}`).toEqual([]);
   });
 });

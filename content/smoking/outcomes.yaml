@@ -41,7 +41,7 @@ atoms:
   - id: smoking.outcomes.check-4-week
     type: outcome_prompt
     title: Four-week check
-    outcome_ref: smoking.russell-standard.4-week
+    outcome_ref: smoking.quit.russell_standard_4w
     body: >
       It has been four weeks since your quit day.
       Since then, have you smoked at all, even a single puff?
@@ -60,7 +60,7 @@ atoms:
   - id: smoking.outcomes.check-7-day
     type: outcome_prompt
     title: Quick check-in
-    outcome_ref: smoking.point-prevalence.7-day
+    outcome_ref: smoking.quit.point_prevalence_7d
     body: >
       Quick one. In the last seven days, have you smoked at all,
       even a single puff?
@@ -75,7 +75,7 @@ atoms:
   - id: smoking.outcomes.check-12-week
     type: outcome_prompt
     title: Twelve-week check
-    outcome_ref: smoking.russell-standard.12-week
+    outcome_ref: smoking.quit.russell_standard_12w
     body: >
       Twelve weeks since your quit day. The big picture matters here.
       Since week four, have you smoked at all, even a single puff?
@@ -91,7 +91,7 @@ atoms:
   - id: smoking.outcomes.check-6-month
     type: outcome_prompt
     title: Six-month check
-    outcome_ref: smoking.russell-standard.6-month
+    outcome_ref: smoking.quit.russell_standard_6m
     body: >
       Six months on. One straight question, like always.
       Since your last check, have you smoked at all, even a single puff?
@@ -107,7 +107,7 @@ atoms:
   - id: smoking.outcomes.cigs-per-day
     type: outcome_prompt
     title: Daily count
-    outcome_ref: smoking.cigs-per-day.trajectory
+    outcome_ref: smoking.consumption.cigs_per_day
     body: >
       About how many cigarettes a day are you smoking at the moment?
       Your real number, whatever it is.

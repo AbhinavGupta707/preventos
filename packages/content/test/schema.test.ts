@@ -100,7 +100,8 @@ describe("WP4.2m type vocabulary", () => {
       id: "smoking.outcomes.check-7-day",
       type: "outcome_prompt",
       body: "Have you smoked at all?",
-      outcome_ref: "smoking.point-prevalence.7-day",
+      // outcome_ref names an @preventos/outcomes id (underscores), not an atom id.
+      outcome_ref: "smoking.quit.point_prevalence_7d",
       options: ["No", "Yes"],
       bcttv1: [{ code: "2.2", label: "Feedback on behaviour" }],
       com_b: ["reflective-motivation"],
@@ -108,6 +109,8 @@ describe("WP4.2m type vocabulary", () => {
     expect(rawAtomSchema.safeParse(prompt).success).toBe(true);
     expect(rawAtomSchema.safeParse({ ...prompt, options: undefined }).success).toBe(true);
     expect(rawAtomSchema.safeParse({ ...prompt, outcome_ref: undefined }).success).toBe(false);
+    // A kebab/atom-id-style ref is rejected — outcome refs use the outcome-id convention.
+    expect(rawAtomSchema.safeParse({ ...prompt, outcome_ref: "smoking.point-prevalence.7-day" }).success).toBe(false);
   });
 
   it("screen_script carries structured questions with flaggable options", () => {

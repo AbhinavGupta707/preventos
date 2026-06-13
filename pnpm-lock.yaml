@@ -263,6 +263,9 @@ importers:
       '@preventos/consent':
         specifier: workspace:*
         version: link:../../packages/consent
+      '@preventos/content':
+        specifier: workspace:*
+        version: link:../../packages/content
       '@preventos/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -275,6 +278,9 @@ importers:
       '@preventos/events':
         specifier: workspace:*
         version: link:../../packages/events
+      '@preventos/outcomes':
+        specifier: workspace:*
+        version: link:../../packages/outcomes
       '@preventos/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -394,6 +400,9 @@ importers:
       '@preventos/domain':
         specifier: workspace:*
         version: link:../domain
+      '@preventos/outcomes':
+        specifier: workspace:*
+        version: link:../outcomes
       '@preventos/shared':
         specifier: workspace:*
         version: link:../shared

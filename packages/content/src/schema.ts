@@ -66,6 +66,11 @@ export const statusSchema = z.string().transform((value, ctx): AtomStatus => {
 });
 
 const ATOM_ID = /^[a-z0-9]+(\.[a-z0-9][a-z0-9-]*)+$/;
+// Outcome refs share the outcome-definition id convention (dot-segmented,
+// underscores allowed) so a content `outcome_ref` can name a real
+// @preventos/outcomes id. Resolution against the registry is enforced in
+// validate.ts (content:validate) — the regex is format only.
+const OUTCOME_REF = /^[a-z0-9_]+(\.[a-z0-9_]+)+$/;
 const BCT_CODE = /^\d{1,2}\.\d{1,2}$/;
 const SLOT_NAME = /^[a-z0-9_]+$/;
 
@@ -114,7 +119,7 @@ export const rawAtomSchema = z
     variant_group: z.string().regex(WINDOW_NAME).optional(),
     items: z.array(menuItemSchema).min(1).optional(),
     options: z.array(z.string().min(1)).min(2).optional(),
-    outcome_ref: z.string().regex(ATOM_ID).optional(),
+    outcome_ref: z.string().regex(OUTCOME_REF).optional(),
     questions: z.array(questionSchema).min(1).optional(),
     tone_variants: z.record(z.enum(TONES), z.string().min(1)).optional(),
     reading_age: z.number().int().min(5).max(16).optional(),

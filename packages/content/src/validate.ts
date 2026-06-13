@@ -9,8 +9,11 @@ import type { SignoffRegistry } from "./signoff.js";
 
 /**
  * Per-pack authoring validation (WP4.2): canonical schema + catalog
- * consistency + claims-register lint + sign-off enforcement, with a
- * reading-age report as warnings. Errors fail CI; warnings do not.
+ * consistency + claims-register lint + sign-off enforcement + outcome_ref
+ * resolution, with a reading-age report as warnings. Errors fail CI; warnings
+ * do not. `knownOutcomeIds` is the recognised-outcome registry
+ * (@preventos/outcomes OUTCOME_REF_IDS) every atom `outcome_ref` must resolve
+ * against — a dangling ref is an error (WP W3-GUARDS).
  */
 
 export interface PackReport {
@@ -28,6 +31,7 @@ export async function validatePack(
   packDir: string,
   compiledClaims: readonly CompiledBlocklist[],
   signoffRegistry: SignoffRegistry,
+  knownOutcomeIds: ReadonlySet<string>,
 ): Promise<PackReport> {
   const pack = path.basename(packDir);
   const loaded = await loadPackDir(packDir);
@@ -40,6 +44,11 @@ export async function validatePack(
         `${atom.id}: claims-register violation [${violation.listId}/${violation.patternId}] ` +
           `"${violation.excerpt}" — ${violation.rationale}`,
       );
+    }
+    // A content outcome_ref must name a recognised outcome id (defined or
+    // declared-pending) — a dangling ref would silently drop an outcome ask.
+    if (atom.outcomeRef !== undefined && !knownOutcomeIds.has(atom.outcomeRef)) {
+      errors.push(`${atom.id}: outcome_ref "${atom.outcomeRef}" does not resolve to a known outcome definition`);
     }
     const body = atom.body ?? atom.steps?.join(" ");
     if (body !== undefined) {

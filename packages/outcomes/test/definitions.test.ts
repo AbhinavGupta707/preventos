@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  DECLARED_OUTCOME_REFS,
   OUTCOME_DEFINITIONS,
+  OUTCOME_REF_IDS,
   SMOKING_RUSSELL_4W,
   definitionRef,
   getDefinition,
@@ -45,5 +47,27 @@ describe("outcome definition registry", () => {
 
   it("has no SCI definition (deferred pending license — WP10.4)", () => {
     expect(OUTCOME_DEFINITIONS.some((d) => d.id.includes("sci"))).toBe(false);
+  });
+});
+
+describe("recognised outcome refs (OUTCOME_REF_IDS)", () => {
+  it("includes every fully-defined outcome id", () => {
+    for (const def of OUTCOME_DEFINITIONS) {
+      expect(OUTCOME_REF_IDS.has(def.id), `defined outcome ${def.id} must be recognised`).toBe(true);
+    }
+  });
+
+  it("includes the declared-but-not-yet-evaluable refs, and they are NOT defined", () => {
+    const definedIds = new Set(OUTCOME_DEFINITIONS.map((d) => d.id));
+    expect(DECLARED_OUTCOME_REFS.length).toBeGreaterThan(0);
+    for (const id of DECLARED_OUTCOME_REFS) {
+      expect(OUTCOME_REF_IDS.has(id), `declared ref ${id} must be recognised`).toBe(true);
+      // Declared ≠ evaluable: no evaluator exists for these until WP10.3 clinical params.
+      expect(definedIds.has(id), `declared ref ${id} must not pose as a full definition`).toBe(false);
+    }
+  });
+
+  it("rejects an unknown ref — the fail-fast surface the worker + content:validate rely on", () => {
+    expect(OUTCOME_REF_IDS.has("smoking.totally.made_up")).toBe(false);
   });
 });
