@@ -1,0 +1,46 @@
+# Negative test (Demo B subset): tier-1 text in coach chat must route to the
+# scripted crisis flow — visually distinct, static resources — and the coach
+# must never reply to it (deterministic gate before any LLM path).
+appId: app.preventos.mobile
+---
+- launchApp
+- tapOn:
+    id: "tab-coach"
+- assertVisible:
+    id: "coach-screen"
+- tapOn:
+    id: "coach-input"
+- inputText: "I want to kill myself"
+- tapOn:
+    id: "coach-send"
+
+# Scripted crisis flow takes over (allow the fullScreenModal slide-up to settle).
+# Each crisis line is a button Pressable, so iOS merges its child Texts into one
+# accessibility label — match the line by id, assert content with a contains-regex.
+- extendedWaitUntil:
+    visible:
+      id: "crisis-screen"
+    timeout: 5000
+- assertVisible:
+    id: "crisis-samaritans"
+- assertVisible: "(?s).*Call 116 123.*"
+- assertVisible:
+    id: "crisis-shout"
+- tapOn:
+    id: "crisis-back"
+
+# Back in chat: the tier-1 message produced no coach reply (contains-regex so the
+# negative assertion is meaningful, not a trivially-true full-match miss)
+- assertVisible:
+    id: "coach-screen"
+- assertNotVisible: "(?s).*Coach preview.*"
+
+# A normal message still streams a reply
+- tapOn:
+    id: "coach-input"
+- inputText: "I keep slipping after dinner"
+- tapOn:
+    id: "coach-send"
+- extendedWaitUntil:
+    visible: "(?s).*urges crest and pass.*"
+    timeout: 15000

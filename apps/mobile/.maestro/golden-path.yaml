@@ -1,0 +1,94 @@
+# Golden path (Demo A subset): install → ≤90s intake → BFO playback → push
+# choreography → today surface → check-in → rescue ≤1 tap → plan → savings.
+appId: app.preventos.mobile
+---
+- launchApp:
+    clearState: true
+
+# --- Onboarding: value before account friction ---
+- assertVisible:
+    id: "onboarding-welcome"
+- tapOn:
+    id: "onboarding-start"
+- tapOn:
+    id: "programme-smoking"
+
+# --- HSI rendered verbatim (safety invariant 2) ---
+- assertVisible: "How soon after you wake up do you smoke your first cigarette?"
+- tapOn:
+    id: "hsi-ttfc-2"
+- assertVisible: "How many cigarettes per day do you smoke?"
+- tapOn:
+    id: "hsi-cpd-1"
+
+# --- Triggers, struggles, readiness, quit date, spend ---
+- tapOn:
+    id: "trigger-after-work"
+- tapOn:
+    id: "intake-next"
+- tapOn: "Cravings hit out of nowhere"
+- tapOn:
+    id: "intake-next-struggles"
+- tapOn:
+    id: "readiness-ready"
+- tapOn:
+    id: "quitdate-7"
+- tapOn:
+    id: "price-13"
+
+# --- BFO playback ---
+- assertVisible: "Here's what we heard"
+# (?s): the BFO card merges Text nodes with newlines in the iOS a11y tree
+- assertVisible: "(?s).*after work.*"
+- tapOn:
+    id: "onboarding-finish"
+
+# --- Push choreography: primer first, defer leaves OS prompt unburned ---
+- assertVisible:
+    id: "push-primer"
+- tapOn:
+    id: "push-defer"
+
+# --- Today: milestone day 1 + single next-best-action ---
+- assertVisible:
+    id: "today-screen"
+- assertVisible:
+    id: "milestone-card"
+- tapOn: "Noted"
+- assertVisible:
+    id: "nba-card"
+- assertVisible: "Morning check-in"
+- tapOn:
+    id: "nba-go"
+- tapOn:
+    id: "checkin-good"
+- assertVisible: "Your quit day"
+
+# --- Rescue: one tap from the today surface ---
+- tapOn:
+    id: "rescue-fab"
+- assertVisible:
+    id: "rescue-craving"
+- assertVisible: "Riding out a craving"
+- tapOn:
+    id: "rescue-passed"
+
+# --- Plans: if-then builder ---
+- tapOn:
+    id: "tab-plans"
+- tapOn:
+    id: "plan-add"
+- tapOn:
+    id: "plan-if-stress-spike"
+- tapOn:
+    id: "plan-then-0"
+# Maestro full-matches the regex; .* consumes the trailing ellipsis
+- assertVisible: "If stress spike.*"
+
+# --- Progress: cross-programme savings rail (15/day at £13 × 1 day won) ---
+- tapOn:
+    id: "tab-progress"
+- assertVisible:
+    id: "savings-total"
+- assertVisible: "£9.75"
+- assertVisible: "1 days won"
