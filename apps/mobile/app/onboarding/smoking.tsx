@@ -5,7 +5,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import type { ReadinessStage } from "@preventos/domain";
 import { HSI, getInstrument } from "@preventos/instruments";
 
-import { api } from "../../src/api/mock";
+import { api } from "../../src/api";
 import { emptyIntake, intakeReducer, toBfoSection } from "../../src/core/intake";
 import type { IntakeState } from "../../src/core/intake";
 import { todayIso, useAppStore } from "../../src/state/store";
@@ -104,6 +104,14 @@ export default function SmokingIntake() {
       },
       section.value,
     );
+    // Stand the journey up server-side (consents + enrolment + quit plan).
+    // Local-first: the store above already drives the offline UX, so a
+    // backend failure (or the offline MockApi) never blocks intake.
+    await api.enrolJourney({
+      vertical: "smoking",
+      quitDate,
+      ...(finalState.answers.readiness !== undefined ? { stage: finalState.answers.readiness } : {}),
+    });
     router.replace("/onboarding/done");
   };
 

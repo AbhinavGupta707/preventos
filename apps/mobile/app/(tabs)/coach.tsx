@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 
-import { api } from "../../src/api/mock";
+import { api } from "../../src/api";
 import { chatReducer, emptyChat } from "../../src/core/chat";
 import { Screen, Text } from "../../src/ui/primitives";
 import { color, radius, space, type } from "../../src/ui/tokens";
