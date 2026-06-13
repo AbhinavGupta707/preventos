@@ -1,6 +1,7 @@
 import { pino } from "pino";
 import { createDb } from "@preventos/db";
 import { startLoops } from "./dispatcher.js";
+import { makeAuditHandlers } from "./handlers.js";
 import { DEFAULT_RULE_SET } from "./ruleset.js";
 
 /** Boot entry: `pnpm --filter @preventos/worker dev`. */
@@ -9,7 +10,10 @@ if (DATABASE_URL === undefined) throw new Error("DATABASE_URL is required");
 
 const logger = pino({ name: "preventos-worker" });
 const { db, pool } = createDb(DATABASE_URL);
-const loops = startLoops(db, pool, logger, { ruleSet: DEFAULT_RULE_SET });
+const loops = startLoops(db, pool, logger, {
+  ruleSet: DEFAULT_RULE_SET,
+  handlers: makeAuditHandlers(logger),
+});
 logger.info("worker loops started");
 
 const shutdown = () => {
