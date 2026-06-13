@@ -45,6 +45,7 @@ describe("cross-vertical arbitration", () => {
     ruleId: `${vertical}.r`,
     vertical,
     priority,
+    unbypassable: false,
     action: { kind: "send_atom", ref: `${vertical}.atom` },
   });
 

@@ -1,4 +1,4 @@
-import { ruleSetSchema, type RuleSet } from "@preventos/decisions";
+import { ALCOHOL_DEPENDENCE_AUDIT_C_THRESHOLD, ruleSetSchema, type RuleSet } from "@preventos/decisions";
 
 /**
  * Default anchor rules for the decision tick — daily morning/evening
@@ -6,10 +6,14 @@ import { ruleSetSchema, type RuleSet } from "@preventos/decisions";
  *
  * Every `send_atom` ref names a real atom in the content catalog and the one
  * `schedule_check_in` ref names a recognised outcome id; the worker fails fast
- * at boot (and CI fails) if any ref dangles — see refguard.ts. This maps onto
- * existing pack atoms as an interim anchor set: vertical packs will ship richer
- * rule sets through content/ config and supersede this default. The worker
- * records refs, it never renders content.
+ * at boot (and CI fails) if any ref dangles — see refguard.ts. Vertical packs
+ * will ship richer rule sets through content/ config and supersede this default.
+ * The worker records refs, it never renders content.
+ *
+ * The alcohol dependence hard-stop (invariant 4 / E17) is unbypassable: it
+ * preempts arbitration and the burden governor so an AUDIT-C-flagged person is
+ * always routed to the scripted referral, never to a moderation atom. It routes
+ * to a real, hash-pinned referral atom (content/alcohol/referral-hard-stop.yaml).
  */
 export const DEFAULT_RULE_SET: RuleSet = ruleSetSchema.parse({
   version: "svc-default-1",
@@ -63,6 +67,17 @@ export const DEFAULT_RULE_SET: RuleSet = ruleSetSchema.parse({
         { field: "vertical", op: "eq", value: "vaping" },
       ],
       then: { kind: "send_atom", ref: "vaping.withdrawal.morning-pull-ttfv" },
+    },
+    {
+      id: "alcohol-dependence-hardstop",
+      vertical: "alcohol",
+      priority: 100,
+      unbypassable: true,
+      when: [
+        { field: "vertical", op: "eq", value: "alcohol" },
+        { field: "auditScore", op: "gte", value: ALCOHOL_DEPENDENCE_AUDIT_C_THRESHOLD },
+      ],
+      then: { kind: "send_atom", ref: "alcohol.hardstop.screen.main" },
     },
     {
       id: "alcohol-morning-anchor",

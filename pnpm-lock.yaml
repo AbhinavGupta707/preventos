@@ -55,6 +55,9 @@ importers:
       '@preventos/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@preventos/decisions':
+        specifier: workspace:*
+        version: link:../../packages/decisions
       '@preventos/domain':
         specifier: workspace:*
         version: link:../../packages/domain

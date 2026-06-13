@@ -39,6 +39,19 @@ export const personIdentity = identity.table("person_identity", {
   createdAt: ts("created_at").notNull().defaultNow(),
 });
 
+/**
+ * Per-enrolment intake assessment snapshot (e.g. AUDIT-C for alcohol). Coded
+ * values only — instrument id, numeric score, derived safety flags — never free
+ * text. `flags` drives the deterministic alcohol hard-stop (invariant 4): a
+ * `dependence-flagged` enrolment is routed to referral and blocked from every
+ * contraindicated moderation atom at contact-send.
+ */
+export interface EnrolmentAssessment {
+  readonly instrument: string;
+  readonly score: number;
+  readonly flags: readonly string[];
+}
+
 export const enrolment = core.table("enrolment", {
   id: uuid("id").primaryKey().defaultRandom(),
   personId: uuid("person_id").notNull().references(() => person.id),
@@ -47,6 +60,7 @@ export const enrolment = core.table("enrolment", {
   stage: text("stage").notNull(),
   pathwayVariant: text("pathway_variant"),
   contentVersionPin: text("content_version_pin"),
+  assessment: jsonb("assessment").$type<EnrolmentAssessment>(),
   enrolledAt: ts("enrolled_at").notNull().defaultNow(),
 });
 

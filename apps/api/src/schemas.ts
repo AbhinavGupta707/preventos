@@ -27,6 +27,13 @@ export const enrolSchema = z
   .object({
     vertical: z.enum(VERTICALS),
     stage: z.enum(READINESS_STAGES).default("ready"),
+    /**
+     * AUDIT-C consumption score (0–12), captured at alcohol intake. Drives the
+     * deterministic dependence hard-stop (invariant 4); ignored for non-alcohol
+     * enrolments. The AUDIT-C questions render verbatim from @preventos/instruments
+     * (invariant 2) — only the resulting score is submitted here.
+     */
+    auditC: z.number().int().min(0).max(12).optional(),
   })
   .strict();
 
