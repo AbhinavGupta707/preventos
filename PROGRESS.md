@@ -44,7 +44,7 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 | W3-GUARDS | Worker fail-fast on dangling refs | open | validate rule-set atom refs + outcome_refs against catalog at boot + in CI; reconcile outcome_ref naming |
 | W3-STEADY | Alcohol hard-stop in rules engine (inv4) | open | AUDIT score → unbypassable hardstop rule + contraindication gate at contact-send + integration test; **gates Steady go-live** |
 | W3-SAFEPORT | Extract pure classifier for mobile | open | split @preventos/safety so mobile uses the 843-validated classifier, not its 11-pattern gate |
-| W3-SECHARD | Bounded security hardening | open | web waitlist IP-spoof; esbuild/postcss/uuid dep bumps; event-schema enum hardening |
+| W3-SECHARD | Bounded security hardening | claimed | `wp/W3-SECHARD-security-hardening` — web waitlist IP-spoof; esbuild/postcss/uuid dep bumps; event-schema enum hardening |
 | W3-DATA | Data-integrity bounded | open | enrolment(person_id) index; plan version/audit; **product decision** on diary mutability before any append-only triggers |
 | W3-TESTCI | CI/test hardening | open | serialise DB-test setup (advisory lock); app-layer verbatim + hard-stop integration tests |
 | FIXED | API safety gate + drizzle SQLi | **done** | main (integration session) | screenInboundText classifies inbound free text, tier-1→escalation case (2 tests); drizzle 0.44.2→0.45.2 |
