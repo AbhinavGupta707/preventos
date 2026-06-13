@@ -5,6 +5,7 @@ import type { AuthPort } from "@preventos/auth";
 import type { Db } from "@preventos/db";
 import { makeAuthenticate } from "./auth-plugin.js";
 import { registerConsentRoutes } from "./routes/consents.js";
+import { registerDevRoutes, type DevSessionIssuer } from "./routes/dev.js";
 import { registerEnrolmentRoutes } from "./routes/enrolments.js";
 import { registerLogRoutes } from "./routes/logs.js";
 import { registerPeopleRoutes } from "./routes/people.js";
@@ -15,6 +16,8 @@ export interface ServerDeps {
   readonly auth: AuthPort;
   readonly rateLimit?: { readonly max: number; readonly timeWindowMs: number };
   readonly logger?: boolean;
+  /** DEV ONLY. When set, registers POST /dev/session. Unset in production. */
+  readonly devSessions?: DevSessionIssuer;
 }
 
 /** Walks the cause chain for a Postgres error code (drizzle wraps pg errors). */
@@ -58,6 +61,7 @@ export async function buildServer(deps: ServerDeps): Promise<FastifyInstance> {
 
   app.get("/health", () => ({ data: { status: "ok" } }));
   registerPeopleRoutes(app, deps.db);
+  if (deps.devSessions !== undefined) registerDevRoutes(app, deps.db, deps.devSessions);
 
   await app.register((scope) => {
     scope.addHook("preHandler", makeAuthenticate(deps.auth));

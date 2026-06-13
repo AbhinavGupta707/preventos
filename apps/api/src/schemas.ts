@@ -22,6 +22,14 @@ export const signUpSchema = z
   })
   .strict();
 
+/** Dev-only session bootstrap (POST /dev/session). Pseudonym optional — the
+ *  route generates one when absent. Never registered in production. */
+export const devSessionSchema = z
+  .object({
+    pseudonym: z.string().min(1).max(200).optional(),
+  })
+  .strict();
+
 export const enrolSchema = z
   .object({
     vertical: z.enum(VERTICALS),

@@ -66,6 +66,9 @@ importers:
         specifier: ^3.25.0
         version: 3.25.76
     devDependencies:
+      '@preventos/api-client':
+        specifier: workspace:*
+        version: link:../../packages/api-client
       '@types/node':
         specifier: ^22.18.0
         version: 22.19.21
@@ -283,6 +286,22 @@ importers:
       tsx:
         specifier: ^4.20.0
         version: 4.22.4
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.6(@types/node@22.19.21)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
+
+  packages/api-client:
+    dependencies:
+      '@preventos/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@preventos/shared':
+        specifier: workspace:*
+        version: link:../shared
+    devDependencies:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
