@@ -8,26 +8,19 @@
  * coach request. The server applies its own gate when SVC lands; this client
  * gate guarantees the crisis flow renders even fully offline.
  */
-
-/** High-signal tier-1 phrases. The full corpus-driven classifier is WS7; this client gate is additive, never replaced by config. */
-const TIER1_PATTERNS: readonly RegExp[] = [
-  /\bsuicid/i,
-  /\bkill (?:myself|me)\b/i,
-  /\bend(?:ing)? my life\b/i,
-  /\bwant(?:ed)? to die\b/i,
-  /\bbetter off dead\b/i,
-  /\bself[- ]?harm/i,
-  /\bhurt(?:ing)? myself\b/i,
-  /\bend it all\b/i,
-  /\bdon'?t want to (?:live|be here|wake up)\b/i,
-  /\boverdos/i,
-  /\bno reason to (?:live|go on)\b/i,
-];
+import { classify } from "@preventos/safety-core";
 
 export type RiskTier = "none" | "tier1";
 
+/**
+ * Delegates to the 843-case-validated classifier in @preventos/safety-core
+ * (W3-SAFEPORT) so the mobile client and the server proxy share ONE validated
+ * classifier — no local pattern list to drift. Tier 1 and tier 2 both route to
+ * the scripted crisis flow and never become a coach request. Takes only the
+ * text: no config, no bypass (invariant 1).
+ */
 export const classifyOutbound = (text: string): RiskTier =>
-  TIER1_PATTERNS.some((p) => p.test(text)) ? "tier1" : "none";
+  classify(text).tier === 0 ? "none" : "tier1";
 
 export interface ChatMessage {
   readonly id: string;

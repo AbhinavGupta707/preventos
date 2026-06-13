@@ -25,3 +25,5 @@ export { buildCatalog, resolveAtom, renderAtom, isContraindicated, assertServabl
 export type { Catalog, ServeEnvironment } from "./catalog.js";
 export { loadModuleFile, loadPackDir, loadAllPacks } from "./load.js";
 export type { LoadedPack } from "./load.js";
+export { loadClaimsRegister, compileClaimsRegister, lintTextClaims, lintAtomClaims } from "./claims.js";
+export type { ClaimsRegister, CompiledBlocklist, ClaimViolation } from "./claims.js";

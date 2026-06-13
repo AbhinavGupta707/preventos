@@ -176,3 +176,24 @@ export const drinkLogEntry = core.table("drink_log_entry", {
   context: text("context"),
   loggedAt: ts("logged_at").notNull().defaultNow(),
 });
+
+// 100% coach audit log (WP6.1). Erasable free text — deleted on GDPR erasure,
+// not append-only. See packages/db/migrations/0003_coach_interaction.sql.
+export const coachInteraction = core.table("coach_interaction", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  personId: uuid("person_id").notNull().references(() => person.id),
+  vertical: text("vertical").notNull(),
+  frame: text("frame").notNull(),
+  inboundText: text("inbound_text").notNull(),
+  preTier: smallint("pre_tier").notNull(),
+  preRiskClass: text("pre_risk_class"),
+  disposition: text("disposition").notNull(),
+  llmProvider: text("llm_provider"),
+  llmModel: text("llm_model"),
+  llmRawText: text("llm_raw_text"),
+  postViolations: text("post_violations").array().notNull().default([]),
+  finalText: text("final_text"),
+  crisisFlowId: text("crisis_flow_id"),
+  latencyMs: integer("latency_ms").notNull(),
+  createdAt: ts("created_at").notNull().defaultNow(),
+});

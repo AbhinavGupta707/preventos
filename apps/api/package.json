@@ -14,7 +14,9 @@
   "dependencies": {
     "@fastify/rate-limit": "^10.3.0",
     "@preventos/auth": "workspace:*",
+    "@preventos/coach": "workspace:*",
     "@preventos/consent": "workspace:*",
+    "@preventos/content": "workspace:*",
     "@preventos/db": "workspace:*",
     "@preventos/domain": "workspace:*",
     "@preventos/events": "workspace:*",
