@@ -15,6 +15,7 @@ const EXPORT_TABLES = [
   "sleep_window",
   "drink_log_entry",
   "escalation_case",
+  "coach_interaction",
 ] as const;
 
 export interface PersonDataBundle {
@@ -42,6 +43,9 @@ const ERASE_MUTABLE_TABLES = [
   "sleep_diary_entry",
   "drink_log_entry",
   "enrolment",
+  // Coach transcripts hold free text (the person's words + raw model output);
+  // unlike the append-only audit tables they are erased outright (WP6.1).
+  "coach_interaction",
 ] as const;
 
 /**

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { COACH_FRAMES } from "@preventos/coach";
 import {
   AGE_BANDS,
   CONSENT_PURPOSES,
@@ -87,6 +88,24 @@ export const planUpdateSchema = z
   .strict();
 
 export const planIdSchema = z.object({ id: z.string().uuid() });
+
+export const coachMessageSchema = z
+  .object({
+    vertical: z.enum(VERTICALS),
+    frame: z.enum(COACH_FRAMES),
+    text: z.string().min(1).max(4000),
+    channel: z.enum(["app", "web"]).default("app"),
+    context: z
+      .object({
+        daysWon: z.number().int().min(0).max(100_000).optional(),
+        streakActive: z.boolean().optional(),
+        enrolledVerticals: z.array(z.enum(VERTICALS)).max(4).optional(),
+        lastLapseVertical: z.enum(VERTICALS).optional(),
+      })
+      .strict()
+      .optional(),
+  })
+  .strict();
 
 type Compact<T> = { [K in keyof T]: Exclude<T[K], undefined> };
 

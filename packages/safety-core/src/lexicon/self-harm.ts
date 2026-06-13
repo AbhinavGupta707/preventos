@@ -71,6 +71,15 @@ export const SELF_HARM_RULES: readonly SafetyRule[] = [
   rule("sh.sh-thoughts", "self_harm", 2, /\bs ?h\b (thoughts|urges)|self.?harm (urges|thoughts)|unalive (thoughts|ideation)/),
   rule("sh.urges", "self_harm", 2, /urges? (to hurt myself|are getting stronger|came back|comes back|are really bad)/),
   rule("sh.dont-want-to-be", "self_harm", 2, /(don'?t|dont) want to (be alive|be here|exist)/),
+  // Passive death wish / ideation phrasings (W3-SAFEPORT cross-check surfaced
+  // these as missed by the lexicon but caught by the old mobile gate). Tier 2:
+  // ideation → human review. Guarded against the corpus tier-0 hyperbole case
+  // ("this hangover is making me want to die").
+  rule("sh.want-to-die", "self_harm", 2, /\bwant(ed)? to die\b|\bwanna die\b|\bwant to be dead\b/, {
+    unless: [/hangover|headache|migraine|cramps?|\bheat\b|embarrass|shame|boredom|making me want|this (class|meeting|lecture|app|diet|weather|exam)/],
+  }),
+  rule("sh.ending-my-life", "self_harm", 2, /end(ing)? my life\b/),
+  rule("sh.suicide-on-mind", "self_harm", 2, /\bsuicid(e|al)\b[^.!?]{0,20}\bon my mind\b|\bon my mind\b[^.!?]{0,20}\bsuicid(e|al)\b/),
   rule("sh.better-off", "self_harm", 2, /(better off|cope better) without me|better off if i was dead|better without me in it/),
   rule("sh.no-point", "self_harm", 2, /no point (to living|of me|in living)|whats even the point of me|point of me\b/),
   rule("sh.no-future", "self_harm", 2, /(don'?t|dont) see a future for myself|no future for myself/),

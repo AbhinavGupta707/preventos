@@ -4,6 +4,9 @@ import { ZodError } from "zod";
 import type { AuthPort } from "@preventos/auth";
 import type { Db } from "@preventos/db";
 import { makeAuthenticate } from "./auth-plugin.js";
+import { loadCoachConfig } from "./coach-deps.js";
+import type { CoachConfig } from "./coach-deps.js";
+import { registerCoachRoutes } from "./routes/coach.js";
 import { registerConsentRoutes } from "./routes/consents.js";
 import { registerEnrolmentRoutes } from "./routes/enrolments.js";
 import { registerLogRoutes } from "./routes/logs.js";
@@ -15,6 +18,8 @@ export interface ServerDeps {
   readonly auth: AuthPort;
   readonly rateLimit?: { readonly max: number; readonly timeWindowMs: number };
   readonly logger?: boolean;
+  /** Coach proxy config; loaded from disk + env if omitted (tests inject it). */
+  readonly coach?: CoachConfig;
 }
 
 /** Walks the cause chain for a Postgres error code (drizzle wraps pg errors). */
@@ -59,12 +64,15 @@ export async function buildServer(deps: ServerDeps): Promise<FastifyInstance> {
   app.get("/health", () => ({ data: { status: "ok" } }));
   registerPeopleRoutes(app, deps.db);
 
+  const coach = deps.coach ?? (await loadCoachConfig());
+
   await app.register((scope) => {
     scope.addHook("preHandler", makeAuthenticate(deps.auth));
     registerConsentRoutes(scope, deps.db);
     registerEnrolmentRoutes(scope, deps.db);
     registerLogRoutes(scope, deps.db);
     registerPlanRoutes(scope, deps.db);
+    registerCoachRoutes(scope, deps.db, coach);
   });
 
   return app;

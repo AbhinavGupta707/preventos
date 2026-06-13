@@ -1,5 +1,5 @@
 {
-  "name": "@preventos/safety",
+  "name": "@preventos/coach",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -11,17 +11,13 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@preventos/db": "workspace:*",
+    "@anthropic-ai/sdk": "^0.104.1",
+    "@preventos/content": "workspace:*",
     "@preventos/domain": "workspace:*",
-    "@preventos/events": "workspace:*",
-    "@preventos/safety-core": "workspace:*",
-    "@preventos/shared": "workspace:*",
-    "drizzle-orm": "^0.45.2"
+    "@preventos/safety-core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.18.0",
-    "@types/pg": "^8.15.4",
-    "pg": "^8.16.0",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   }
