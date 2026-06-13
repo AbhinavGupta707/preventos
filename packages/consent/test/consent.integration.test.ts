@@ -1,7 +1,6 @@
-import pg from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { PersonId } from "@preventos/domain";
-import { attachIdentity, createDb, createEnrolment, createPerson, runMigrations } from "@preventos/db";
+import { attachIdentity, createDb, createEnrolment, createPerson, runMigrations, resetTestDatabase } from "@preventos/db";
 import { checkConsent, grantConsent, requireConsent, revokeConsent } from "../src/service.js";
 import { erasePerson, exportPersonData } from "../src/data-rights.js";
 
@@ -13,10 +12,7 @@ let handle: ReturnType<typeof createDb>;
 let personId: PersonId;
 
 beforeAll(async () => {
-  const admin = new pg.Pool({ connectionString: ADMIN_URL, max: 1 });
-  await admin.query(`DROP DATABASE IF EXISTS ${TEST_DB} WITH (FORCE)`);
-  await admin.query(`CREATE DATABASE ${TEST_DB}`);
-  await admin.end();
+  await resetTestDatabase(ADMIN_URL, TEST_DB);
   handle = createDb(TEST_URL);
   await runMigrations(handle.pool);
   const person = await createPerson(handle.db, { pseudonym: "consent-test", ageBand: "35-44" });

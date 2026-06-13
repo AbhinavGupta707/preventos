@@ -40,7 +40,7 @@ Result pattern, immutability, no secrets) are recorded as confirmed-good and not
 ### DATA-INTEGRITY — bounded
 - `integrity-index-gap-enrolment-1` — add index on `enrolment(person_id)` (multi-vertical tick perf).
 - `integrity-planobject-mutable-1` — guarantee plan version increments + audit.
-- append-only triggers on diaries — **needs a product decision first**: `contact_record` is mutable by design (DLR status); `drink_log`/`sleep_diary` may allow retro-fill. Decide intended mutability, then add triggers only where truly append-only. (Review's "add triggers to all three" fix would break DLR updates — do not apply blindly.)
+- append-only triggers on diaries — **DECISION (W3-DATA, 2026-06-13): keep all three MUTABLE; do NOT add append-only triggers.** `contact_record` takes DLR status transitions (queued→sent→delivered); `drink_log_entry`/`sleep_diary_entry` must allow retro-fill correction (the "retro-fill mercy" UX, and a user fixing a mistaken entry). The audit trail for these lives in the append-only `core.event` stream (`drink.logged`, `sleep.diary.logged`, `contact.sent/received`), which already survives erasure. The review's "add triggers to all three" fix is **rejected** on product grounds — it would break DLR updates and retro-fill.
 
 ### TEST-CI — hardening
 - `test-ci-db-race` — concurrent suites DROP/CREATE test DBs via a shared admin connection; add advisory-lock/serialised setup or template-DB to prevent CI flakes. (Observed once during integration; reproduced green twice after, but latent.)

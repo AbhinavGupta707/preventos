@@ -1,6 +1,5 @@
-import pg from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { createDb, createPerson, runMigrations } from "@preventos/db";
+import { createDb, createPerson, runMigrations, resetTestDatabase } from "@preventos/db";
 import { EVENT_SCHEMAS, EVENT_TYPES } from "../src/catalogue.js";
 import { dispatchPending } from "../src/dispatch.js";
 import { publish } from "../src/publish.js";
@@ -13,10 +12,7 @@ let handle: ReturnType<typeof createDb>;
 let personId: string;
 
 beforeAll(async () => {
-  const admin = new pg.Pool({ connectionString: ADMIN_URL, max: 1 });
-  await admin.query(`DROP DATABASE IF EXISTS ${TEST_DB} WITH (FORCE)`);
-  await admin.query(`CREATE DATABASE ${TEST_DB}`);
-  await admin.end();
+  await resetTestDatabase(ADMIN_URL, TEST_DB);
   handle = createDb(TEST_URL);
   await runMigrations(handle.pool);
   const person = await createPerson(handle.db, { pseudonym: "events-test" });

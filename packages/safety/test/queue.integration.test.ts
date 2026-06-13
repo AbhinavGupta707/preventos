@@ -1,7 +1,6 @@
-import pg from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { PersonId } from "@preventos/domain";
-import { createDb, createPerson, runMigrations, schema } from "@preventos/db";
+import { createDb, createPerson, runMigrations, schema, resetTestDatabase } from "@preventos/db";
 import { publish } from "@preventos/events";
 import { eq } from "drizzle-orm";
 import { claimCase, closeCase, listQueue, openCase, releaseCase, SLA_MINUTES } from "../src/queue.js";
@@ -15,10 +14,7 @@ let personId: PersonId;
 let triggerEventId: bigint;
 
 beforeAll(async () => {
-  const admin = new pg.Pool({ connectionString: ADMIN_URL, max: 1 });
-  await admin.query(`DROP DATABASE IF EXISTS ${TEST_DB} WITH (FORCE)`);
-  await admin.query(`CREATE DATABASE ${TEST_DB}`);
-  await admin.end();
+  await resetTestDatabase(ADMIN_URL, TEST_DB);
   handle = createDb(TEST_URL);
   await runMigrations(handle.pool);
   const person = await createPerson(handle.db, { pseudonym: "safety-test", ageBand: "25-34" });

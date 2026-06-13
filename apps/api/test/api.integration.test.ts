@@ -1,7 +1,6 @@
-import pg from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { FakeAuthProvider } from "@preventos/auth";
-import { createDb, runMigrations } from "@preventos/db";
+import { createDb, runMigrations, resetTestDatabase } from "@preventos/db";
 import { buildServer } from "../src/server.js";
 
 const ADMIN_URL = process.env["DATABASE_URL"] ?? "postgres://preventos:preventos_dev@localhost:5432/preventos";
@@ -29,10 +28,7 @@ async function signUp(pseudonym: string): Promise<{ personId: string; token: str
 const asUser = (token: string) => ({ authorization: `Bearer ${token}` });
 
 beforeAll(async () => {
-  const admin = new pg.Pool({ connectionString: ADMIN_URL, max: 1 });
-  await admin.query(`DROP DATABASE IF EXISTS ${TEST_DB} WITH (FORCE)`);
-  await admin.query(`CREATE DATABASE ${TEST_DB}`);
-  await admin.end();
+  await resetTestDatabase(ADMIN_URL, TEST_DB);
   handle = createDb(TEST_URL);
   await runMigrations(handle.pool);
   auth = new FakeAuthProvider();

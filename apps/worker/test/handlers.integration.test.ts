@@ -1,7 +1,6 @@
 import { randomUUID } from "node:crypto";
-import pg from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { createDb, createPerson, runMigrations } from "@preventos/db";
+import { createDb, createPerson, runMigrations, resetTestDatabase } from "@preventos/db";
 import { dispatchPending, publish } from "@preventos/events";
 import { makeAuditHandlers } from "../src/handlers.js";
 
@@ -12,10 +11,7 @@ const TEST_URL = ADMIN_URL.replace(/\/[^/]*$/, `/${TEST_DB}`);
 let handle: ReturnType<typeof createDb>;
 
 beforeAll(async () => {
-  const admin = new pg.Pool({ connectionString: ADMIN_URL, max: 1 });
-  await admin.query(`DROP DATABASE IF EXISTS ${TEST_DB} WITH (FORCE)`);
-  await admin.query(`CREATE DATABASE ${TEST_DB}`);
-  await admin.end();
+  await resetTestDatabase(ADMIN_URL, TEST_DB);
   handle = createDb(TEST_URL);
   await runMigrations(handle.pool);
 });

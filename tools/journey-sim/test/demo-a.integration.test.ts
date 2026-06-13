@@ -1,9 +1,8 @@
-import pg from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { InjectOptions } from "fastify";
 import { buildServer } from "@preventos/api";
 import { FakeAuthProvider } from "@preventos/auth";
-import { createDb, runMigrations } from "@preventos/db";
+import { createDb, runMigrations, resetTestDatabase } from "@preventos/db";
 import { runDemoA, type HttpCall } from "../src/demo-a.js";
 
 const ADMIN_URL = process.env["DATABASE_URL"] ?? "postgres://preventos:preventos_dev@localhost:5432/preventos";
@@ -15,10 +14,7 @@ let auth: FakeAuthProvider;
 let server: Awaited<ReturnType<typeof buildServer>>;
 
 beforeAll(async () => {
-  const admin = new pg.Pool({ connectionString: ADMIN_URL, max: 1 });
-  await admin.query(`DROP DATABASE IF EXISTS ${TEST_DB} WITH (FORCE)`);
-  await admin.query(`CREATE DATABASE ${TEST_DB}`);
-  await admin.end();
+  await resetTestDatabase(ADMIN_URL, TEST_DB);
   handle = createDb(TEST_URL);
   await runMigrations(handle.pool);
   auth = new FakeAuthProvider();

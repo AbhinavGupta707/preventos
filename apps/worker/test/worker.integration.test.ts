@@ -1,9 +1,8 @@
 import { fileURLToPath } from "node:url";
-import pg from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { grantConsent } from "@preventos/consent";
 import { buildCatalog, loadPackDir, type ResolvedAtom } from "@preventos/content";
-import { createDb, createEnrolment, createPerson, runMigrations } from "@preventos/db";
+import { createDb, createEnrolment, createPerson, runMigrations, resetTestDatabase } from "@preventos/db";
 import { deriveAlcoholFlags, ruleSetHash, ruleSetSchema, type BurdenConfig, type RuleSet } from "@preventos/decisions";
 import type { PersonId } from "@preventos/domain";
 import { dispatchPending, publish } from "@preventos/events";
@@ -106,10 +105,7 @@ const decisionsFor = async (personId: string) =>
     .rows;
 
 beforeAll(async () => {
-  const admin = new pg.Pool({ connectionString: ADMIN_URL, max: 1 });
-  await admin.query(`DROP DATABASE IF EXISTS ${TEST_DB} WITH (FORCE)`);
-  await admin.query(`CREATE DATABASE ${TEST_DB}`);
-  await admin.end();
+  await resetTestDatabase(ADMIN_URL, TEST_DB);
   handle = createDb(TEST_URL);
   await runMigrations(handle.pool);
 

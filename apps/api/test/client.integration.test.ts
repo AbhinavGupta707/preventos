@@ -1,8 +1,7 @@
-import pg from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { ApiClient } from "@preventos/api-client";
 import { FakeAuthProvider } from "@preventos/auth";
-import { createDb, runMigrations } from "@preventos/db";
+import { createDb, runMigrations, resetTestDatabase } from "@preventos/db";
 import { buildServer } from "../src/server.js";
 
 /**
@@ -24,10 +23,7 @@ let token: string | undefined;
 let client: ApiClient;
 
 beforeAll(async () => {
-  const admin = new pg.Pool({ connectionString: ADMIN_URL, max: 1 });
-  await admin.query(`DROP DATABASE IF EXISTS ${TEST_DB} WITH (FORCE)`);
-  await admin.query(`CREATE DATABASE ${TEST_DB}`);
-  await admin.end();
+  await resetTestDatabase(ADMIN_URL, TEST_DB);
   handle = createDb(TEST_URL);
   await runMigrations(handle.pool);
   auth = new FakeAuthProvider();
