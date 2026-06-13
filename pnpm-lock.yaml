@@ -52,6 +52,21 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  apps/crisis-static:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.19.21
+      eslint:
+        specifier: ^9.39.2
+        version: 9.39.4
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.6(@types/node@22.19.21)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
+
   apps/mobile:
     dependencies:
       expo:
@@ -262,6 +277,40 @@ importers:
         specifier: ^3.2.4
         version: 3.2.6(@types/node@22.19.21)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
 
+  packages/safety:
+    dependencies:
+      '@preventos/db':
+        specifier: workspace:*
+        version: link:../db
+      '@preventos/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@preventos/events':
+        specifier: workspace:*
+        version: link:../events
+      '@preventos/shared':
+        specifier: workspace:*
+        version: link:../shared
+      drizzle-orm:
+        specifier: ^0.44.2
+        version: 0.44.7(@types/pg@8.20.0)(pg@8.21.0)
+    devDependencies:
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.19.21
+      '@types/pg':
+        specifier: ^8.15.4
+        version: 8.20.0
+      pg:
+        specifier: ^8.16.0
+        version: 8.21.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.6(@types/node@22.19.21)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
+
   packages/shared:
     devDependencies:
       typescript:
@@ -272,6 +321,10 @@ importers:
         version: 3.2.6(@types/node@22.19.21)(lightningcss@1.32.0)(terser@5.48.0)(yaml@2.9.0)
 
   tools/red-team:
+    dependencies:
+      '@preventos/safety':
+        specifier: workspace:*
+        version: link:../../packages/safety
     devDependencies:
       '@types/node':
         specifier: ^22.10.0
