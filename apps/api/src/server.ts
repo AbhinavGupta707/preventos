@@ -8,6 +8,7 @@ import { loadCoachConfig } from "./coach-deps.js";
 import type { CoachConfig } from "./coach-deps.js";
 import { registerCoachRoutes } from "./routes/coach.js";
 import { registerConsentRoutes } from "./routes/consents.js";
+import { registerDevRoutes, type DevSessionIssuer } from "./routes/dev.js";
 import { registerEnrolmentRoutes } from "./routes/enrolments.js";
 import { registerLogRoutes } from "./routes/logs.js";
 import { registerPeopleRoutes } from "./routes/people.js";
@@ -20,6 +21,8 @@ export interface ServerDeps {
   readonly logger?: boolean;
   /** Coach proxy config; loaded from disk + env if omitted (tests inject it). */
   readonly coach?: CoachConfig;
+  /** DEV ONLY. When set, registers POST /dev/session. Unset in production. */
+  readonly devSessions?: DevSessionIssuer;
 }
 
 /** Walks the cause chain for a Postgres error code (drizzle wraps pg errors). */
@@ -63,6 +66,7 @@ export async function buildServer(deps: ServerDeps): Promise<FastifyInstance> {
 
   app.get("/health", () => ({ data: { status: "ok" } }));
   registerPeopleRoutes(app, deps.db);
+  if (deps.devSessions !== undefined) registerDevRoutes(app, deps.db, deps.devSessions);
 
   const coach = deps.coach ?? (await loadCoachConfig());
 

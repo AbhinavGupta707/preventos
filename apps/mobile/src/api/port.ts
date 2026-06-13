@@ -1,18 +1,38 @@
-import type { BfoSection } from "@preventos/domain";
+import type { BfoSection, ReadinessStage, Vertical } from "@preventos/domain";
 import type { Result } from "@preventos/shared";
 
 import type { NextAction, TodayContext } from "../core/nextBestAction";
 
+/** What an intake hands the backend to stand up a programme journey. */
+export interface JourneyEnrolment {
+  readonly vertical: Vertical;
+  readonly stage?: ReadinessStage;
+  /** Sets a quit plan when present (smoking/vaping). */
+  readonly quitDate?: string;
+}
+
 /**
- * Typed client port to the PreventOS backend (WP2.x). The app talks only to
- * this interface; `MockApi` implements it until SVC (apps/api) lands, at which
- * point a fetch-backed adapter replaces the mock with zero screen changes.
+ * Typed client port to the PreventOS backend (WP2.x). Screens talk only to
+ * this interface. `MockApi` implements it for offline/preview and tests;
+ * `FetchApi` implements it against the live apps/api (selected when
+ * EXPO_PUBLIC_API_URL is set). Methods without a server route yet
+ * (coach/BFO/next-best-action/push) are served locally by both adapters until
+ * their work packages land.
  */
 export interface ApiPort {
+  /** Ensures a backend session exists (dev: sign-up + token; prod: auth provider). */
+  ensureSession(): Promise<Result<{ readonly personId: string }, string>>;
+
+  /** Stands up the journey server-side: consents + enrolment + (quit) plan. */
+  enrolJourney(input: JourneyEnrolment): Promise<Result<void, string>>;
+
+  /** Records a rescue/craving press as an inbound contact. */
+  logCraving(channel?: "app" | "web"): Promise<Result<void, string>>;
+
   /** Persist an intake-produced BFO section (server merges into the person's BFO). */
   submitBfoSection(section: BfoSection): Promise<Result<void, string>>;
 
-  /** Server-side arbitration decides the today surface; mock computes locally. */
+  /** Server-side arbitration decides the today surface; computed locally for now. */
   getNextBestAction(ctx: TodayContext): Promise<Result<NextAction, string>>;
 
   /**

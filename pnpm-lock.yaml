@@ -80,6 +80,9 @@ importers:
         specifier: ^3.25.0
         version: 3.25.76
     devDependencies:
+      '@preventos/api-client':
+        specifier: workspace:*
+        version: link:../../packages/api-client
       '@types/node':
         specifier: ^22.18.0
         version: 22.19.21
@@ -104,6 +107,9 @@ importers:
       '@preventos/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@preventos/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@preventos/outcomes':
         specifier: workspace:*
         version: link:../../packages/outcomes
@@ -117,15 +123,24 @@ importers:
         specifier: 19.2.3
         version: 19.2.3(react@19.2.3)
     devDependencies:
+      '@preventos/events':
+        specifier: workspace:*
+        version: link:../../packages/events
       '@types/node':
         specifier: ^22.18.0
         version: 22.19.21
+      '@types/pg':
+        specifier: ^8.15.4
+        version: 8.20.0
       '@types/react':
         specifier: ~19.2.2
         version: 19.2.17
       '@types/react-dom':
         specifier: ~19.2.2
         version: 19.2.3(@types/react@19.2.17)
+      pg:
+        specifier: ^8.16.0
+        version: 8.21.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -153,6 +168,9 @@ importers:
       '@expo/vector-icons':
         specifier: ^15.1.1
         version: 15.1.1(expo-font@56.0.6)(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
+      '@preventos/api-client':
+        specifier: workspace:*
+        version: link:../../packages/api-client
       '@preventos/decisions':
         specifier: workspace:*
         version: link:../../packages/decisions
@@ -223,6 +241,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@preventos/api-client':
+        specifier: workspace:*
+        version: link:../../packages/api-client
       next:
         specifier: ^15.5.6
         version: 15.5.19(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -306,6 +327,22 @@ importers:
       tsx:
         specifier: ^4.20.0
         version: 4.22.4
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.6(@types/node@22.19.21)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
+
+  packages/api-client:
+    dependencies:
+      '@preventos/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@preventos/shared':
+        specifier: workspace:*
+        version: link:../shared
+    devDependencies:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3

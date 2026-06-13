@@ -4,6 +4,7 @@ import { buildCatalog, loadAllPacks } from "@preventos/content";
 import { createDb } from "@preventos/db";
 import { startLoops } from "./dispatcher.js";
 import { assertRuleSetResolvable } from "./refguard.js";
+import { makeAuditHandlers } from "./handlers.js";
 import { DEFAULT_RULE_SET } from "./ruleset.js";
 
 /** Boot entry: `pnpm --filter @preventos/worker dev`. */
@@ -33,7 +34,11 @@ if (catalog.byId.size === 0) {
 const atomFor = (atomId: string) => catalog.byId.get(atomId);
 
 const { db, pool } = createDb(DATABASE_URL);
-const loops = startLoops(db, pool, logger, { ruleSet: DEFAULT_RULE_SET, atomFor });
+const loops = startLoops(db, pool, logger, {
+  ruleSet: DEFAULT_RULE_SET,
+  atomFor,
+  handlers: makeAuditHandlers(logger),
+});
 logger.info({ atoms: catalog.byId.size }, "worker loops started");
 
 const shutdown = () => {

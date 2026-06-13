@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 
+import { api } from "../src/api";
 import { color, radius, shadow, type } from "../src/ui/tokens";
 
 /** Routes where the floating rescue button would be in the way of itself. */
@@ -16,7 +17,12 @@ function RescueButton() {
       testID="rescue-fab"
       accessibilityRole="button"
       accessibilityLabel="Rescue — help with a craving, urge, or sleepless night"
-      onPress={() => router.push("/rescue")}
+      onPress={() => {
+        // Log the press as an inbound contact (best-effort, online-safe — the
+        // rescue screen itself stays fully offline). MockApi makes this a no-op.
+        void api.logCraving();
+        router.push("/rescue");
+      }}
       style={({ pressed }) => [styles.fab, { opacity: pressed ? 0.85 : 1 }]}
     >
       <Text style={styles.fabText}>Rescue</Text>

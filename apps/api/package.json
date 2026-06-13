@@ -28,6 +28,7 @@
     "zod": "^3.25.0"
   },
   "devDependencies": {
+    "@preventos/api-client": "workspace:*",
     "@types/node": "^22.18.0",
     "@types/pg": "^8.15.4",
     "pg": "^8.16.0",

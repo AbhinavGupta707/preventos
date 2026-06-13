@@ -4,7 +4,7 @@ import { ok } from "@preventos/shared";
 
 import { nextBestAction } from "../core/nextBestAction";
 import type { NextAction, TodayContext } from "../core/nextBestAction";
-import type { ApiPort } from "./port";
+import type { ApiPort, JourneyEnrolment } from "./port";
 
 const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -20,6 +20,21 @@ const PREVIEW_REPLIES: readonly string[] = [
 
 export class MockApi implements ApiPort {
   private readonly submitted: BfoSection[] = [];
+
+  async ensureSession(): Promise<Result<{ readonly personId: string }, string>> {
+    await wait(20);
+    return ok({ personId: "mock-person" });
+  }
+
+  async enrolJourney(_input: JourneyEnrolment): Promise<Result<void, string>> {
+    await wait(60);
+    return ok(undefined);
+  }
+
+  async logCraving(_channel: "app" | "web" = "app"): Promise<Result<void, string>> {
+    await wait(30);
+    return ok(undefined);
+  }
 
   async submitBfoSection(section: BfoSection): Promise<Result<void, string>> {
     await wait(150);
@@ -50,5 +65,3 @@ export class MockApi implements ApiPort {
     return ok(undefined);
   }
 }
-
-export const api: ApiPort = new MockApi();

@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
-import { api } from "../../src/api/mock";
+import { api } from "../../src/api";
 import type { NextAction } from "../../src/core/nextBestAction";
 import { crossedMilestones } from "../../src/core/streaks";
 import { daysWonFor, todayIso, useAppStore } from "../../src/state/store";
