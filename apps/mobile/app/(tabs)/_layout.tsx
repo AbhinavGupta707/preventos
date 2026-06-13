@@ -18,6 +18,7 @@ export default function TabsLayout() {
         name="today"
         options={{
           title: "Today",
+          tabBarButtonTestID: "tab-today",
           tabBarIcon: ({ color: c, size }) => <Ionicons name="sunny-outline" color={c} size={size} />,
         }}
       />
@@ -25,6 +26,7 @@ export default function TabsLayout() {
         name="plans"
         options={{
           title: "Plans",
+          tabBarButtonTestID: "tab-plans",
           tabBarIcon: ({ color: c, size }) => <Ionicons name="map-outline" color={c} size={size} />,
         }}
       />
@@ -32,6 +34,7 @@ export default function TabsLayout() {
         name="progress"
         options={{
           title: "Progress",
+          tabBarButtonTestID: "tab-progress",
           tabBarIcon: ({ color: c, size }) => <Ionicons name="leaf-outline" color={c} size={size} />,
         }}
       />
@@ -39,6 +42,7 @@ export default function TabsLayout() {
         name="coach"
         options={{
           title: "Coach",
+          tabBarButtonTestID: "tab-coach",
           tabBarIcon: ({ color: c, size }) => <Ionicons name="chatbubble-ellipses-outline" color={c} size={size} />,
         }}
       />

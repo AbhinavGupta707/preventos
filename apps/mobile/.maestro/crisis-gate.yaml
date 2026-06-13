@@ -4,7 +4,8 @@
 appId: app.preventos.mobile
 ---
 - launchApp
-- tapOn: "Coach"
+- tapOn:
+    id: "tab-coach"
 - assertVisible:
     id: "coach-screen"
 - tapOn:

@@ -137,7 +137,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.sm + 4,
     paddingVertical: space.sm,
   },
-  inputRow: { flexDirection: "row", gap: space.sm, paddingBottom: space.sm, paddingTop: space.sm },
+  // marginBottom clears the floating rescue button so Send stays tappable
+  inputRow: { flexDirection: "row", gap: space.sm, marginBottom: 64, paddingTop: space.sm },
   messages: { paddingBottom: space.md },
   sendButton: {
     alignSelf: "flex-end",
