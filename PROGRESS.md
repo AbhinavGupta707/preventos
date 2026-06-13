@@ -31,7 +31,7 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 | WS7 | Safety subsystem (7.1, 7.2, crisis-static, 7.4) (wave 2) | open | — | Corpus (843 cases) + spine ready; recall ≥0.95 tier-1 is the bar |
 | WS2 | Mobile app (2.1–2.6) (wave 2) | open | — | apps/mobile; spine packages available |
 | WS3 | Web (3.1 + 3.2) (wave 2) | open | — | apps/web; claims lint applies to marketing copy |
-| SVC | Services assembly (apps/api + apps/worker) (wave 2) | open | — | Wires spine packages; consumes events dispatcher + scheduler |
+| SVC | Services assembly (apps/api + apps/worker) (wave 2) | **done** | wp/svc-services | apps/api (Fastify): enrolment, consent grant/revoke/check, craving/drink/sleep-diary logs, plan CRUD — all via spine packages, auth-port middleware (FakeAuthProvider), zod at every boundary, rate limiting; 19 integration tests incl. 401/403/409/429 negatives. apps/worker: outbox dispatch loop + decision tick (decisionPoints→evaluateRules→arbitrate→consent+burden gates→contact+DecisionRecord), idempotent per decision point; 8 integration tests. Demo A proven over real HTTP against Postgres (`pnpm --filter @preventos/journey-sim demo`): enrol→tick→ONE arbitrated budget-respecting contact with decision audit; consent deny-by-default audited; outbox drained. Assumptions: craving log = inbound contact_record+contact.received (trigger detail awaits WS2 BFO); plan deletion un-evented (no plan.deleted in spine catalogue); default anchor rule set + placeholder atom refs live in apps/worker until vertical packs ship rules; prod default tz Europe/London; proactive contacts status `queued` (push delivery = WP2.5) |
 | WS8 | Outcomes, analytics & evidence (8.1–8.4) (wave 2) | open | — | events + auth(k-anon) ready |
 | AV.2 | Companion state engine (avatar) | open | — | **Parallel-safe now** — pure package; see plan WS-AV; AV.1 character design is an owner/design action |
 
@@ -40,3 +40,4 @@ Statuses: open → claimed(session/branch) → in_review(PR) → done(evidence).
 ## Session log
 - 2026-06-12 · spine session: plan v3 adopted; WP1.1a built and verified; repo initialized.
 - 2026-06-12 · V.4c session (worktree): Nightshift content pack drafted under wellbeing framing (E16); claims blocklist seeded in content/sleep/README.md pending WP4.2 lint/WP10.10 register.
+- 2026-06-12 · SVC session (worktree wp/svc-services): platform services assembled (apps/api, apps/worker, tools/journey-sim); Demo A loop proven end-to-end over HTTP against Postgres.

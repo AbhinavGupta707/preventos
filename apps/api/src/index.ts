@@ -1,0 +1,23 @@
+import { FakeAuthProvider } from "@preventos/auth";
+import { createDb } from "@preventos/db";
+import { buildServer } from "./server.js";
+
+/**
+ * Boot entry: `pnpm --filter @preventos/api dev`. Uses the fake auth provider
+ * until the Clerk adapter lands (owner-created API keys pending — see
+ * PROGRESS.md WP1.5). DEV_SESSION_TOKEN/DEV_SESSION_PERSON_ID seed one
+ * end-user session for local journeys.
+ */
+const DATABASE_URL = process.env["DATABASE_URL"];
+if (DATABASE_URL === undefined) throw new Error("DATABASE_URL is required");
+
+const auth = new FakeAuthProvider();
+const devToken = process.env["DEV_SESSION_TOKEN"];
+const devPersonId = process.env["DEV_SESSION_PERSON_ID"];
+if (devToken !== undefined && devPersonId !== undefined) {
+  auth.issue(devToken, { kind: "end_user", personRef: devPersonId });
+}
+
+const { db } = createDb(DATABASE_URL);
+const server = await buildServer({ db, auth, logger: true });
+await server.listen({ port: Number(process.env["PORT"] ?? 3001), host: "127.0.0.1" });
