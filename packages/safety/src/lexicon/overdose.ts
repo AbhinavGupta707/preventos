@@ -58,6 +58,9 @@ export const OVERDOSE_RULES: readonly SafetyRule[] = [
   }),
   rule("od.cough-codeine", "overdose", 1, /cough syrup with codeine/),
   rule("od.took-on-purpose", "overdose", 1, /(took|swallowed).{0,40}on purpose/),
+  // W3-SAFEPORT: first-person overdose disclosure (parity with retired mobile gate).
+  // "overdosed on coffee/emails/sleep/…" idioms stay suppressed by the global guards.
+  rule("od.self-overdosed", "overdose", 1, /\b(took|taken) an? overdose\b|\bi'?ve overdosed\b|\bi overdosed\b/),
 
   // ── tier 2: risky patterns, hypothetical lethality questions, tolerance loss, past events ──
   rule("od.lethality-question", "overdose", 2, /enough to kill someone|dying from too much|what would happen if someone took|survive an overdose|before you need medical help|tolerance to alcohol poisoning|lethal dose|knock me out for good/),

@@ -63,6 +63,14 @@ export const SELF_HARM_RULES: readonly SafetyRule[] = [
   rule("sh.breaking-point-rope", "self_harm", 1, /breaking point/, { requiresAll: [/(rope|doing this)/] }),
   rule("sh.done-pretending", "self_harm", 1, /done pretending.{0,40}(not waking up|okay)/),
 
+  // ── W3-SAFEPORT tier-1: explicit "end my life" intent. The corpus phrasings
+  // never spelled this out, so the lexicon (and the server screen) were blind to
+  // it; the retired 11-pattern mobile client gate caught it. Restored so the one
+  // validated classifier is never weaker than the gate it replaces (invariant 1).
+  rule("sh.end-my-life", "self_harm", 1, /(want(s|ed|ing)? to )?end(ing)? my (own )?life/, {
+    unless: [/as i know it|life of crime/],
+  }),
+
   // ── tier 2: ideation, urges, history, passive death wish ──
   rule("sh.thought-about", "self_harm", 2, /(thought|thinking|think) about (suicide|k[i]?ll(ing)? ?m[ye]? ?self|ways to hurt myself|hurting myself|my own)/),
   rule("sh.suicidal-thoughts", "self_harm", 2, /suicid[ae]l? (thoughts|ideation)|suicide crossed my mind|having suicidal/, {
@@ -95,4 +103,35 @@ export const SELF_HARM_RULES: readonly SafetyRule[] = [
   rule("sh.feel-suicidal-passive", "self_harm", 2, /some days i (dont|don'?t) want to be here/),
   rule("sh.drink-hurt", "self_harm", 2, /when i drink i think about/),
   rule("sh.everything-darker", "self_harm", 2, /making everything (so much )?darker/),
+
+  // ── W3-SAFEPORT tier-2: passive death-wish / ideation phrasings the retired
+  // 11-pattern mobile gate caught but the corpus-tuned lexicon did not. `unless`
+  // guards mirror the corpus tier-0 idioms (hangover / recovery hyperbole) so the
+  // FP rate stays at 0.0%. Verified by the WP7.4 red-team harness. ──
+  rule("sh.want-to-die", "self_harm", 2, /\bwant(s|ed|ing)? to die\b/, {
+    unless: [/hangover|this (heat|cold|weather|commute|traffic|queue|meeting)|of (embarrassment|shame|laughter|boredom)/],
+  }),
+  rule("sh.end-it-all", "self_harm", 2, /\bend(ing)? it all\b/),
+  rule("sh.better-off-dead", "self_harm", 2, /\bbetter off dead\b/),
+  rule("sh.no-reason-to-live", "self_harm", 2, /\bno reason to (live|go on|carry on|keep going)\b|\bnothing (left )?to live for\b/),
+  rule("sh.suicidal-feeling", "self_harm", 2, /\bsuicidal\b/, {
+    unless: [
+      /used to (be|feel|have)|years ago|no longer|haven'?t looked back|tendencies/,
+      // conditional / quoted-question framing ("call if I ever feel suicidal", "asked if I was suicidal")
+      /if .{0,15}(feel|felt|get|getting|was|were|become|becoming|am|i'?m) suicidal/,
+      // explicit denial of current risk ("I'm not suicidal", "never been suicidal")
+      /(not|n'?t|never (been|felt)) suicidal/,
+    ],
+  }),
+  rule("sh.suicide-on-mind", "self_harm", 2, /\bsuicide('?s)? (is |been )?on my mind\b|\bthinking (about|of) suicide\b|\b(want(s|ed|ing)?|going) to suicide\b/),
+  rule("sh.i-self-harm", "self_harm", 2, /\b(i|i'?ve|ive) (sometimes |occasionally |secretly |still |been |again )*self.?harm(ed|ing|s)?\b/, {
+    unless: [/awareness|helpline|charity|hotline|prevention|support (group|line)/],
+  }),
+  rule("sh.hurting-myself", "self_harm", 2, /\bhurt(ing|s)? myself\b/, {
+    unless: [/only (ever )?hurt(ing)? myself|hurt(ing)? myself by|working out|the gym|exercise|football|running|training|studying/],
+  }),
+  rule("sh.dont-want-to-live", "self_harm", 2, /\b(don'?t|dont) want to (live|carry on living)( anymore| any more)?\b/),
+  rule("sh.dont-want-to-wake", "self_harm", 2, /\b(don'?t|dont) want to wake up( tomorrow| again| anymore| ever| at all)?\b/, {
+    unless: [/wake up (early|for (work|school)|at \d|before|on time|late|to my alarm)/],
+  }),
 ];

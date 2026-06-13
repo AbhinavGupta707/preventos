@@ -62,4 +62,39 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    // W3-SAFEPORT: the pure classifier surface (everything except queue.ts) must
+    // stay db-free so `@preventos/safety/classify` is bundler-safe for mobile/web.
+    files: ["packages/safety/src/**/*.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: [
+                "@preventos/db",
+                "@preventos/db/*",
+                "@preventos/events",
+                "@preventos/events/*",
+                "drizzle-orm",
+                "drizzle-orm/*",
+                "pg",
+                "pg/*",
+              ],
+              message:
+                "the pure classifier entry must stay db-free (W3-SAFEPORT): @preventos/safety/classify is bundled into mobile/web. Only ./queue.ts — reached via the package root @preventos/safety — may touch the database.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // queue.ts is the deliberate exception: the db-backed escalation queue.
+    files: ["packages/safety/src/queue.ts"],
+    rules: {
+      "no-restricted-imports": "off",
+    },
+  },
 );

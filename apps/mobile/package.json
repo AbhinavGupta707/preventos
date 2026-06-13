@@ -7,6 +7,7 @@
     "@preventos/decisions": "workspace:*",
     "@preventos/domain": "workspace:*",
     "@preventos/instruments": "workspace:*",
+    "@preventos/safety": "workspace:*",
     "@preventos/shared": "workspace:*",
     "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~56.0.11",

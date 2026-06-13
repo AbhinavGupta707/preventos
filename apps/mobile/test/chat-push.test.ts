@@ -1,30 +1,48 @@
 import { describe, expect, it } from "vitest";
 
-import { classifyOutbound, chatReducer, emptyChat } from "../src/core/chat";
+import { classifyOutbound, routesToCrisis, chatReducer, emptyChat } from "../src/core/chat";
 import { canPromptOs, choreographyReducer, initialChoreography } from "../src/core/pushChoreography";
 
-describe("deterministic crisis gate — invariant 1: runs before any LLM, no bypass", () => {
+describe("deterministic crisis gate — invariant 1: the validated classifier, before any LLM, no bypass", () => {
+  // Every phrase the retired 11-pattern gate caught must still route to crisis
+  // now the gate delegates to @preventos/safety (W3-SAFEPORT): the gate may only
+  // get stricter, never weaker. Mixed tier-1/tier-2 — both route to crisis.
   const crisisTexts = [
     "I want to kill myself",
     "i've been thinking about ending my life",
     "I just want to die",
     "thinking of hurting myself tonight",
     "SUICIDE is on my mind",
+    "I feel like there's no reason to live",
+    "I took an overdose",
   ];
 
   for (const text of crisisTexts) {
-    it(`flags tier-1: "${text.slice(0, 30)}…"`, () => {
-      expect(classifyOutbound(text)).toBe("tier1");
+    it(`routes to crisis: "${text.slice(0, 30)}…"`, () => {
+      expect(routesToCrisis(text)).toBe(true);
+      expect(classifyOutbound(text).tier).toBeGreaterThanOrEqual(1);
     });
   }
 
-  it("does not flag ordinary coaching messages", () => {
-    expect(classifyOutbound("I'm dying for a cigarette right now")).toBe("none");
-    expect(classifyOutbound("these cravings are killing me")).toBe("none");
-    expect(classifyOutbound("help me get through tonight")).toBe("none");
+  // The upgrade over the 11-pattern list: obfuscated phrasings it could not match.
+  for (const text of ["k i l l   m y s e l f", "kms tonight", "i want to unalive myself"]) {
+    it(`catches obfuscation the 11-pattern gate missed: "${text.slice(0, 24)}"`, () => {
+      expect(routesToCrisis(text)).toBe(true);
+    });
+  }
+
+  it("does not flag ordinary coaching messages or recovery hyperbole", () => {
+    for (const text of [
+      "I'm dying for a cigarette right now",
+      "these cravings are killing me",
+      "help me get through tonight",
+      "I'd rather die than start smoking again",
+    ]) {
+      expect(routesToCrisis(text), text).toBe(false);
+    }
   });
 
-  it("tier-1 message NEVER reaches the coach — reducer routes to crisis instead", () => {
+  it("risk message NEVER reaches the coach — reducer routes to crisis instead", () => {
     const next = chatReducer(emptyChat(), { type: "send", text: "I want to kill myself" });
     expect(next.pendingCoachRequest).toBeNull();
     expect(next.crisisActive).toBe(true);
