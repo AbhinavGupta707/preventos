@@ -7,6 +7,12 @@ export interface LlmRequest {
   readonly system: string;
   readonly messages: readonly LlmTurn[];
   readonly maxTokens: number;
+  /**
+   * Optional per-request model override. A frame may route a simple turn to a
+   * cheaper/faster model and a complex one to a larger model; when unset the
+   * provider uses its configured default (COACH_MODEL or the built-in default).
+   */
+  readonly model?: string;
 }
 
 export interface LlmResponse {

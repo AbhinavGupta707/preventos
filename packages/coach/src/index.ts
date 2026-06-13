@@ -7,6 +7,8 @@ export { FakeCoachProvider } from "./providers/fake.js";
 export type { FakeResponder } from "./providers/fake.js";
 export { ClaudeCoachProvider, claudeProviderFromEnv } from "./providers/claude.js";
 export type { ClaudeProviderOptions } from "./providers/claude.js";
+export { FireworksCoachProvider, fireworksProviderFromEnv } from "./providers/fireworks.js";
+export type { FireworksProviderOptions, FetchLike } from "./providers/fireworks.js";
 export { SAFE_FALLBACK, safeSubstitute } from "./messages.js";
 export type { CoachLlmProvider, LlmRequest, LlmResponse, LlmTurn } from "./provider.js";
 export { COACH_FRAMES } from "./types.js";

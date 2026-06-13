@@ -54,11 +54,22 @@ weeks. So they are *defence in depth* here, never the control of record:
 
 | Port | Production | Tests / no-key |
 |------|------------|----------------|
-| `CoachLlmProvider` | `ClaudeCoachProvider` (official `@anthropic-ai/sdk`, model `claude-opus-4-8`, `COACH_MODEL`-overridable) | `FakeCoachProvider` (deterministic, records calls) |
+| `CoachLlmProvider` | `FireworksCoachProvider` or `ClaudeCoachProvider` (selected by key — see below) | `FakeCoachProvider` (deterministic, records calls) |
 | `CoachLogSink` | db-backed writer → `core.coach_interaction` | in-memory recorder |
 | `claimsFences` | compiled `compliance/claims/claims-register.json` | same, loaded in the test |
 
-The Claude adapter is dormant without `ANTHROPIC_API_KEY` (the API falls back to
-the fake provider), so CI and local runs never spend money. This package has no
-db dependency; a lint boundary keeps the Anthropic SDK importable only here
-(the "sole LLM path").
+`apps/api` picks the provider by configured key, in order:
+
+| Key set | Provider | Default model (`COACH_MODEL`-overridable) |
+|---------|----------|-------------------------------------------|
+| `FIREWORKS_API_KEY` | `FireworksCoachProvider` (OpenAI-compatible, base `https://api.fireworks.ai/inference/v1`) | `accounts/fireworks/models/llama-v3p3-70b-instruct` |
+| `ANTHROPIC_API_KEY` (and no Fireworks key) | `ClaudeCoachProvider` (official `@anthropic-ai/sdk`) | `claude-opus-4-8` |
+| neither | `FakeCoachProvider` | — (deterministic, zero spend) |
+
+Both adapters honour an optional per-request `LlmRequest.model`, so a frame can
+route a simple turn to a cheaper/faster model and a complex one to a larger
+model without changing the proxy. With no key the API falls back to the fake
+provider, so CI and local runs never spend money. This package has no db
+dependency; a lint boundary keeps the Anthropic SDK importable only here (the
+"sole LLM path"), and the Fireworks adapter speaks plain HTTP behind the same
+`CoachLlmProvider` port.

@@ -44,7 +44,7 @@ export class ClaudeCoachProvider implements CoachLlmProvider {
 
   async generate(request: LlmRequest): Promise<LlmResponse> {
     const message = await this.client.messages.create({
-      model: this.model,
+      model: request.model ?? this.model,
       max_tokens: request.maxTokens,
       system: request.system,
       messages: request.messages.map((turn) => ({ role: turn.role, content: turn.content })),
