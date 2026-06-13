@@ -4,6 +4,13 @@ import { appendFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { clientIpForRateLimit } from "../../../lib/client-ip";
+
+// Number of trusted reverse proxies / CDN edges in front of this app. Default 1
+// (a single edge proxy that appends the real client IP). Set to your real hop
+// count, or 0 to ignore X-Forwarded-For entirely when there is no trusted proxy.
+const parsedHops = Number.parseInt(process.env["RATE_LIMIT_TRUSTED_PROXIES"] ?? "1", 10);
+const TRUSTED_PROXY_HOPS = Number.isNaN(parsedHops) ? 1 : parsedHops;
 
 const signupSchema = z.object({
   email: z.string().trim().email("Please enter a valid email address."),
@@ -27,7 +34,7 @@ function rateLimited(ip: string): boolean {
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
+  const ip = clientIpForRateLimit(request.headers.get("x-forwarded-for"), TRUSTED_PROXY_HOPS);
   if (rateLimited(ip)) {
     return NextResponse.json({ success: false, error: "Too many attempts — please try again shortly." }, { status: 429 });
   }

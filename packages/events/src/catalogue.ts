@@ -1,8 +1,17 @@
 import { z } from "zod";
-import { RISK_CLASSES, VERTICALS } from "@preventos/domain";
+import { CHANNELS, CONSENT_PURPOSES, ENROLMENT_STATUSES, RISK_CLASSES, VERTICALS } from "@preventos/domain";
 
 const uuid = z.string().uuid();
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+
+// Coded values only (erasure invariant): bound length + charset so no free text
+// or direct identifier (phone, email, postcode, name) can ride into an audit row.
+// `codedId`    — dot/underscore/kebab slugs: content atom ids, outcome def ids.
+// `codedToken` — open-but-coded scope tokens (consent signal/recipient): slug or uuid.
+// `disposition`— escalation outcome: an open clinical vocabulary, kebab-coded.
+const codedId = z.string().regex(/^[a-z0-9][a-z0-9._-]{0,127}$/);
+const codedToken = z.string().regex(/^[a-z0-9][a-z0-9._-]{0,63}$/);
+const disposition = z.string().regex(/^[a-z][a-z0-9-]{0,63}$/);
 
 /**
  * Erasure invariant (plan WP1.3): event payloads carry identifiers and coded
@@ -15,29 +24,29 @@ export const EVENT_SCHEMAS = {
   "person.created": z.object({ personId: uuid }).strict(),
   "enrolment.started": z.object({ personId: uuid, enrolmentId: uuid, vertical: z.enum(VERTICALS) }).strict(),
   "enrolment.status_changed": z
-    .object({ personId: uuid, enrolmentId: uuid, from: z.string(), to: z.string() })
+    .object({ personId: uuid, enrolmentId: uuid, from: z.enum(ENROLMENT_STATUSES), to: z.enum(ENROLMENT_STATUSES) })
     .strict(),
   "consent.changed": z
     .object({
       personId: uuid,
-      purpose: z.string(),
+      purpose: z.enum(CONSENT_PURPOSES),
       action: z.enum(["granted", "revoked"]),
-      signal: z.string().optional(),
-      recipient: z.string().optional(),
+      signal: codedToken.optional(),
+      recipient: codedToken.optional(),
     })
     .strict(),
   "contact.sent": z
-    .object({ personId: uuid, contactId: uuid, channel: z.string(), contentAtomId: z.string().optional() })
+    .object({ personId: uuid, contactId: uuid, channel: z.enum(CHANNELS), contentAtomId: codedId.optional() })
     .strict(),
-  "contact.received": z.object({ personId: uuid, contactId: uuid, channel: z.string() }).strict(),
+  "contact.received": z.object({ personId: uuid, contactId: uuid, channel: z.enum(CHANNELS) }).strict(),
   "decision.made": z.object({ personId: uuid, decisionId: uuid, vertical: z.enum(VERTICALS) }).strict(),
   "lapse.logged": z.object({ personId: uuid, enrolmentId: uuid, vertical: z.enum(VERTICALS) }).strict(),
   "escalation.opened": z
     .object({ personId: uuid, caseId: uuid, riskClass: z.enum(RISK_CLASSES), tier: z.number().int().min(1).max(3) })
     .strict(),
-  "escalation.closed": z.object({ personId: uuid, caseId: uuid, disposition: z.string() }).strict(),
+  "escalation.closed": z.object({ personId: uuid, caseId: uuid, disposition }).strict(),
   "outcome.recorded": z
-    .object({ personId: uuid, outcomeId: uuid, vertical: z.enum(VERTICALS), definitionId: z.string() })
+    .object({ personId: uuid, outcomeId: uuid, vertical: z.enum(VERTICALS), definitionId: codedId })
     .strict(),
   "sleep.diary.logged": z.object({ personId: uuid, entryId: uuid, date: isoDate }).strict(),
   "sleep.window.adjusted": z.object({ personId: uuid, windowId: uuid, version: z.number().int() }).strict(),

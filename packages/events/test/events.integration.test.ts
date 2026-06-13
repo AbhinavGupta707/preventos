@@ -36,6 +36,46 @@ describe("catalogue", () => {
   });
 });
 
+// W3-SECHARD — coded-value hardening. The erasure invariant says payloads carry
+// identifiers and coded values ONLY; previously several fields were unbounded
+// z.string(), so free text or PII could ride into an append-only audit row.
+// These are pure schema checks (no DB).
+describe("catalogue — coded-value hardening (erasure invariant)", () => {
+  const PID = "11111111-1111-4111-8111-111111111111";
+  const CID = "22222222-2222-4222-8222-222222222222";
+
+  it("escalation.closed.disposition accepts coded kebab, rejects free text / PII", () => {
+    expect(EVENT_SCHEMAS["escalation.closed"].safeParse({ personId: PID, caseId: CID, disposition: "referred-to-gp" }).success).toBe(true);
+    expect(EVENT_SCHEMAS["escalation.closed"].safeParse({ personId: PID, caseId: CID, disposition: "patient John on 07700900000" }).success).toBe(false);
+  });
+
+  it("consent.changed.purpose accepts canonical purposes, rejects arbitrary text", () => {
+    expect(EVENT_SCHEMAS["consent.changed"].safeParse({ personId: PID, purpose: "programme_delivery", action: "granted" }).success).toBe(true);
+    expect(EVENT_SCHEMAS["consent.changed"].safeParse({ personId: PID, purpose: "sell to bob@example.com", action: "granted" }).success).toBe(false);
+  });
+
+  it("consent.changed.signal/recipient accept coded tokens, reject free text", () => {
+    expect(EVENT_SCHEMAS["consent.changed"].safeParse({ personId: PID, purpose: "supporter_sharing", action: "granted", recipient: "33333333-3333-4333-8333-333333333333" }).success).toBe(true);
+    expect(EVENT_SCHEMAS["consent.changed"].safeParse({ personId: PID, purpose: "supporter_sharing", action: "granted", recipient: "my friend Dave" }).success).toBe(false);
+  });
+
+  it("contact.{sent,received}.channel accepts known channels only", () => {
+    expect(EVENT_SCHEMAS["contact.received"].safeParse({ personId: PID, contactId: CID, channel: "app" }).success).toBe(true);
+    expect(EVENT_SCHEMAS["contact.sent"].safeParse({ personId: PID, contactId: CID, channel: "carrier-pigeon" }).success).toBe(false);
+  });
+
+  it("enrolment.status_changed.from/to accept enrolment statuses only", () => {
+    expect(EVENT_SCHEMAS["enrolment.status_changed"].safeParse({ personId: PID, enrolmentId: CID, from: "active", to: "withdrawn" }).success).toBe(true);
+    expect(EVENT_SCHEMAS["enrolment.status_changed"].safeParse({ personId: PID, enrolmentId: CID, from: "active", to: "free text note" }).success).toBe(false);
+  });
+
+  it("outcome.recorded.definitionId and contact.sent.contentAtomId accept coded ids only", () => {
+    expect(EVENT_SCHEMAS["outcome.recorded"].safeParse({ personId: PID, outcomeId: CID, vertical: "smoking", definitionId: "smoking.quit.russell_standard_4w" }).success).toBe(true);
+    expect(EVENT_SCHEMAS["outcome.recorded"].safeParse({ personId: PID, outcomeId: CID, vertical: "smoking", definitionId: "outcome for John Smith" }).success).toBe(false);
+    expect(EVENT_SCHEMAS["contact.sent"].safeParse({ personId: PID, contactId: CID, channel: "push", contentAtomId: "smoking.lapse.opener" }).success).toBe(true);
+  });
+});
+
 describe("publish", () => {
   it("rejects invalid payloads and writes nothing", async () => {
     await expect(
