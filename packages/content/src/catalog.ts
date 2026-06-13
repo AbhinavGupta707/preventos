@@ -1,6 +1,5 @@
-import { createHash } from "node:crypto";
 import type { Result } from "@preventos/shared";
-import { err, ok } from "@preventos/shared";
+import { err, ok, sha256Hex } from "@preventos/shared";
 import type { ContentChannel, ResolvedAtom, Sequence } from "./schema.js";
 
 export interface Catalog {
@@ -33,9 +32,7 @@ export function buildCatalog(
   }
   const sortedAtoms = [...byId.values()].sort((a, b) => a.id.localeCompare(b.id));
   const sortedSequences = [...sequenceMap.values()].sort((a, b) => a.id.localeCompare(b.id));
-  const hash = createHash("sha256")
-    .update(JSON.stringify({ atoms: sortedAtoms, sequences: sortedSequences }))
-    .digest("hex");
+  const hash = sha256Hex(JSON.stringify({ atoms: sortedAtoms, sequences: sortedSequences }));
   return ok({ byId, sequences: sequenceMap, hash });
 }
 

@@ -1,6 +1,5 @@
-import { createHash } from "node:crypto";
 import type { Result } from "@preventos/shared";
-import { err, ok } from "@preventos/shared";
+import { err, ok, sha256Hex } from "@preventos/shared";
 import { AUDIT_C } from "./audit-c.js";
 import { HSI } from "./hsi.js";
 import { SCI } from "./sci.js";
@@ -15,9 +14,7 @@ const SERVABLE: ReadonlySet<LicensingStatus> = new Set(["cleared", "cleared-with
 
 /** Deterministic hash over item wording — the lock behind safety invariant 2. */
 export function computeIntegrity(items: readonly InstrumentItem[]): string {
-  return createHash("sha256")
-    .update(JSON.stringify(items.map((item) => ({ id: item.id, text: item.text, options: item.options }))))
-    .digest("hex");
+  return sha256Hex(JSON.stringify(items.map((item) => ({ id: item.id, text: item.text, options: item.options }))));
 }
 
 /** Recomputes the wording hash against the locked constant. */

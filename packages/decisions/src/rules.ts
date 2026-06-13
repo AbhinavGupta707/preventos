@@ -1,5 +1,5 @@
-import { createHash } from "node:crypto";
 import { z } from "zod";
+import { sha256Hex } from "@preventos/shared";
 import { VERTICALS } from "@preventos/domain";
 
 const conditionSchema = z.object({
@@ -74,7 +74,7 @@ export function ruleSetHash(ruleSet: RuleSet): string {
     version: ruleSet.version,
     rules: [...ruleSet.rules].sort((a, b) => a.id.localeCompare(b.id)),
   });
-  return `${ruleSet.version}#${createHash("sha256").update(canonical).digest("hex").slice(0, 12)}`;
+  return `${ruleSet.version}#${sha256Hex(canonical).slice(0, 12)}`;
 }
 
 /**

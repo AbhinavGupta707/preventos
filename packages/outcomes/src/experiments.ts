@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { sha256Hex } from "@preventos/shared";
 import { z } from "zod";
 
 /**
@@ -80,10 +80,11 @@ export function parseExperiment(input: unknown): Experiment {
  * always lands in the same variant for a given experiment version.
  */
 export function assignVariant(experiment: Experiment, personId: string): string {
-  const digest = createHash("sha256")
-    .update(`${experiment.key}@${experiment.version}:${personId}`)
-    .digest();
-  const r = digest.readUInt32BE(0) / 0x1_0000_0000;
+  // First 4 bytes of the digest, big-endian, as a uint32 in [0,1). Reading the
+  // first 8 hex chars is byte-identical to the previous Buffer.readUInt32BE(0),
+  // so existing assignments are unchanged.
+  const hex = sha256Hex(`${experiment.key}@${experiment.version}:${personId}`);
+  const r = parseInt(hex.slice(0, 8), 16) / 0x1_0000_0000;
   const totalWeight = experiment.variants.reduce((sum, v) => sum + v.weight, 0);
 
   let cumulative = 0;

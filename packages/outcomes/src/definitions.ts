@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { sha256Hex } from "@preventos/shared";
 import { z } from "zod";
 
 /**
@@ -205,10 +205,7 @@ function canonicalise(value: unknown): unknown {
 
 /** Content-addressed ref: identical definitions always hash identically. */
 export function definitionRef(def: OutcomeDefinition): string {
-  const digest = createHash("sha256")
-    .update(JSON.stringify(canonicalise(def)))
-    .digest("hex")
-    .slice(0, 12);
+  const digest = sha256Hex(JSON.stringify(canonicalise(def))).slice(0, 12);
   return `${def.id}@${def.version}#${digest}`;
 }
 
