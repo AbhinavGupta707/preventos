@@ -82,7 +82,8 @@ appId: app.preventos.mobile
     id: "plan-if-stress-spike"
 - tapOn:
     id: "plan-then-0"
-- assertVisible: "If stress spike*"
+# Maestro full-matches the regex; .* consumes the trailing ellipsis
+- assertVisible: "If stress spike.*"
 
 # --- Progress: cross-programme savings rail (15/day at £13 × 1 day won) ---
 - tapOn:

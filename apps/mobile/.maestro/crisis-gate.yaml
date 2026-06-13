@@ -14,19 +14,26 @@ appId: app.preventos.mobile
 - tapOn:
     id: "coach-send"
 
-# Scripted crisis flow takes over
+# Scripted crisis flow takes over (allow the fullScreenModal slide-up to settle).
+# Each crisis line is a button Pressable, so iOS merges its child Texts into one
+# accessibility label — match the line by id, assert content with a contains-regex.
+- extendedWaitUntil:
+    visible:
+      id: "crisis-screen"
+    timeout: 5000
 - assertVisible:
-    id: "crisis-screen"
-- assertVisible: "Samaritans"
-- assertVisible: "Call 116 123"
-- assertVisible: "Shout"
+    id: "crisis-samaritans"
+- assertVisible: "(?s).*Call 116 123.*"
+- assertVisible:
+    id: "crisis-shout"
 - tapOn:
     id: "crisis-back"
 
-# Back in chat: the tier-1 message produced no coach reply
+# Back in chat: the tier-1 message produced no coach reply (contains-regex so the
+# negative assertion is meaningful, not a trivially-true full-match miss)
 - assertVisible:
     id: "coach-screen"
-- assertNotVisible: "Coach preview — the live coach*"
+- assertNotVisible: "(?s).*Coach preview.*"
 
 # A normal message still streams a reply
 - tapOn:
@@ -35,5 +42,5 @@ appId: app.preventos.mobile
 - tapOn:
     id: "coach-send"
 - extendedWaitUntil:
-    visible: "*urges crest and pass*"
+    visible: "(?s).*urges crest and pass.*"
     timeout: 15000
