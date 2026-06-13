@@ -33,6 +33,7 @@ WP definitions and acceptance criteria live in `IMPLEMENTATION_PLAN.md` §5–6.
 | WS3 | Web (3.1 + 3.2) (wave 2) | open | — | apps/web; claims lint applies to marketing copy |
 | SVC | Services assembly (apps/api + apps/worker) (wave 2) | open | — | Wires spine packages; consumes events dispatcher + scheduler |
 | WS8 | Outcomes, analytics & evidence (8.1–8.4) (wave 2) | **done** (8.1, 8.3 skeleton, 8.4) | wp/8-outcomes-evidence | `@preventos/outcomes`: versioned content-hash-pinned definitions (Russell-Standard 4w ITT, vaping pp7/pp30, AUDIT-C delta + drinking days, sleep SE/SOL/WASO; SCI deferred pending WP10.4 license) evaluated against 50-journey fixture cohort (43/43 tests, hand-derived aggregates). Experiments: deterministic sha256 assignment, mandatory escalation guardrail, safety surfaces unrepresentable by construction (negative-tested). Console `/evidence`: k≥5 suppression server-side; proven at runtime — served HTML contains zero occurrences of the n=2 group, all rendered counts ≥5. WP8.2 (analytics instrumentation) needs SVC/apps — open |
+| AV.2 | Companion state engine (avatar) | open | — | **Parallel-safe now** — pure package; see plan WS-AV; AV.1 character design is an owner/design action |
 
 Statuses: open → claimed(session/branch) → in_review(PR) → done(evidence).
 

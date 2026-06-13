@@ -315,6 +315,28 @@ security-reviewer on auth/safety/consent/payload surfaces; database-reviewer on 
 - **WP8.3 Evidence dashboard** — M — as v2 + per-vertical and cross-vertical views (Demo E).
 - **WP8.4 Experiment framework lite** — S — as v2; safety flows excluded from experimentation.
 
+### WS-AV — Companion avatar (owner addition, 2026-06-12)
+Decision E21: a customisable 2D rigged creature companion (Finch/Wysa-class, NOT a photoreal
+human) built in Rive — state-machine animation driven by real platform state, one .riv asset
+serving mobile (rive-react-native, ~60fps) and web. Evidence anchor: relational-agent research
+(Bickmore et al.) shows embodied agents improve engagement, adherence, and therapeutic alliance,
+including for low-health-literacy users. Hard rules: the companion NEVER guilts or punishes
+(lapse → concern + care, never disappointment); it steps aside entirely during crisis flows;
+no variable-reward/loot mechanics (gambling-adjacent user base); cosmetics unlock on days-won
+milestones only; the avatar is the *presentation layer* of the one guardrailed coach — never a
+second agent; dependency guards (PRD §3.3.5) extend to companion attachment.
+- **WP-AV.1 Character design & Rive rig** — L — species set + customisation palette + emotional
+  state machine (idle/happy/concerned/asleep/co-breathing/celebrating) + milestone evolution
+  stages. Asset creation is the long pole — owner decides: commission vs Rive marketplace base.
+- **WP-AV.2 Companion state engine** — M — pure package mapping platform events (streak, diary
+  logged, lapse debriefed, SOS used, dormancy) → companion emotional state + line-of-dialogue
+  slots (content-pack governed, clinically signed off like all copy). Parallel-safe now.
+- **WP-AV.3 App integration** — M — home-surface presence, SOS co-breathing (companion breathes
+  with the user), coach-chat presence (avatar as the coach's face), crisis-flow step-aside.
+- **WP-AV.4 Customisation & evolution** — S — setup flow (species/colour/name), milestone stages.
+- **WP-AV.5 Widget & notification assets** — S — lock-screen widget (Finch's proven retention
+  surface), rich-push imagery.
+
 ### WS9 — Infrastructure & security
 - **WP9.1 Environments, IaC, release pipeline** — M — as v2.
 - **WP9.2 Observability & clinical audit trail** — M — as v2 + titration-adjustment audit stream.
