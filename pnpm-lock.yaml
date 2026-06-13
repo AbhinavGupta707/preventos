@@ -50,12 +50,15 @@ importers:
       '@preventos/events':
         specifier: workspace:*
         version: link:../../packages/events
+      '@preventos/safety':
+        specifier: workspace:*
+        version: link:../../packages/safety
       '@preventos/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       drizzle-orm:
-        specifier: ^0.44.2
-        version: 0.44.7(@types/pg@8.20.0)(pg@8.21.0)
+        specifier: ^0.45.2
+        version: 0.45.2(@types/pg@8.20.0)(pg@8.21.0)
       fastify:
         specifier: ^5.6.0
         version: 5.8.5
@@ -262,8 +265,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared
       drizzle-orm:
-        specifier: ^0.44.2
-        version: 0.44.7(@types/pg@8.20.0)(pg@8.21.0)
+        specifier: ^0.45.2
+        version: 0.45.2(@types/pg@8.20.0)(pg@8.21.0)
       pg:
         specifier: ^8.16.0
         version: 8.21.0
@@ -381,8 +384,8 @@ importers:
         specifier: workspace:*
         version: link:../shared
       drizzle-orm:
-        specifier: ^0.44.2
-        version: 0.44.7(@types/pg@8.20.0)(pg@8.21.0)
+        specifier: ^0.45.2
+        version: 0.45.2(@types/pg@8.20.0)(pg@8.21.0)
       pg:
         specifier: ^8.16.0
         version: 8.21.0
@@ -519,8 +522,8 @@ importers:
         specifier: workspace:*
         version: link:../shared
       drizzle-orm:
-        specifier: ^0.44.2
-        version: 0.44.7(@types/pg@8.20.0)(pg@8.21.0)
+        specifier: ^0.45.2
+        version: 0.45.2(@types/pg@8.20.0)(pg@8.21.0)
     devDependencies:
       '@types/node':
         specifier: ^22.18.0
@@ -2956,8 +2959,8 @@ packages:
   dom-accessibility-api@0.6.3:
     resolution: {integrity: sha512-7ZgogeTnjuHbo+ct10G9Ffp0mif17idi0IyWNVA/wcwcm7NPOD/WEHVP3n7n3MhXqxoIYm8d6MuZohYWIZ4T3w==}
 
-  drizzle-orm@0.44.7:
-    resolution: {integrity: sha512-quIpnYznjU9lHshEOAYLoZ9s3jweleHlZIAWR/jX9gAWNg/JhQ1wj0KGRf7/Zm+obRrYd9GjPVJg790QY9N5AQ==}
+  drizzle-orm@0.45.2:
+    resolution: {integrity: sha512-kY0BSaTNYWnoDMVoyY8uxmyHjpJW1geOmBMdSSicKo9CIIWkSxMIj2rkeSR51b8KAPB7m+qysjuHme5nKP+E5Q==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=4'
@@ -7494,7 +7497,7 @@ snapshots:
 
   dom-accessibility-api@0.6.3: {}
 
-  drizzle-orm@0.44.7(@types/pg@8.20.0)(pg@8.21.0):
+  drizzle-orm@0.45.2(@types/pg@8.20.0)(pg@8.21.0):
     optionalDependencies:
       '@types/pg': 8.20.0
       pg: 8.21.0

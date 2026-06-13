@@ -5,6 +5,7 @@ import { schema } from "@preventos/db";
 import type { PersonId } from "@preventos/domain";
 import { publish } from "@preventos/events";
 import { compact, cravingLogSchema, drinkLogSchema, sleepDiarySchema } from "../schemas.js";
+import { screenInboundText } from "../safety-screen.js";
 
 async function requireProgrammeDelivery(db: Db, personId: PersonId, reply: FastifyReply): Promise<boolean> {
   if (await checkConsent(db, personId, { purpose: "programme_delivery" })) return true;
@@ -28,8 +29,13 @@ export function registerLogRoutes(app: FastifyInstance, db: Db): void {
       })
       .returning();
     if (entry === undefined) throw new Error("drink log insert returned no row");
-    await publish(db, "drink.logged", { personId, entryId: entry.id, date: input.date });
-    return reply.code(201).send({ data: { id: entry.id, date: entry.date, units: Number(entry.units) } });
+    const logged = await publish(db, "drink.logged", { personId, entryId: entry.id, date: input.date });
+    // Safety invariant 1: any free text the user submitted is classified before
+    // we respond; a tier-1/2 hit opens a human escalation case off this event.
+    const safety = await screenInboundText(db, personId, input.context, logged.eventId);
+    return reply
+      .code(201)
+      .send({ data: { id: entry.id, date: entry.date, units: Number(entry.units) }, safety });
   });
 
   app.post("/logs/sleep-diary", async (request, reply) => {

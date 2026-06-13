@@ -18,8 +18,9 @@
     "@preventos/db": "workspace:*",
     "@preventos/domain": "workspace:*",
     "@preventos/events": "workspace:*",
+    "@preventos/safety": "workspace:*",
     "@preventos/shared": "workspace:*",
-    "drizzle-orm": "^0.44.2",
+    "drizzle-orm": "^0.45.2",
     "fastify": "^5.6.0",
     "zod": "^3.25.0"
   },

@@ -395,3 +395,52 @@ describe("rate limiting", () => {
     }
   });
 });
+
+describe("safety gate on inbound free text (invariant 1, server side)", () => {
+  async function readyUser(pseudonym: string) {
+    const { personId, token } = await signUp(pseudonym);
+    await server.inject({
+      method: "POST",
+      url: "/consents/grant",
+      headers: asUser(token),
+      payload: { purpose: "programme_delivery" },
+    });
+    return { personId, token };
+  }
+
+  it("a tier-1 phrase in a drink-log context opens a human escalation case and flags crisis", async () => {
+    const { personId, token } = await readyUser("api-safety-crisis");
+    const res = await server.inject({
+      method: "POST",
+      url: "/logs/drink",
+      headers: asUser(token),
+      payload: { date: "2026-06-13", units: 3, context: "drinking because I want to kill myself tonight" },
+    });
+    expect(res.statusCode).toBe(201);
+    expect(res.json().safety.crisis).toBe(true);
+    expect(res.json().safety.tier).toBe(1);
+    const cases = await handle.pool.query(
+      "SELECT tier, state FROM core.escalation_case WHERE person_id = $1",
+      [personId],
+    );
+    expect(cases.rowCount).toBe(1);
+    expect(cases.rows[0].state).toBe("open");
+  });
+
+  it("benign context logs normally with no escalation", async () => {
+    const { personId, token } = await readyUser("api-safety-benign");
+    const res = await server.inject({
+      method: "POST",
+      url: "/logs/drink",
+      headers: asUser(token),
+      payload: { date: "2026-06-13", units: 2, context: "after work with friends" },
+    });
+    expect(res.statusCode).toBe(201);
+    expect(res.json().safety.crisis).toBe(false);
+    expect(res.json().safety.tier).toBe(0);
+    const cases = await handle.pool.query("SELECT count(*) FROM core.escalation_case WHERE person_id = $1", [
+      personId,
+    ]);
+    expect(cases.rows[0].count).toBe("0");
+  });
+});
