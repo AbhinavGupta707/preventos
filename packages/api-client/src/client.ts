@@ -13,6 +13,7 @@ import type {
   EnrolInput,
   EnrolmentView,
   FetchLike,
+  FunnelEventInput,
   HttpRequestInit,
   PlanCreateInput,
   PlanView,
@@ -20,6 +21,7 @@ import type {
   SignedUpPerson,
   SleepDiaryInput,
   SleepDiaryLogged,
+  WaitlistInput,
 } from "./types.js";
 
 interface SendOptions {
@@ -116,6 +118,20 @@ export class ApiClient {
 
   async signUp(input: SignUpInput): Promise<Result<SignedUpPerson, ApiError>> {
     const res = await this.send({ method: "POST", path: "/people", body: input });
+    return res.ok ? ok(ApiClient.data(res.value)) : res;
+  }
+
+  // ---- marketing (public; WP8.2) ----
+
+  /** Join the waitlist (pre-account). Lands in the isolated `marketing` schema. */
+  async joinWaitlist(input: WaitlistInput): Promise<Result<{ ok: boolean }, ApiError>> {
+    const res = await this.send({ method: "POST", path: "/marketing/waitlist", body: input });
+    return res.ok ? ok(ApiClient.data(res.value)) : res;
+  }
+
+  /** Record a first-party conversion event (coded values only). */
+  async recordFunnelEvent(input: FunnelEventInput): Promise<Result<{ ok: boolean }, ApiError>> {
+    const res = await this.send({ method: "POST", path: "/marketing/events", body: input });
     return res.ok ? ok(ApiClient.data(res.value)) : res;
   }
 

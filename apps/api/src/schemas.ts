@@ -122,6 +122,41 @@ export const coachMessageSchema = z
   })
   .strict();
 
+// ---- marketing (WP8.2) — the AUTHORITATIVE privacy allow-list ----
+// apps/api is the store of record; these schemas are the single enforced control
+// that keeps the marketing funnel free of free text, identifiers, and
+// special-category data. See compliance/privacy/marketing-funnel-privacy-audit.md.
+
+export const WAITLIST_PROGRAMMES = ["quitkit", "exhale", "steady", "nightshift", "unsure"] as const;
+export const FUNNEL_EVENT_NAMES = [
+  "waitlist_joined",
+  "savings_calculated",
+  "sleep_debt_calculated",
+  "programme_page_cta_clicked",
+] as const;
+
+export const waitlistSignupSchema = z
+  .object({
+    email: z.string().trim().email().max(254),
+    programme: z.enum(WAITLIST_PROGRAMMES).default("unsure"),
+  })
+  .strict();
+
+/** Coded property values only — a short string or a number. Structurally cannot
+ *  carry free text (≤100 chars), nested objects/arrays, or identifiers. */
+const funnelPropertyValue = z.union([z.string().max(100), z.number()]);
+
+export const funnelEventSchema = z
+  .object({
+    name: z.enum(FUNNEL_EVENT_NAMES),
+    path: z.string().max(200),
+    properties: z
+      .record(funnelPropertyValue)
+      .default({})
+      .refine((p) => Object.keys(p).length <= 10, "too many properties"),
+  })
+  .strict();
+
 type Compact<T> = { [K in keyof T]: Exclude<T[K], undefined> };
 
 /** Drops undefined-valued keys so zod-optional output satisfies exactOptionalPropertyTypes. */

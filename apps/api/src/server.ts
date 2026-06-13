@@ -11,6 +11,7 @@ import { registerConsentRoutes } from "./routes/consents.js";
 import { registerDevRoutes, type DevSessionIssuer } from "./routes/dev.js";
 import { registerEnrolmentRoutes } from "./routes/enrolments.js";
 import { registerLogRoutes } from "./routes/logs.js";
+import { registerMarketingRoutes } from "./routes/marketing.js";
 import { registerPeopleRoutes } from "./routes/people.js";
 import { registerPlanRoutes } from "./routes/plans.js";
 
@@ -66,6 +67,7 @@ export async function buildServer(deps: ServerDeps): Promise<FastifyInstance> {
 
   app.get("/health", () => ({ data: { status: "ok" } }));
   registerPeopleRoutes(app, deps.db);
+  registerMarketingRoutes(app, deps.db);
   if (deps.devSessions !== undefined) registerDevRoutes(app, deps.db, deps.devSessions);
 
   const coach = deps.coach ?? (await loadCoachConfig());

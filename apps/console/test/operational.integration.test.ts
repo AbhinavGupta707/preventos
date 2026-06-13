@@ -1,6 +1,15 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { createDb, createEnrolment, createPerson, runMigrations, resetTestDatabase } from "@preventos/db";
+import {
+  createDb,
+  createEnrolment,
+  createPerson,
+  recordFunnelEvent,
+  recordWaitlistSignup,
+  runMigrations,
+  resetTestDatabase,
+} from "@preventos/db";
 import { publish } from "@preventos/events";
+import { getMarketingFunnel } from "../lib/marketing";
 import { getOperationalSummary } from "../lib/operational";
 
 const ADMIN_URL = process.env["DATABASE_URL"] ?? "postgres://preventos:preventos_dev@localhost:5432/preventos";
@@ -94,5 +103,46 @@ describe("console operational summary reads real events", () => {
     const eventTypes = summary.eventsByType.map((row) => row.type);
     expect(eventTypes).toContain("person.created");
     expect(eventTypes).toContain("enrolment.started");
+  });
+});
+
+describe("console marketing funnel reads the isolated marketing schema (WP8.2)", () => {
+  it("returns configured:false when no DATABASE_URL is set", async () => {
+    const saved = process.env["DATABASE_URL"];
+    delete process.env["DATABASE_URL"];
+    try {
+      const funnel = await getMarketingFunnel();
+      expect(funnel.configured).toBe(false);
+      expect(funnel.waitlistTotal).toBe(0);
+    } finally {
+      if (saved !== undefined) process.env["DATABASE_URL"] = saved;
+    }
+  });
+
+  it("aggregates per-programme waitlist counts and conversion events", async () => {
+    await recordWaitlistSignup(handle.db, { email: "w1@example.com", programme: "quitkit" });
+    await recordWaitlistSignup(handle.db, { email: "w2@example.com", programme: "quitkit" });
+    await recordWaitlistSignup(handle.db, { email: "w3@example.com", programme: "nightshift" });
+    await recordFunnelEvent(handle.db, { name: "waitlist_joined", path: "/", properties: {} });
+    await recordFunnelEvent(handle.db, { name: "sleep_debt_calculated", path: "/tools", properties: { debt: 12 } });
+
+    const saved = process.env["DATABASE_URL"];
+    process.env["DATABASE_URL"] = TEST_URL;
+    let funnel;
+    try {
+      funnel = await getMarketingFunnel();
+    } finally {
+      if (saved !== undefined) process.env["DATABASE_URL"] = saved;
+    }
+
+    expect(funnel.configured).toBe(true);
+    expect(funnel.error).toBeUndefined();
+    expect(funnel.waitlistTotal).toBe(3);
+    const byProgramme = Object.fromEntries(funnel.waitlist.map((w) => [w.programme, w.count]));
+    expect(byProgramme["quitkit"]).toBe(2);
+    expect(byProgramme["nightshift"]).toBe(1);
+    const eventNames = funnel.events.map((e) => e.name);
+    expect(eventNames).toContain("waitlist_joined");
+    expect(eventNames).toContain("sleep_debt_calculated");
   });
 });

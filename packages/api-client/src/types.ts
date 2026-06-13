@@ -95,6 +95,19 @@ export interface SleepDiaryInput {
   readonly quality?: number;
 }
 
+/** Marketing waitlist signup (public; mirrors apps/api waitlistSignupSchema). */
+export interface WaitlistInput {
+  readonly email: string;
+  readonly programme?: "quitkit" | "exhale" | "steady" | "nightshift" | "unsure";
+}
+
+/** First-party conversion event (public; coded values only — no free text/PII). */
+export interface FunnelEventInput {
+  readonly name: "waitlist_joined" | "savings_calculated" | "sleep_debt_calculated" | "programme_page_cta_clicked";
+  readonly path: string;
+  readonly properties?: Readonly<Record<string, string | number>>;
+}
+
 // ---- response views (mirror apps/api reply shapes) ----
 
 export interface SignedUpPerson {

@@ -12,6 +12,7 @@ export type {
   EnrolInput,
   EnrolmentView,
   FetchLike,
+  FunnelEventInput,
   HttpRequestInit,
   HttpResponseLike,
   PlanCreateInput,
@@ -21,4 +22,5 @@ export type {
   SignedUpPerson,
   SleepDiaryInput,
   SleepDiaryLogged,
+  WaitlistInput,
 } from "./types.js";

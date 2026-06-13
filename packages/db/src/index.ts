@@ -13,3 +13,13 @@ export {
   appendEvent,
   appendDecision,
 } from "./repos.js";
+export {
+  marketing,
+  waitlistSignup,
+  funnelEvent,
+  recordWaitlistSignup,
+  recordFunnelEvent,
+  waitlistCountsByProgramme,
+  funnelCountsByName,
+} from "./marketing.js";
+export type { ProgrammeCount, EventCount } from "./marketing.js";

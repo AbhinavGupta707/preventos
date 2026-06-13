@@ -1,10 +1,12 @@
-// WP3.1 — waitlist capture. Local-first NDJSON sink under .data/ until the
-// services assembly (SVC) provides a real store; the route shape is stable.
+// WP3.1 — waitlist capture. WP8.2 routes this to the domain store
+// (marketing.waitlist_signup via apps/api) when PREVENTOS_API_URL is configured,
+// falling back to the local .data/ NDJSON sink for dev/offline. Route shape stable.
 import { appendFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { clientIpForRateLimit } from "../../../lib/client-ip";
+import { forwardWaitlist } from "../../../lib/marketing";
 
 // Number of trusted reverse proxies / CDN edges in front of this app. Default 1
 // (a single edge proxy that appends the real client IP). Set to your real hop
@@ -50,6 +52,11 @@ export async function POST(request: Request): Promise<NextResponse> {
   if (!parsed.success) {
     const error = parsed.error.issues[0]?.message ?? "Invalid request.";
     return NextResponse.json({ success: false, error }, { status: 400 });
+  }
+
+  // Prefer the domain store; fall back to the local NDJSON sink (dev/offline).
+  if (await forwardWaitlist({ email: parsed.data.email, programme: parsed.data.programme })) {
+    return NextResponse.json({ success: true });
   }
 
   const dir = join(process.cwd(), ".data");

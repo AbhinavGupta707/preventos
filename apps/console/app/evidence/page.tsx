@@ -1,8 +1,17 @@
 import { getEvidenceSummary } from "../../lib/evidence";
+import { getMarketingFunnel } from "../../lib/marketing";
 import { getOperationalSummary } from "../../lib/operational";
 
 const th = { textAlign: "left" as const, padding: "8px 12px", borderBottom: "2px solid #ddd" };
 const td = { padding: "8px 12px", borderBottom: "1px solid #eee" };
+
+const PROGRAMME_LABELS: Record<string, string> = {
+  quitkit: "QuitKit (smoking)",
+  exhale: "Exhale (vaping)",
+  steady: "Steady (alcohol)",
+  nightshift: "Nightshift (sleep)",
+  unsure: "Unsure / browsing",
+};
 
 // Reads the live event backbone at request time — never prerendered.
 export const dynamic = "force-dynamic";
@@ -10,6 +19,7 @@ export const dynamic = "force-dynamic";
 export default async function EvidencePage() {
   const summary = getEvidenceSummary();
   const live = await getOperationalSummary();
+  const funnel = await getMarketingFunnel();
 
   return (
     <main style={{ maxWidth: 880, margin: "0 auto", padding: 24 }}>
@@ -74,6 +84,74 @@ export default async function EvidencePage() {
                   <tr key={row.type}>
                     <td style={{ ...td, fontFamily: "monospace", fontSize: 13 }}>{row.type}</td>
                     <td style={td} data-event-count={row.count}>
+                      {row.count}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      <h2 style={{ fontWeight: 500, fontSize: 18, marginTop: 32 }}>Marketing funnel</h2>
+      {!funnel.configured ? (
+        <p style={{ color: "#666" }}>No database configured — set DATABASE_URL to read the funnel.</p>
+      ) : funnel.error !== undefined ? (
+        <p style={{ color: "#a00" }}>Marketing schema unreachable: {funnel.error}</p>
+      ) : (
+        <>
+          <p style={{ color: "#666" }}>
+            First-party waitlist + conversion counts from the isolated{" "}
+            <code>marketing</code> schema (coded aggregates only — no email, no per-lead
+            data, never joined to clinical records). {funnel.waitlistTotal} total waitlist{" "}
+            {funnel.waitlistTotal === 1 ? "signup" : "signups"}.
+          </p>
+          <table style={{ borderCollapse: "collapse", width: "100%" }}>
+            <thead>
+              <tr>
+                <th style={th}>Waitlist by programme</th>
+                <th style={th}>Signups</th>
+              </tr>
+            </thead>
+            <tbody>
+              {funnel.waitlist.length === 0 ? (
+                <tr>
+                  <td style={td} colSpan={2}>
+                    No waitlist signups yet.
+                  </td>
+                </tr>
+              ) : (
+                funnel.waitlist.map((row) => (
+                  <tr key={row.programme}>
+                    <td style={td}>{PROGRAMME_LABELS[row.programme] ?? row.programme}</td>
+                    <td style={td} data-waitlist-programme={row.programme} data-waitlist-count={row.count}>
+                      {row.count}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+          <table style={{ borderCollapse: "collapse", width: "100%", marginTop: 16 }}>
+            <thead>
+              <tr>
+                <th style={th}>Conversion event</th>
+                <th style={th}>Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {funnel.events.length === 0 ? (
+                <tr>
+                  <td style={td} colSpan={2}>
+                    No conversion events yet.
+                  </td>
+                </tr>
+              ) : (
+                funnel.events.map((row) => (
+                  <tr key={row.name}>
+                    <td style={{ ...td, fontFamily: "monospace", fontSize: 13 }}>{row.name}</td>
+                    <td style={td} data-funnel-event={row.name} data-funnel-count={row.count}>
                       {row.count}
                     </td>
                   </tr>
