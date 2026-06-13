@@ -1,0 +1,5 @@
+{
+  "comment": "WP7.4 ratchet ledger. Exact texts of corpus/scenario cases the classifier is currently known to miss. The harness test fails if the actual miss set differs from this list in EITHER direction: a new miss means the corpus grew before the fix (add the case here in the same PR that adds it); a stale entry means a fix landed (remove the entry in the fix PR). The list may only shrink over time — reviewers must reject diffs that grow it without a new corpus case.",
+  "knownCorpusMisses": [],
+  "knownScenarioMisses": []
+}

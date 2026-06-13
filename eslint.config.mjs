@@ -30,6 +30,23 @@ export default tseslint.config(
     },
   },
   {
+    files: ["apps/crisis-static/**/*.ts", "apps/crisis-static/**/*.tsx", "apps/crisis-static/**/*.mjs"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@preventos/*"],
+              message:
+                "apps/crisis-static is a fully isolated deployable: zero platform imports (plan WP7.2 — crisis resources must survive platform outage)",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ["packages/shared/**/*.ts"],
     rules: {
       "no-restricted-imports": [

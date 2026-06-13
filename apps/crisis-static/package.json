@@ -1,21 +1,17 @@
 {
-  "name": "@preventos/red-team",
+  "name": "@preventos/crisis-static",
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "main": "./src/corpus.ts",
-  "types": "./src/corpus.ts",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src test",
+    "lint": "eslint test",
     "test": "vitest run"
   },
   "devDependencies": {
-    "@types/node": "^22.10.0",
+    "@types/node": "^22.18.0",
+    "eslint": "^9.39.2",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
-  },
-  "dependencies": {
-    "@preventos/safety": "workspace:*"
   }
 }

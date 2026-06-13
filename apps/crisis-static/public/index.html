@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="robots" content="noindex">
+<title>Get help now</title>
+<!--
+  PreventOS crisis page. Deliberately self-contained:
+  - no JavaScript, no external requests, no fonts, no analytics
+  - renders fully offline once cached
+  - dark by default (2am-safe); calm colours, no alarm-red blocks
+  - zero imports from the PreventOS platform (lint-enforced)
+-->
+<style>
+  :root {
+    color-scheme: dark light;
+    --bg: #14161a;
+    --card: #1e2127;
+    --text: #e8e6e1;
+    --muted: #a8a49c;
+    --accent: #8fb6a8;
+    --line: #2c3038;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f5f3ef; --card: #ffffff; --text: #23262b; --muted: #5d6066; --accent: #2f6e5b; --line: #ddd9d2; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 1.25rem; background: var(--bg); color: var(--text);
+    font: 1.06rem/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+    max-width: 38rem; margin-inline: auto;
+  }
+  h1 { font-size: 1.45rem; line-height: 1.3; margin: 0.5rem 0 0.25rem; }
+  h2 { font-size: 1.05rem; color: var(--muted); font-weight: 600; margin: 2rem 0 0.5rem; }
+  p.lead { color: var(--muted); margin-top: 0; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 1rem 1.1rem; margin: 0.7rem 0;
+  }
+  .card strong { display: block; font-size: 1.05rem; }
+  .card .when { color: var(--muted); font-size: 0.9rem; }
+  .card p { margin: 0.35rem 0 0; color: var(--muted); }
+  a.call {
+    display: inline-block; margin-top: 0.55rem; padding: 0.6rem 1.1rem;
+    background: var(--accent); color: var(--bg); text-decoration: none;
+    border-radius: 10px; font-weight: 700; font-size: 1.1rem;
+  }
+  .quiet { color: var(--muted); font-size: 0.92rem; }
+  .notice {
+    border-left: 3px solid var(--accent); padding: 0.6rem 0.9rem; margin: 1rem 0;
+    color: var(--text); background: var(--card); border-radius: 0 10px 10px 0;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>You can get help right now.</h1>
+  <p class="lead">Everything on this page is free, confidential, and open at this hour — including the middle of the night.</p>
+
+  <div class="card">
+    <strong>Emergency — 999</strong>
+    <span class="when">24/7 · if you or someone else is in immediate danger</span>
+    <p>If you can't speak safely, dial 999, then press 55 when prompted.</p>
+    <a class="call" href="tel:999">Call 999</a>
+  </div>
+
+  <div class="card">
+    <strong>Samaritans — 116 123</strong>
+    <span class="when">24/7 · free · whatever you're going through</span>
+    <p>Someone will listen, without judgement, for as long as you need.</p>
+    <a class="call" href="tel:116123">Call 116 123</a>
+  </div>
+
+  <div class="card">
+    <strong>Shout — text 85258</strong>
+    <span class="when">24/7 · free · if talking feels too hard right now</span>
+    <p>Text <strong>SHOUT</strong> to 85258 to message with a trained volunteer.</p>
+    <a class="call" href="sms:85258?body=SHOUT">Text SHOUT to 85258</a>
+  </div>
+
+  <div class="card">
+    <strong>NHS 111</strong>
+    <span class="when">24/7 · urgent medical advice that isn't a 999 emergency</span>
+    <p>Including urgent mental health support — say you need help with your mental health.</p>
+    <a class="call" href="tel:111">Call 111</a>
+  </div>
+
+  <h2>If someone is hurting you</h2>
+  <div class="card">
+    <strong>National Domestic Abuse Helpline — 0808 2000 247</strong>
+    <span class="when">24/7 · free · run by Refuge</span>
+    <p>Confidential support, whoever you are, whatever the situation.</p>
+    <a class="call" href="tel:08082000247">Call 0808 2000 247</a>
+  </div>
+
+  <h2>If you're worried about a child — or you're under 19</h2>
+  <div class="card">
+    <strong>NSPCC — 0808 800 5000</strong>
+    <span class="when">free · if you're worried about a child, however unsure</span>
+    <a class="call" href="tel:08088005000">Call 0808 800 5000</a>
+  </div>
+  <div class="card">
+    <strong>Childline — 0800 1111</strong>
+    <span class="when">24/7 · free · for anyone under 19, about anything</span>
+    <a class="call" href="tel:08001111">Call 0800 1111</a>
+  </div>
+
+  <h2>Alcohol</h2>
+  <div class="notice">
+    If your body has become used to alcohol, <strong>do not suddenly stop drinking on your own</strong> —
+    stopping abruptly can be dangerous. Shaking, sweating, fits, or seeing things after stopping
+    is a medical emergency: call 999.
+  </div>
+  <div class="card">
+    <strong>Drinkline — 0300 123 1110</strong>
+    <span class="when">weekdays 9am–8pm, weekends 11am–4pm · free</span>
+    <a class="call" href="tel:03001231110">Call 0300 123 1110</a>
+  </div>
+
+  <p class="quiet">This page works without an internet connection and doesn't track you.
+  It is part of PreventOS but runs separately, so it stays available even if the app is down.</p>
+</main>
+</body>
+</html>
