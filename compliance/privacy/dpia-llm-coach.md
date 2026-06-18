@@ -6,9 +6,10 @@
 ## Step 1 — Need
 
 The coach sends user conversation content — which routinely contains special category health
-data and occasionally crisis-adjacent content — to a third-party LLM provider (Anthropic,
-Claude API) via an in-house policy-enforcement proxy. Novel-technology processing of
-sensitive data on vulnerable-state users: DPIA required.
+data and occasionally crisis-adjacent content — to a third-party LLM provider (Fireworks
+when `FIREWORKS_API_KEY` is configured, or Anthropic when `ANTHROPIC_API_KEY` is configured
+and Fireworks is absent) via an in-house policy-enforcement proxy. Novel-technology
+processing of sensitive data on vulnerable-state users: DPIA required.
 
 ## Step 2 — Processing description (deltas)
 
@@ -21,10 +22,11 @@ sensitive data on vulnerable-state users: DPIA required.
 - **What is never sent:** tier-1 risk content. Deterministic crisis detection runs pre-LLM
   and routes to scripted flows (safety invariant #1); the LLM is provably bypassed.
 - **Provider terms:** VERIFY(legal) at contract time — API data not used for model training
-  per Anthropic commercial terms; confirm current retention window and whether a
-  zero-data-retention arrangement is available at our tier. **DECISION REQUIRED(owner):**
-  standard retention vs. pursuing ZDR.
-- **Transfers:** US provider — IDTA/UK addendum required. TBD(legal).
+  by Fireworks/Anthropic, current retention windows, and whether a zero-data-retention
+  arrangement is available at our tier. **DECISION REQUIRED(owner):** standard retention
+  vs. pursuing ZDR.
+- **Transfers:** US/non-UK provider — IDTA/UK addendum or equivalent safeguard required.
+  See `processor-register.md`.
 
 ## Step 4 — Necessity & proportionality (deltas)
 

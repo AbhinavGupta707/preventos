@@ -42,9 +42,9 @@ For 9(2)(a) to hold, consent must be explicit, specific, informed, freely given,
 - [ ] Appropriate Policy Document: VERIFY(legal) — strictly required for several DPA 2018
   Sch. 1 conditions; not for 9(2)(a) — but drafting one is cheap and we should. TBD(legal).
 - [ ] Art. 30 record of processing activities — seed from the DPIA processor register.
-- [ ] Transfers: IDTA/UK addendum per US processor (Clerk, Anthropic, Expo; PostHog if US-hosted).
-- [ ] Children: platform 18+ at launch (DECISION REQUIRED in dpia-core); Exhale age gate is
-  additionally store-policy-driven.
+- [ ] Transfers: IDTA/UK addendum per non-UK processor. Current beta register:
+  `processor-register.md`.
+- [ ] Children: consumer beta is 18+; Exhale age gate is additionally store-policy-driven.
 - [ ] ICO registration (data protection fee) — TBD(owner): pay before processing real users.
 
 ## Sign-off block

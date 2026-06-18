@@ -8,10 +8,12 @@
 
 Reading sleep and activity data from Apple HealthKit and Android Health Connect is
 unambiguous special category processing of continuously-sensed health data. DPIA required.
+Consumer beta note: QuitKit + Exhale do not need wearable import, so HealthKit/Health
+Connect are **not enabled** for the consumer beta.
 
 ## Step 2 — Processing description
 
-- **Data types:** sleep stages/sessions and step counts only (corroboration of Nightshift
+- **Data types if later enabled:** sleep stages/sessions and step counts only (corroboration of Nightshift
   diaries; activity context). No heart rate, no location, no workouts at launch — adding any
   datatype reopens this DPIA.
 - **Design stance (load-bearing, from the plan):** *wearable-informed, not wearable-led.*

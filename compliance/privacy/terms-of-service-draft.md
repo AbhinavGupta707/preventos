@@ -1,6 +1,6 @@
 # Terms of Service — PreventOS — DRAFT
 
-> **DRAFT — 2026-06-12 — not published, not adopted.** TBD(legal) review required; this is a
+> **DRAFT — refreshed 2026-06-18 — not published, not adopted.** TBD(legal) review required; this is a
 > structured drafting skeleton with the product-specific clauses written and boilerplate
 > flagged. Brand name placeholder (Q1). Gate: G4.
 > Note: legal documents are outside the claims-register lint scope — disclaimers below
@@ -16,11 +16,14 @@ to them. Governing law and courts: England and Wales.
 
 ## 2. What PreventOS is — and is not (core clause)
 
-PreventOS provides behaviour-change programmes for smoking, vaping, alcohol, and sleep.
+PreventOS provides consumer wellbeing and behaviour-change support. The consumer beta is
+limited to adult smoking and adult vaping support unless we tell you otherwise.
 
 - **Not medical care.** PreventOS does not diagnose, treat, or cure any disease or
   condition, and nothing in the app is medical advice. The AI coach is not a clinician
   and its messages are not professional advice of any kind.
+- **Not a medical device.** PreventOS is not a regulated medical device and has not
+  received MHRA, UKCA, CE, FDA, or equivalent clearance.
 - **Talk to a professional.** Always consult a qualified health professional about
   medications (including nicotine replacement products and sleep medication), symptoms,
   or any health concern. Never stop or change prescribed medication because of anything
@@ -32,7 +35,8 @@ PreventOS provides behaviour-change programmes for smoking, vaping, alcohol, and
   drinkers.
 - **Emergencies.** The app is not an emergency service. If you or someone else is in
   immediate danger, call 999 (UK) or your local emergency number. Crisis resources in the
-  app are signposts, not a substitute for emergency services.
+  app are signposts, not a substitute for emergency services. The consumer beta is not
+  monitored for urgent help.
 
 ## 3. Eligibility
 
@@ -70,10 +74,11 @@ under the consents in the Privacy Policy — no broader.
 
 ## 8. Service changes and availability
 
-Programmes may change as our content is reviewed and improved (every piece of programme
-content passes clinical sign-off before release). We may modify or withdraw features;
-material changes notified in-app. No guarantee of uninterrupted availability — but crisis
-resources are designed to work offline.
+Programmes may change as our content is reviewed and improved. The consumer beta does not
+represent formal clinical sign-off; higher-risk features remain unavailable until stronger
+clinical/legal review is complete and the sign-off registry is updated. We may modify or
+withdraw features; material changes notified in-app. No guarantee of uninterrupted
+availability — but crisis resources are designed to work offline.
 
 ## 9. Liability
 

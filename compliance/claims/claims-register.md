@@ -1,6 +1,6 @@
 # Claims register v0 — WP10.10
 
-> **DRAFT — 2026-06-12.** Approved-language entries are *draft-pending-signoff*; nothing in
+> **DRAFT — refreshed 2026-06-18.** Approved-language entries are *draft-pending-signoff*; nothing in
 > §3 may appear in shipped copy until the owner + clinical reviewer adopt this register.
 > The blocklists in `claims-register.json` are active immediately as a guard (better to
 > over-block in CI than leak a claim). Gate: G5. Plan refs: E16, WP4.2, risk "treatment-claim drift".
@@ -30,6 +30,10 @@ enforces in CI on every content atom and marketing page.
 - False positives are expected and acceptable in v0 (e.g. "speak to a therapist" passes, but
   some legitimate signposting may trip a pattern). Resolution path: rewrite the copy, or add
   a reviewed, justified exception entry to the register — never weaken a pattern ad hoc.
+- Required beta disclaimers live in `consumer-beta-disclaimers.md`. They are limiting
+  statements, not promotional claims; the register must allow negative phrases such as
+  "not a medical device" and "does not diagnose" while still blocking positive clinical or
+  regulatory-status claims.
 
 ## 3. Approved language (draft — per vertical)
 
@@ -43,7 +47,19 @@ section explains the framing rules a reviewer should apply when extending it.
 | QuitKit (smoking) | Quit support framing; NRT = usage technique support, signpost prescribers | "Your personal quit plan" · "Craving support that's there in the moment" | cessation-outcome guarantees; NRT prescribing/dosing language; disease-treatment claims |
 | Exhale (vaping) | Appearance/performance/money/freedom framing | "Spend less, breathe easier" (VERIFY: "breathe easier" with clinical reviewer — health-adjacent) | disease-scare framing; health-outcome claims; youth-directed anything |
 
-## 4. Wiring plan (WP4.2)
+## 4. Required consumer-beta disclaimers
+
+Status: **draft-pending-owner/legal-signoff**. These statements should appear in store
+metadata, onboarding, terms, coach first-run, and safety/legal surfaces as appropriate:
+
+- PreventOS is a wellbeing and habit-support app for adults.
+- PreventOS is not a medical device.
+- PreventOS does not diagnose, treat, cure, or prevent any disease or condition.
+- PreventOS is not an emergency service and is not monitored for urgent help.
+- Users should consult a qualified health professional about symptoms, medicines,
+  nicotine replacement products, alcohol withdrawal, sleep problems, or any health concern.
+
+## 5. Wiring plan (WP4.2)
 
 Content lint loads `claims-register.json`, runs all three blocklists over: content-atom text
 fields, marketing site copy (`apps/web` marketing routes), and store-listing source files.

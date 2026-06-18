@@ -63,8 +63,9 @@ allow-list that cannot carry free text, identifiers, or special-category fields.
 
 ## Owner / TBD actions before launch
 
-- TBD(DPO): confirm retention period for waitlist leads and a deletion/suppression
-  path on request (the isolated schema makes a by-email purge straightforward).
+- TBD(DPO): confirm the waitlist retention period in
+  `retention-deletion-schedule.md` and a deletion/suppression path on request
+  (the isolated schema makes a by-email purge straightforward).
 - TBD(legal): confirm lawful basis (consent for the signup; legitimate interest
   for coded aggregate funnel analytics) and update `privacy-policy-draft.md`
   (marketing/waitlist section) and the cookie/consent copy on `apps/web`.

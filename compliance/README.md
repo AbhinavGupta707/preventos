@@ -19,6 +19,12 @@
 | `privacy/article-9-analysis.md` | 10.6 | UK GDPR Art. 9 lawful-basis analysis | G4 | DRAFT |
 | `privacy/privacy-policy-draft.md` | 10.6 | User-facing privacy policy | G4 | DRAFT |
 | `privacy/terms-of-service-draft.md` | 10.6 | User-facing terms of service | G4 | DRAFT |
+| `privacy/consumer-beta-privacy-decisions.md` | 10.6/10.7 | Consumer-beta privacy decisions for adult QuitKit + Exhale | G4/G5 | DRAFT |
+| `privacy/retention-deletion-schedule.md` | 10.6 | Retention and deletion schedule | G4 | DRAFT |
+| `privacy/processor-register.md` | 10.6 | Processor/subprocessor register | G4 | DRAFT |
+| `claims/consumer-beta-disclaimers.md` | 10.10 | Required no-medical-device/no-diagnosis/no-emergency disclaimers | G5 | DRAFT |
+| `store/consumer-beta-review-pack.md` | 10.7 | Consumer-beta store-review posture and blocked-feature list | G5 | DRAFT |
+| `store/apple-google-health-app-checklist.md` | 10.7 | Apple App Store and Google Play health-app checklist | G5 | DRAFT |
 | `sign-off-registry.yaml` | 10.2 (seeded here) | Sign-off registry — the enforcement record for safety invariant #3 | G3 | schema seeded, zero entries |
 
 ## How to review efficiently
