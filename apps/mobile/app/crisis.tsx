@@ -108,5 +108,5 @@ const styles = StyleSheet.create({
     marginBottom: space.sm,
     padding: space.md,
   },
-  scroll: { paddingBottom: space.xxl, paddingTop: space.lg },
+  scroll: { paddingBottom: space.xxl, paddingTop: space.xxl + space.sm },
 });

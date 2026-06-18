@@ -217,5 +217,5 @@ const styles = StyleSheet.create({
   },
   pacerWrap: { alignItems: "center", paddingVertical: space.xl },
   pressed: { opacity: 0.82, transform: [{ scale: 0.99 }] },
-  scroll: { paddingBottom: space.xxl, paddingTop: space.lg },
+  scroll: { paddingBottom: space.xxl, paddingTop: space.xxl },
 });
