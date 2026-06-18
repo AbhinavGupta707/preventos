@@ -56,7 +56,7 @@ function harness(enrolStatus = 201): { fetch: FetchLike; calls: Call[] } {
 describe("FetchApi adapter", () => {
   it("enrolJourney drives session → consents → enrolment → quit plan in order", async () => {
     const { fetch, calls } = harness();
-    const api = new FetchApi({ baseUrl: "http://api", fetch });
+    const api = new FetchApi({ baseUrl: "http://api", fetch, allowDevSessions: true });
     const res = await api.enrolJourney({ vertical: "smoking", quitDate: "2026-06-20", stage: "ready" });
     expect(res.ok).toBe(true);
     expect(calls.map(({ method, path }) => ({ method, path }))).toEqual([
@@ -70,14 +70,14 @@ describe("FetchApi adapter", () => {
 
   it("treats a 409 on enrolment as success (idempotent re-intake)", async () => {
     const { fetch } = harness(409);
-    const api = new FetchApi({ baseUrl: "http://api", fetch });
+    const api = new FetchApi({ baseUrl: "http://api", fetch, allowDevSessions: true });
     const res = await api.enrolJourney({ vertical: "smoking", quitDate: "2026-06-20" });
     expect(res.ok).toBe(true);
   });
 
   it("caches the session — a second call does not re-create a dev session", async () => {
     const { fetch, calls } = harness();
-    const api = new FetchApi({ baseUrl: "http://api", fetch });
+    const api = new FetchApi({ baseUrl: "http://api", fetch, allowDevSessions: true });
     await api.ensureSession();
     await api.logCraving();
     expect(calls.filter((c) => c.path === "/dev/session")).toHaveLength(1);
@@ -86,7 +86,7 @@ describe("FetchApi adapter", () => {
 
   it("logs a sleep diary entry through the live API adapter", async () => {
     const { fetch, calls } = harness();
-    const api = new FetchApi({ baseUrl: "http://api", fetch });
+    const api = new FetchApi({ baseUrl: "http://api", fetch, allowDevSessions: true });
     const res = await api.logSleepDiary({
       date: "2026-06-18",
       bedTime: "23:00",
@@ -102,7 +102,7 @@ describe("FetchApi adapter", () => {
 
   it("requests a Nightshift sleep window through the live API adapter", async () => {
     const { fetch, calls } = harness();
-    const api = new FetchApi({ baseUrl: "http://api", fetch });
+    const api = new FetchApi({ baseUrl: "http://api", fetch, allowDevSessions: true });
     const res = await api.createSleepWindow({ desiredRiseTime: "07:00", effectiveFrom: "2026-06-18" });
     expect(res.ok && res.value).toMatchObject({ windowStart: "23:30", windowEnd: "07:00", durationMin: 450 });
     expect(calls.map((c) => c.path)).toEqual(["/dev/session", "/sleep/windows"]);
@@ -117,5 +117,21 @@ describe("FetchApi adapter", () => {
     expect(coach.ok).toBe(true);
     expect(tokens.join("")).not.toHaveLength(0);
     expect(calls).toHaveLength(0); // never hit the network
+  });
+
+  it("uses a Clerk token provider without calling /dev/session", async () => {
+    const { fetch, calls } = harness();
+    const api = new FetchApi({ baseUrl: "http://api", fetch, getAuthToken: () => "clerk-jwt" });
+    const res = await api.logCraving();
+    expect(res.ok).toBe(true);
+    expect(calls.map((c) => c.path)).toEqual(["/logs/craving"]);
+  });
+
+  it("fails closed without a Clerk token or explicit dev-session allowance", async () => {
+    const { fetch, calls } = harness();
+    const api = new FetchApi({ baseUrl: "http://api", fetch });
+    const res = await api.logCraving();
+    expect(res).toEqual({ ok: false, error: "authenticated session required" });
+    expect(calls).toHaveLength(0);
   });
 });

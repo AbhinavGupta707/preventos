@@ -89,14 +89,14 @@ pnpm db:migrate
 | `PREVENTOS_API_URL` | `http://127.0.0.1:3001` when syncing | Staging API origin | Beta/prod API origin |
 | `EXPO_PUBLIC_API_URL` | unset for MockApi, or LAN/API URL | Staging API origin for live internal builds | Beta/prod API origin for live internal builds |
 | `FIREWORKS_API_KEY` | normally unset | secret manager only | secret manager only |
-| `ANTHROPIC_API_KEY` | normally unset fallback | secret manager only if chosen | secret manager only if chosen |
 | `COACH_MODEL` | unset unless testing selection | owner-selected model or unset default | owner-selected model or unset default |
-| `CLERK_SECRET_KEY` / `CLERK_PUBLISHABLE_KEY` / `CLERK_WEBHOOK_SECRET` | unset until adapter lands | owner-created Clerk app keys after adapter registration | owner-created Clerk app keys after adapter registration |
+| `CLERK_SECRET_KEY` / `CLERK_PUBLISHABLE_KEY` / `CLERK_WEBHOOK_SECRET` | unset unless testing Clerk locally | owner-created Clerk app keys | owner-created Clerk app keys |
 | `CONTENT_ROOT` / `PREVENTOS_CONTENT_ROOT` | unset unless testing alternate content bundle | unset unless host path differs | unset unless host path differs |
 | `RATE_LIMIT_TRUSTED_PROXIES` | `1` | host-specific proxy hop count | host-specific proxy hop count |
 
-Do not set Clerk keys expecting production auth until the adapter is registered
-behind `@preventos/auth` and official Clerk flows pass end-to-end.
+Do not treat Clerk as fully active just because keys exist. Launch still
+requires the owner-created tenant, JWT template, allowed origins, redirect URLs,
+and a successful end-to-end Clerk sign-in/session flow.
 
 ## Health Checks
 
@@ -172,7 +172,7 @@ Operations:
 - Postgres backup, retention, and external access policy.
 - Clerk tenants, allowed origins, redirect URLs, JWT/session templates, and key
   sets.
-- Fireworks key, Claude fallback decision, and beta model policy.
+- Fireworks key and beta model policy.
 - Apple Developer account/team and TestFlight ownership.
 - Google Play Console account/package ownership.
 - Whether public beta remains QuitKit + Exhale only, with Steady and Nightshift

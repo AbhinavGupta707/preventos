@@ -8,8 +8,9 @@ import type { ApiPort } from "./port";
  * offline/preview on MockApi (the default for tests and store builds).
  */
 const baseUrl = process.env.EXPO_PUBLIC_API_URL;
+const allowDevSessions = process.env.EXPO_PUBLIC_ALLOW_DEV_SESSIONS === "true";
 
-export const api: ApiPort = baseUrl ? new FetchApi({ baseUrl }) : new MockApi();
+export const api: ApiPort = baseUrl ? new FetchApi({ baseUrl, allowDevSessions }) : new MockApi();
 
 export { MockApi } from "./mock";
 export { FetchApi } from "./fetch";

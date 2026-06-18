@@ -33,8 +33,6 @@ services:
         value: "false"
       - key: FIREWORKS_API_KEY
         sync: false
-      - key: ANTHROPIC_API_KEY
-        sync: false
       - key: COACH_MODEL
         sync: false
 

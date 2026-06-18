@@ -24,5 +24,6 @@ export type {
   SleepDiaryLogged,
   SleepWindowInput,
   SleepWindowView,
+  TokenProvider,
   WaitlistInput,
 } from "./types.js";

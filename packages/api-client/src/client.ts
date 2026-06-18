@@ -23,6 +23,7 @@ import type {
   SleepDiaryLogged,
   SleepWindowInput,
   SleepWindowView,
+  TokenProvider,
   WaitlistInput,
 } from "./types.js";
 
@@ -59,7 +60,7 @@ function buildQuery(query: Readonly<Record<string, string | undefined>>): string
  */
 export class ApiClient {
   private readonly baseUrl: string;
-  private readonly getToken: () => string | undefined;
+  private readonly getToken: TokenProvider;
   private readonly doFetch: FetchLike;
 
   constructor(config: ApiClientConfig) {
@@ -72,7 +73,7 @@ export class ApiClient {
     const headers: Record<string, string> = {};
     if (options.body !== undefined) headers["content-type"] = "application/json";
     if (options.auth) {
-      const token = this.getToken();
+      const token = await this.getToken();
       if (token === undefined || token === "") return err({ status: 401, message: "no session token" });
       headers["authorization"] = `Bearer ${token}`;
     }

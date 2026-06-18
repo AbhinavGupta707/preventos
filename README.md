@@ -1,7 +1,9 @@
 # PreventOS
 
-Multi-vertical digital behaviour-change platform. One app, four programmes at launch:
+Multi-vertical digital behaviour-change platform. One app, four programmes:
 smoking (QuitKit), adult vaping (Exhale), alcohol (Steady), sleep (Nightshift).
+The current consumer beta path is QuitKit + Exhale public, with Steady and
+Nightshift kept internal/gated until owner acceptance.
 
 - Product spec: [PreventOS_Product_Requirements_Document_v1.md](./PreventOS_Product_Requirements_Document_v1.md)
 - Build plan: [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md)

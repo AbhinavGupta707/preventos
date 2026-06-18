@@ -44,8 +44,8 @@ Non-negotiable release boundaries:
   Postgres.
 - Create the Clerk tenant and hand engineering the non-production and production
   key sets.
-- Create the Fireworks key and set the beta model policy. Claude remains a
-  legacy fallback, not the preferred production path.
+- Create the Fireworks key and set the beta model policy. Leave the legacy
+  Claude fallback unset for beta unless the owner explicitly re-enables it.
 - Confirm Apple Developer and Google Play Console access for internal testing.
 - Adopt consumer privacy/store documents, including LLM processor language,
   retention/deletion schedule, and no-medical-device positioning.
@@ -62,6 +62,7 @@ Required for local API, worker, console live data, and integration tests:
 
 Optional local development:
 
+- `PREVENTOS_AUTH_PROVIDER=fake`
 - `PORT`
 - `HOST`
 - `ALLOW_DEV_SESSIONS`
@@ -79,18 +80,24 @@ smoke test:
 
 - `FIREWORKS_API_KEY`
 - `COACH_MODEL`
-- `ANTHROPIC_API_KEY` (legacy fallback only)
 
-Future Clerk activation placeholders:
+Clerk activation:
 
 - `CLERK_SECRET_KEY`
 - `CLERK_PUBLISHABLE_KEY`
 - `CLERK_WEBHOOK_SECRET`
+- `CLERK_JWT_KEY`
+- `CLERK_JWT_AUDIENCE`
+- `CLERK_AUTHORIZED_PARTIES`
 
-Current auth status: `apps/api` still boots with `FakeAuthProvider`. Local web
-sync uses the gated `/dev/session` stand-in when `ALLOW_DEV_SESSIONS=true`.
-Those dev sessions are not production auth and must remain disabled outside
-local development.
+Current auth status: `apps/api` selects Clerk by default through the
+`@preventos/auth` `ClerkAuthProvider`. Fake auth remains available only when
+`PREVENTOS_AUTH_PROVIDER=fake`, `ALLOW_DEV_SESSIONS=true`, or a seeded
+`DEV_SESSION_TOKEN`/`DEV_SESSION_PERSON_ID` pair explicitly asks for local dev
+auth. Local web/mobile live sync may use the gated `/dev/session` stand-in only
+when `ALLOW_DEV_SESSIONS=true` (and mobile also sets
+`EXPO_PUBLIC_ALLOW_DEV_SESSIONS=true`). Those dev sessions are not production
+auth and must remain disabled outside local development.
 
 ## Local Verification
 
@@ -129,11 +136,14 @@ For web-to-API local sync, set:
 ```sh
 DATABASE_URL=postgres://preventos:preventos_dev@localhost:5432/preventos
 PREVENTOS_API_URL=http://127.0.0.1:3001
+PREVENTOS_AUTH_PROVIDER=fake
 ALLOW_DEV_SESSIONS=true
 ```
 
 For mobile-to-API internal builds, set `EXPO_PUBLIC_API_URL` to a device-reachable
-API URL before building. Leave it unset for offline/mock previews.
+API URL before building. Leave it unset for offline/mock previews. Set
+`EXPO_PUBLIC_ALLOW_DEV_SESSIONS=true` only for local/dev builds against an API
+that also has `ALLOW_DEV_SESSIONS=true`.
 
 ## CI Verification
 
@@ -145,8 +155,8 @@ Expected GitHub Actions check:
 - Command: `pnpm verify`
 - Expected result before merge: green on the PR branch
 
-CI intentionally does not require LLM keys. With no `FIREWORKS_API_KEY` or
-`ANTHROPIC_API_KEY`, the coach path uses `FakeCoachProvider`, so verification is
+CI intentionally does not require LLM keys. With no `FIREWORKS_API_KEY` and no
+legacy fallback key, the coach path uses `FakeCoachProvider`, so verification is
 deterministic and has zero provider spend.
 
 If GitHub Actions is unavailable, the fallback merge gate is:
@@ -160,25 +170,36 @@ Record the local command output in the PR description when using the fallback.
 
 ## Clerk Setup Path
 
-Clerk is not fully wired yet. Follow registration/discovery/install order before
-debugging runtime auth:
+Clerk is wired behind `AuthPort` for API session verification. Follow
+registration/discovery/install order before debugging runtime auth:
 
 1. Create separate Clerk applications for development/staging and production.
 2. Configure allowed origins and redirect URLs for web, console, and mobile deep
    links.
 3. Enable the intended sign-in methods for adults-only consumer beta.
 4. Create JWT/session templates that expose only the claims required by the
-   `@preventos/auth` port: user kind, stable subject, and staff role where
-   applicable.
+   `@preventos/auth` port:
+   - `preventos_user_kind`: `"end_user"` or `"staff"`
+   - `preventos_person_id`: the PreventOS UUID for an end user
+   - `preventos_staff_id`: stable staff id, or rely on Clerk `sub`
+   - `preventos_staff_role`: one of `advisor`, `service_admin`, `analyst`,
+     `platform_admin`
+   Do not store health data, programme state, diary data, assessment scores, or
+   safety flags in Clerk metadata.
 5. Store keys in the deployment platform secret manager, not in git.
-6. Implement and test the Clerk adapter behind the existing auth port.
-7. Replace `FakeAuthProvider` in production API/console boot paths only after
-   adapter tests prove deny-by-default RBAC and k-anonymity still hold.
+6. Set `CLERK_SECRET_KEY` and `CLERK_PUBLISHABLE_KEY` for apps/api. Set
+   `CLERK_JWT_KEY` from Clerk's PEM public key when you want networkless token
+   verification; otherwise the Clerk SDK may retrieve JWKS through Clerk's
+   backend API. Set `CLERK_AUTHORIZED_PARTIES` to the allowed web/console/mobile
+   origins.
+7. Keep `PREVENTOS_AUTH_PROVIDER=clerk` (or leave it unset) in beta/prod.
 8. Disable `/dev/session` by leaving `ALLOW_DEV_SESSIONS` unset or false.
+9. Smoke-test a Clerk-issued bearer token against `/consents/check` or another
+   person-scoped API route before exposing real app traffic.
 
-Do not treat Clerk as active just because keys exist. The feature is only
-present once the adapter is registered in code and the official Clerk flows pass
-end-to-end.
+Do not treat Clerk as active just because keys exist. The feature is present in
+code, but launch still requires the owner-created tenant, JWT template, allowed
+origins, and a successful end-to-end Clerk sign-in/session flow.
 
 ## Fireworks And LLM Activation Path
 

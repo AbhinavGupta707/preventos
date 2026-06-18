@@ -5,6 +5,7 @@ import {
   type SleepDiaryInput,
   type SleepWindowInput,
   type SleepWindowView,
+  type TokenProvider,
 } from "@preventos/api-client";
 import type { BfoSection } from "@preventos/domain";
 import type { Result } from "@preventos/shared";
@@ -17,6 +18,10 @@ import type { ApiPort, JourneyEnrolment } from "./port";
 export interface FetchApiConfig {
   /** Origin of apps/api, e.g. "http://10.0.2.2:3001". */
   readonly baseUrl: string;
+  /** Clerk session token provider. When present, /dev/session is never called. */
+  readonly getAuthToken?: TokenProvider;
+  /** Local development only: allows POST /dev/session bootstrap. */
+  readonly allowDevSessions?: boolean;
   /** Inject a fetch in tests; defaults to the platform global. */
   readonly fetch?: FetchLike;
 }
@@ -32,18 +37,25 @@ export interface FetchApiConfig {
 export class FetchApi implements ApiPort {
   private readonly client: ApiClient;
   private readonly preview = new MockApi();
+  private readonly getAuthToken: TokenProvider | undefined;
+  private readonly allowDevSessions: boolean;
   private session: DevSession | undefined;
 
   constructor(config: FetchApiConfig) {
+    this.getAuthToken = config.getAuthToken;
+    this.allowDevSessions = config.allowDevSessions ?? false;
     this.client = new ApiClient({
       baseUrl: config.baseUrl,
-      getToken: () => this.session?.token,
+      getToken: async () => this.session?.token ?? (await this.getAuthToken?.()),
       ...(config.fetch !== undefined ? { fetch: config.fetch } : {}),
     });
   }
 
   async ensureSession(): Promise<Result<{ readonly personId: string }, string>> {
     if (this.session !== undefined) return ok({ personId: this.session.personId });
+    const clerkToken = await this.getAuthToken?.();
+    if (clerkToken !== undefined && clerkToken !== "") return ok({ personId: "clerk-authenticated" });
+    if (!this.allowDevSessions) return err("authenticated session required");
     const res = await this.client.createDevSession();
     if (!res.ok) return err(res.error.message);
     this.session = res.value;

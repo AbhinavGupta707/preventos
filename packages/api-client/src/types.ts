@@ -27,12 +27,13 @@ export interface HttpResponseLike {
 }
 
 export type FetchLike = (url: string, init?: HttpRequestInit) => Promise<HttpResponseLike>;
+export type TokenProvider = () => string | undefined | Promise<string | undefined>;
 
 export interface ApiClientConfig {
   /** Origin of apps/api, e.g. "http://127.0.0.1:3001" (no trailing slash). */
   readonly baseUrl: string;
   /** Bearer token for person-scoped routes; omit for public/dev-session calls. */
-  readonly getToken?: () => string | undefined;
+  readonly getToken?: TokenProvider;
   /** Inject a fetch in tests; defaults to the platform global. */
   readonly fetch?: FetchLike;
 }
