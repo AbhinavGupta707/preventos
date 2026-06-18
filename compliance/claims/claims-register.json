@@ -1,8 +1,8 @@
 {
   "version": "0.1.0",
   "status": "DRAFT",
-  "updated": "2026-06-12",
-  "notes": "WP10.10 claims register v0. Blocklists are CI-enforceable guards (WP4.2). Approved language is draft-pending-signoff. See claims-register.md for governance.",
+  "updated": "2026-06-18",
+  "notes": "WP10.10 claims register v0. Blocklists are CI-enforceable guards (WP4.2). Approved language is draft-pending-signoff. Required consumer-beta disclaimers are limiting statements and must pass lint. See claims-register.md for governance.",
   "exemptions": [
     {
       "scope": "packages/instruments verbatim renders",
@@ -35,9 +35,9 @@
         },
         {
           "id": "sleep-diagnose",
-          "pattern": "\\bdiagnos(e|es|is|ing|tic)\\b",
+          "pattern": "\\b(we|our\\s+app|the\\s+app|preventos|coach|programme|program)\\b\\s+(can\\s+|will\\s+|does\\s+|is\\s+designed\\s+to\\s+)?\\bdiagnos(e|es|ing|tic)\\b",
           "flags": "i",
-          "rationale": "Diagnosis claims (sleep-scoped copy); signpost to GP instead"
+          "rationale": "Positive diagnosis claims (sleep-scoped copy); signpost to GP instead. Negative disclaimers must pass."
         },
         {
           "id": "sleep-named-therapy",
@@ -65,9 +65,9 @@
         },
         {
           "id": "sleep-device-claims",
-          "pattern": "\\b(medical\\s+device|SaMD|MHRA[\\s-]?(cleared|approved|registered)|FDA[\\s-]?(cleared|approved)|CE[\\s-]?marked)\\b",
+          "pattern": "\\b(SaMD|MHRA[\\s-]?(cleared|approved|registered)|FDA[\\s-]?(cleared|approved)|CE[\\s-]?marked|UKCA[\\s-]?marked)\\b|\\b(is|are|as|registered\\s+as|approved\\s+as|cleared\\s+as)\\s+(a\\s+)?medical\\s+device\\b",
           "flags": "i",
-          "rationale": "Regulatory-status claims; SaMD is a deferred owner decision"
+          "rationale": "Regulatory-status claims; SaMD is a deferred owner decision. Negative disclaimers such as 'not a medical device' must pass."
         }
       ]
     },
@@ -103,9 +103,27 @@
       "patterns": [
         {
           "id": "global-treat-disease",
-          "pattern": "\\b(treat|cure|prevent|reverse)s?\\b[^.!?]{0,50}\\b(disease|cancer|COPD|heart\\s+disease|stroke|diabetes|depression|anxiety\\s+disorder)\\b",
+          "pattern": "\\b(we|our\\s+app|the\\s+app|preventos|coach|programme|program|quitting|quit|vaping\\s+less|drinking\\s+less)\\b\\s+(can\\s+|will\\s+|does\\s+|is\\s+designed\\s+to\\s+)?\\b(treats?|cures?|prevents?|reverses?)\\b[^.!?]{0,50}\\b(disease|cancer|COPD|heart\\s+disease|stroke|diabetes|depression|anxiety\\s+disorder)\\b",
           "flags": "i",
-          "rationale": "Disease-outcome claims"
+          "rationale": "Disease-outcome claims. Negative required disclaimers must pass."
+        },
+        {
+          "id": "global-diagnosis",
+          "pattern": "\\b(we|our\\s+app|the\\s+app|preventos|coach|programme|program)\\b\\s+(can\\s+|will\\s+|does\\s+|is\\s+designed\\s+to\\s+)?\\bdiagnos(e|es|ing)\\b[^.!?]{0,50}\\b(condition|disease|disorder|dependence|addiction|insomnia|COPD|depression|anxiety)\\b",
+          "flags": "i",
+          "rationale": "Product-wide no-diagnosis posture; required negative disclaimers must pass"
+        },
+        {
+          "id": "global-emergency-care",
+          "pattern": "\\b(24\\/7|round-the-clock|live)\\s+(clinical\\s+)?(monitoring|emergency\\s+support|crisis\\s+support)\\b|\\b(emergency\\s+care|urgent\\s+care)\\s+(in|through|from)\\s+(the\\s+)?app\\b",
+          "flags": "i",
+          "rationale": "Do not promise emergency care, live monitoring, or crisis support coverage unless staffed and legally approved"
+        },
+        {
+          "id": "global-regulatory-status",
+          "pattern": "\\b(SaMD|MHRA[\\s-]?(cleared|approved|registered)|FDA[\\s-]?(cleared|approved)|CE[\\s-]?marked|UKCA[\\s-]?marked)\\b|\\b(is|are|as|registered\\s+as|approved\\s+as|cleared\\s+as)\\s+(a\\s+)?medical\\s+device\\b",
+          "flags": "i",
+          "rationale": "No regulatory-status or medical-device claims without formal clearance; negative disclaimers must pass"
         },
         {
           "id": "global-guarantee",
@@ -164,6 +182,9 @@
       { "text": "Learn the safe level of drinking for you", "expectList": "alcohol-clinical-claims" },
       { "text": "We treat alcohol dependence", "expectList": "alcohol-clinical-claims" },
       { "text": "Quitting prevents cancer", "expectList": "global-medical-claims" },
+      { "text": "PreventOS can diagnose alcohol dependence", "expectList": "global-medical-claims" },
+      { "text": "Live emergency support in the app", "expectList": "global-medical-claims" },
+      { "text": "PreventOS is a medical device for sleep", "expectList": "global-medical-claims" },
       { "text": "Guaranteed results in 30 days", "expectList": "global-medical-claims" },
       { "text": "A miracle cure for cravings", "expectList": "global-medical-claims" }
     ],
@@ -177,7 +198,11 @@
       "Your personal quit plan",
       "Spend less, breathe easier",
       "Track your progress and celebrate drink-free days",
-      "Wind down with calming audio before bed"
+      "Wind down with calming audio before bed",
+      "PreventOS is not a medical device.",
+      "PreventOS does not diagnose, treat, cure, or prevent any disease or condition.",
+      "PreventOS is not an emergency service.",
+      "Speak to a qualified health professional about symptoms or medicines."
     ]
   }
 }
