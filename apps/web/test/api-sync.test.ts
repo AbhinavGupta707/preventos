@@ -31,6 +31,21 @@ function stubApi(): void {
     if (path.startsWith("/consents")) return reply(201, { data: { purpose: "x", action: "granted" } });
     if (path === "/logs/drink") return reply(201, { data: { id: "d1", date: "2026-06-13", units: 2 }, safety: { tier: 0, crisis: false } });
     if (path === "/logs/sleep-diary") return reply(201, { data: { id: "s1", date: "2026-06-13" } });
+    if (path === "/sleep/windows") {
+      return reply(201, {
+        data: {
+          id: "w1",
+          version: 1,
+          windowStart: "23:30",
+          windowEnd: "07:00",
+          durationMin: 450,
+          decision: "initial",
+          safetyFloorApplied: false,
+          signpostRequired: false,
+          computedFrom: { rule: "initial_mean_sleep_plus_buffer" },
+        },
+      });
+    }
     return reply(404, { error: "not found" });
   }) as typeof globalThis.fetch;
 }
@@ -90,5 +105,24 @@ describe("web → apps/api sync proxy", () => {
     calls = [];
     await syncToApi({ action: "consent", key: "reminders", value: false });
     expect(calls.at(-1)?.path).toBe("/consents/revoke");
+  });
+
+  it("requests a Nightshift sleep window from the API", async () => {
+    const res = await syncToApi({
+      action: "sleepWindow",
+      desiredRiseTime: "07:00",
+      effectiveFrom: "2026-06-18",
+      safetySensitiveOccupation: false,
+      excessiveDaytimeSleepiness: false,
+    });
+    expect(res.synced).toBe(true);
+    expect(res.sleepWindow).toMatchObject({ windowStart: "23:30", windowEnd: "07:00", durationMin: 450 });
+    expect(calls.map((c) => c.path)).toEqual(["/dev/session", "/sleep/windows"]);
+    expect(calls[1]?.body).toEqual({
+      desiredRiseTime: "07:00",
+      effectiveFrom: "2026-06-18",
+      safetySensitiveOccupation: false,
+      excessiveDaytimeSleepiness: false,
+    });
   });
 });

@@ -1,19 +1,30 @@
 "use client";
 
 import type { FormEvent } from "react";
+import { useState } from "react";
 import { useAppStore, todayIso } from "../../../../lib/store/app-store";
-import { syncApp } from "../../../../lib/sync";
+import { requestSleepWindow, syncApp } from "../../../../lib/sync";
 import { sleepEntryMetrics } from "../../../../lib/diary/sleep-entry";
 import { sleepEntrySchema } from "../../../../lib/store/types";
 
+function durationLabel(minutes: number): string {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return mins === 0 ? `${hours}h` : `${hours}h ${mins}m`;
+}
+
 export default function SleepDiaryPage() {
   const { state, hydrated, update } = useAppStore();
+  const [windowStatus, setWindowStatus] = useState<string | null>(null);
+  const [windowPending, setWindowPending] = useState(false);
 
   if (!hydrated) return <p>Loading…</p>;
 
   const today = todayIso();
   const todayDone = state.sleepDiary.some((entry) => entry.date === today);
   const recent = state.sleepDiary.slice(-7).reverse(); // reverse() on the fresh slice copy
+  const enoughDiaryForWindow = state.sleepDiary.length >= 5;
+  const defaultRiseTime = state.sleepDiary.at(-1)?.getUpTime ?? "07:00";
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,6 +42,27 @@ export default function SleepDiaryPage() {
       sleepDiary: [...current.sleepDiary.filter((entry) => entry.date !== today), parsed.data],
     }));
     syncApp({ action: "sleep", ...parsed.data });
+  }
+
+  async function onWindowSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    setWindowPending(true);
+    setWindowStatus(null);
+    const result = await requestSleepWindow({
+      action: "sleepWindow",
+      desiredRiseTime: String(data.get("desiredRiseTime")),
+      effectiveFrom: today,
+      safetySensitiveOccupation: data.get("safetySensitiveOccupation") === "on",
+      excessiveDaytimeSleepiness: data.get("excessiveDaytimeSleepiness") === "on",
+    });
+    setWindowPending(false);
+    if (result.sleepWindow !== undefined) {
+      update((current) => ({ ...current, sleepWindow: result.sleepWindow }));
+      setWindowStatus("Sleep window updated.");
+      return;
+    }
+    setWindowStatus(result.error ?? "Connect the API to calculate the sleep window. Your diary is saved on this device.");
   }
 
   return (
@@ -63,6 +95,58 @@ export default function SleepDiaryPage() {
           </button>
         </form>
       )}
+
+      <h2>Your sleep window</h2>
+      {state.sleepWindow !== undefined ? (
+        <dl className="result-panel">
+          <dt>Window</dt>
+          <dd>
+            {state.sleepWindow.windowStart} to {state.sleepWindow.windowEnd}
+          </dd>
+          <dt>Time in bed</dt>
+          <dd>{durationLabel(state.sleepWindow.durationMin)}</dd>
+          {state.sleepWindow.signpostRequired ? (
+            <p>
+              A more cautious window was used because of safety flags. If sleepiness is affecting driving, work, or
+              daily life, speak to a clinician.
+            </p>
+          ) : null}
+        </dl>
+      ) : (
+        <p className="notice">
+          {enoughDiaryForWindow
+            ? "You have enough diary entries to request your first sleep window."
+            : `Save ${5 - state.sleepDiary.length} more check-in${5 - state.sleepDiary.length === 1 ? "" : "s"} to request your first sleep window.`}
+        </p>
+      )}
+
+      {enoughDiaryForWindow ? (
+        <form onSubmit={onWindowSubmit}>
+          <div className="field">
+            <label htmlFor="desiredRiseTime">Target get-up time</label>
+            <input id="desiredRiseTime" name="desiredRiseTime" type="time" defaultValue={defaultRiseTime} required />
+          </div>
+          <div className="field field-checkbox">
+            <label>
+              <input name="safetySensitiveOccupation" type="checkbox" /> I drive, operate machinery, or do
+              safety-sensitive work
+            </label>
+          </div>
+          <div className="field field-checkbox">
+            <label>
+              <input name="excessiveDaytimeSleepiness" type="checkbox" /> I am very sleepy during the day
+            </label>
+          </div>
+          <button className="button" type="submit" disabled={windowPending}>
+            {windowPending ? "Updating…" : "Update sleep window"}
+          </button>
+          {windowStatus !== null ? (
+            <p className="notice" role="status">
+              {windowStatus}
+            </p>
+          ) : null}
+        </form>
+      ) : null}
 
       {recent.length > 0 ? (
         <>

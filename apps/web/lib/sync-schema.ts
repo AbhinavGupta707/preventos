@@ -28,6 +28,13 @@ export const syncActionSchema = z.discriminatedUnion("action", [
     nightAwakeMin: z.number().min(0).max(1440),
   }),
   z.object({
+    action: z.literal("sleepWindow"),
+    desiredRiseTime: hhmm,
+    effectiveFrom: isoDate,
+    safetySensitiveOccupation: z.boolean(),
+    excessiveDaytimeSleepiness: z.boolean(),
+  }),
+  z.object({
     action: z.literal("consent"),
     key: z.enum(["reminders", "analytics"]),
     value: z.boolean(),

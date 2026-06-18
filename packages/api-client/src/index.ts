@@ -22,5 +22,7 @@ export type {
   SignedUpPerson,
   SleepDiaryInput,
   SleepDiaryLogged,
+  SleepWindowInput,
+  SleepWindowView,
   WaitlistInput,
 } from "./types.js";

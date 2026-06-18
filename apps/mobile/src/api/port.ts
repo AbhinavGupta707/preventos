@@ -1,4 +1,5 @@
 import type { BfoSection, ReadinessStage, Vertical } from "@preventos/domain";
+import type { SleepDiaryInput, SleepWindowInput, SleepWindowView } from "@preventos/api-client";
 import type { Result } from "@preventos/shared";
 
 import type { NextAction, TodayContext } from "../core/nextBestAction";
@@ -28,6 +29,12 @@ export interface ApiPort {
 
   /** Records a rescue/craving press as an inbound contact. */
   logCraving(channel?: "app" | "web"): Promise<Result<void, string>>;
+
+  /** Logs a Nightshift morning diary entry. */
+  logSleepDiary(input: SleepDiaryInput): Promise<Result<void, string>>;
+
+  /** Requests the current Nightshift sleep-window recommendation. */
+  createSleepWindow(input: SleepWindowInput): Promise<Result<SleepWindowView, string>>;
 
   /** Persist an intake-produced BFO section (server merges into the person's BFO). */
   submitBfoSection(section: BfoSection): Promise<Result<void, string>>;
