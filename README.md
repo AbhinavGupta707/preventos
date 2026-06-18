@@ -5,6 +5,7 @@ smoking (QuitKit), adult vaping (Exhale), alcohol (Steady), sleep (Nightshift).
 
 - Product spec: [PreventOS_Product_Requirements_Document_v1.md](./PreventOS_Product_Requirements_Document_v1.md)
 - Build plan: [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md)
+- Beta release runbook: [docs/beta-release-runbook.md](./docs/beta-release-runbook.md)
 
 ## Development
 
@@ -15,6 +16,9 @@ pnpm install          # always from repo root
 pnpm verify           # typecheck + lint + test + license check
 docker compose up -d  # local Postgres
 ```
+
+Copy `.env.example` to `.env` for local service configuration. Do not commit
+real secrets.
 
 ## Structure
 
