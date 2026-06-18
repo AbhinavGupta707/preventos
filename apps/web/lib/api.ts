@@ -6,6 +6,7 @@
 // until owner keys land (PROGRESS WP1.5). Unset PREVENTOS_API_URL → no-op
 // (synced:false), so the app still runs fully local with no backend.
 import { ApiClient } from "@preventos/api-client";
+import type { SleepWindowView } from "@preventos/api-client";
 import type { SyncAction } from "./sync-schema";
 
 const PROGRAMME_VERTICAL = {
@@ -38,6 +39,7 @@ function client(): ApiClient | undefined {
 export interface SyncResult {
   readonly synced: boolean;
   readonly error?: string;
+  readonly sleepWindow?: SleepWindowView;
 }
 
 export async function syncToApi(action: SyncAction): Promise<SyncResult> {
@@ -87,6 +89,15 @@ export async function syncToApi(action: SyncAction): Promise<SyncResult> {
         riseTime: action.getUpTime,
       });
       return res.ok ? { synced: true } : { synced: false, error: res.error.message };
+    }
+    case "sleepWindow": {
+      const res = await api.createSleepWindow({
+        desiredRiseTime: action.desiredRiseTime,
+        effectiveFrom: action.effectiveFrom,
+        safetySensitiveOccupation: action.safetySensitiveOccupation,
+        excessiveDaytimeSleepiness: action.excessiveDaytimeSleepiness,
+      });
+      return res.ok ? { synced: true, sleepWindow: res.value } : { synced: false, error: res.error.message };
     }
     case "consent": {
       const purpose = CONSENT_PURPOSE[action.key];

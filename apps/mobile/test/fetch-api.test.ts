@@ -5,6 +5,7 @@ import { FetchApi } from "../src/api/fetch";
 interface Call {
   readonly method: string;
   readonly path: string;
+  readonly body?: Record<string, unknown>;
 }
 
 /** Fake fetch that records (method, path) and replies per route. `enrolStatus`
@@ -14,7 +15,11 @@ function harness(enrolStatus = 201): { fetch: FetchLike; calls: Call[] } {
   const fetch: FetchLike = (url, init?: HttpRequestInit) => {
     const path = url.replace("http://api", "");
     const method = init?.method ?? "GET";
-    calls.push({ method, path });
+    calls.push({
+      method,
+      path,
+      ...(init?.body !== undefined ? { body: JSON.parse(init.body) as Record<string, unknown> } : {}),
+    });
     const route = (status: number, body: unknown) =>
       Promise.resolve({
         ok: status >= 200 && status < 300,
@@ -27,6 +32,22 @@ function harness(enrolStatus = 201): { fetch: FetchLike; calls: Call[] } {
     if (path.startsWith("/consents")) return route(201, { data: { purpose: "x", action: "granted" } });
     if (path === "/plans") return route(201, { data: { id: "pl1", version: 1 } });
     if (path === "/logs/craving") return route(201, { data: { id: "c1", occurredAt: "now" } });
+    if (path === "/logs/sleep-diary") return route(201, { data: { id: "s1", date: "2026-06-18" } });
+    if (path === "/sleep/windows") {
+      return route(201, {
+        data: {
+          id: "w1",
+          version: 1,
+          windowStart: "23:30",
+          windowEnd: "07:00",
+          durationMin: 450,
+          decision: "initial",
+          safetyFloorApplied: false,
+          signpostRequired: false,
+          computedFrom: { rule: "initial_mean_sleep_plus_buffer" },
+        },
+      });
+    }
     return route(404, { error: "not found" });
   };
   return { fetch, calls };
@@ -38,7 +59,7 @@ describe("FetchApi adapter", () => {
     const api = new FetchApi({ baseUrl: "http://api", fetch });
     const res = await api.enrolJourney({ vertical: "smoking", quitDate: "2026-06-20", stage: "ready" });
     expect(res.ok).toBe(true);
-    expect(calls).toEqual([
+    expect(calls.map(({ method, path }) => ({ method, path }))).toEqual([
       { method: "POST", path: "/dev/session" },
       { method: "POST", path: "/consents/grant" },
       { method: "POST", path: "/consents/grant" },
@@ -60,7 +81,32 @@ describe("FetchApi adapter", () => {
     await api.ensureSession();
     await api.logCraving();
     expect(calls.filter((c) => c.path === "/dev/session")).toHaveLength(1);
-    expect(calls.at(-1)).toEqual({ method: "POST", path: "/logs/craving" });
+    expect(calls.at(-1)).toMatchObject({ method: "POST", path: "/logs/craving" });
+  });
+
+  it("logs a sleep diary entry through the live API adapter", async () => {
+    const { fetch, calls } = harness();
+    const api = new FetchApi({ baseUrl: "http://api", fetch });
+    const res = await api.logSleepDiary({
+      date: "2026-06-18",
+      bedTime: "23:00",
+      sleepOnsetLatencyMin: 20,
+      wasoMin: 30,
+      finalWakeTime: "06:45",
+      riseTime: "07:00",
+    });
+    expect(res.ok).toBe(true);
+    expect(calls.map((c) => c.path)).toEqual(["/dev/session", "/logs/sleep-diary"]);
+    expect(calls.at(-1)?.body).toMatchObject({ date: "2026-06-18", riseTime: "07:00" });
+  });
+
+  it("requests a Nightshift sleep window through the live API adapter", async () => {
+    const { fetch, calls } = harness();
+    const api = new FetchApi({ baseUrl: "http://api", fetch });
+    const res = await api.createSleepWindow({ desiredRiseTime: "07:00", effectiveFrom: "2026-06-18" });
+    expect(res.ok && res.value).toMatchObject({ windowStart: "23:30", windowEnd: "07:00", durationMin: 450 });
+    expect(calls.map((c) => c.path)).toEqual(["/dev/session", "/sleep/windows"]);
+    expect(calls.at(-1)?.body).toEqual({ desiredRiseTime: "07:00", effectiveFrom: "2026-06-18" });
   });
 
   it("falls back to preview (no throw) for endpoints that don't exist yet", async () => {

@@ -1,4 +1,11 @@
-import { ApiClient, type DevSession, type FetchLike } from "@preventos/api-client";
+import {
+  ApiClient,
+  type DevSession,
+  type FetchLike,
+  type SleepDiaryInput,
+  type SleepWindowInput,
+  type SleepWindowView,
+} from "@preventos/api-client";
 import type { BfoSection } from "@preventos/domain";
 import type { Result } from "@preventos/shared";
 import { err, ok } from "@preventos/shared";
@@ -75,6 +82,20 @@ export class FetchApi implements ApiPort {
     if (!session.ok) return session;
     const res = await this.client.logCraving(channel);
     return res.ok ? ok(undefined) : err(res.error.message);
+  }
+
+  async logSleepDiary(input: SleepDiaryInput): Promise<Result<void, string>> {
+    const session = await this.ensureSession();
+    if (!session.ok) return session;
+    const res = await this.client.logSleepDiary(input);
+    return res.ok ? ok(undefined) : err(res.error.message);
+  }
+
+  async createSleepWindow(input: SleepWindowInput): Promise<Result<SleepWindowView, string>> {
+    const session = await this.ensureSession();
+    if (!session.ok) return session;
+    const res = await this.client.createSleepWindow(input);
+    return res.ok ? ok(res.value) : err(res.error.message);
   }
 
   // ---- not yet server-backed: served locally until their WPs land ----

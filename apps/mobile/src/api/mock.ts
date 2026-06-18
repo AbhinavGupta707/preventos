@@ -1,4 +1,5 @@
 import type { BfoSection } from "@preventos/domain";
+import type { SleepDiaryInput, SleepWindowInput, SleepWindowView } from "@preventos/api-client";
 import type { Result } from "@preventos/shared";
 import { ok } from "@preventos/shared";
 
@@ -34,6 +35,26 @@ export class MockApi implements ApiPort {
   async logCraving(_channel: "app" | "web" = "app"): Promise<Result<void, string>> {
     await wait(30);
     return ok(undefined);
+  }
+
+  async logSleepDiary(_input: SleepDiaryInput): Promise<Result<void, string>> {
+    await wait(40);
+    return ok(undefined);
+  }
+
+  async createSleepWindow(input: SleepWindowInput): Promise<Result<SleepWindowView, string>> {
+    await wait(40);
+    return ok({
+      id: "mock-sleep-window",
+      version: 1,
+      windowStart: "23:30",
+      windowEnd: input.desiredRiseTime,
+      durationMin: 450,
+      decision: "initial",
+      safetyFloorApplied: input.safetySensitiveOccupation === true || input.excessiveDaytimeSleepiness === true,
+      signpostRequired: input.safetySensitiveOccupation === true || input.excessiveDaytimeSleepiness === true,
+      computedFrom: { source: "mock" },
+    });
   }
 
   async submitBfoSection(section: BfoSection): Promise<Result<void, string>> {

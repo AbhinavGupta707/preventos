@@ -14,6 +14,19 @@ export const sleepEntrySchema = z.object({
 });
 export type SleepEntry = z.infer<typeof sleepEntrySchema>;
 
+export const sleepWindowSchema = z.object({
+  id: z.string(),
+  version: z.number().int().positive(),
+  windowStart: z.string().regex(/^\d{2}:\d{2}$/),
+  windowEnd: z.string().regex(/^\d{2}:\d{2}$/),
+  durationMin: z.number().int().positive(),
+  decision: z.enum(["initial", "expand", "restrict", "hold"]),
+  safetyFloorApplied: z.boolean(),
+  signpostRequired: z.boolean(),
+  computedFrom: z.record(z.string(), z.unknown()),
+});
+export type SleepWindow = z.infer<typeof sleepWindowSchema>;
+
 export const drinkEntrySchema = z.object({
   id: z.string(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
@@ -36,6 +49,7 @@ export const appStateSchema = z.object({
   quitDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   dailySpendGbp: z.number().min(0).optional(),
   sleepDiary: z.array(sleepEntrySchema),
+  sleepWindow: sleepWindowSchema.optional(),
   drinkLog: z.array(drinkEntrySchema),
   consent: consentSchema,
 });
