@@ -71,6 +71,42 @@ describe("ApiClient", () => {
     expect(res.ok && res.value.safety).toEqual({ tier: 1, crisis: true, caseId: "c1" });
   });
 
+  it("creates a Nightshift sleep window through the shared contract", async () => {
+    const { fetch, calls } = fakeFetch(() => ({
+      status: 201,
+      body: {
+        data: {
+          id: "w1",
+          version: 1,
+          windowStart: "23:30",
+          windowEnd: "07:00",
+          durationMin: 450,
+          decision: "initial",
+          safetyFloorApplied: false,
+          signpostRequired: false,
+          computedFrom: { rule: "initial_mean_sleep_plus_buffer" },
+        },
+      },
+    }));
+    const client = new ApiClient({ baseUrl: "http://api", fetch, getToken: () => "t" });
+    const res = await client.createSleepWindow({ desiredRiseTime: "07:00", effectiveFrom: "2026-06-08" });
+    expect(res).toEqual({
+      ok: true,
+      value: {
+        id: "w1",
+        version: 1,
+        windowStart: "23:30",
+        windowEnd: "07:00",
+        durationMin: 450,
+        decision: "initial",
+        safetyFloorApplied: false,
+        signpostRequired: false,
+        computedFrom: { rule: "initial_mean_sleep_plus_buffer" },
+      },
+    });
+    expect(calls[0]?.url).toBe("http://api/sleep/windows");
+  });
+
   it("surfaces a transport failure as status 0", async () => {
     const fetch: FetchLike = () => Promise.reject(new Error("offline"));
     const client = new ApiClient({ baseUrl: "http://api", fetch });

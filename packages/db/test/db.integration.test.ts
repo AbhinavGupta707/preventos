@@ -7,10 +7,12 @@ import {
   appendConsent,
   appendDecision,
   appendEvent,
+  appendSleepWindow,
   attachIdentity,
   consentHistoryFor,
   createEnrolment,
   createPerson,
+  latestSleepWindowFor,
 } from "../src/repos.js";
 
 const ADMIN_URL = process.env["DATABASE_URL"] ?? "postgres://preventos:preventos_dev@localhost:5432/preventos";
@@ -140,11 +142,27 @@ describe("schema round-trips and invariants", () => {
   });
 
   it("sleep windows are append-only (titration history is auditable)", async () => {
-    await handle.pool.query(
-      `INSERT INTO core.sleep_window (person_id, version, window_start, window_end, effective_from)
-       VALUES ($1, 1, '23:30', '06:00', '2026-06-15')`,
-      [personId],
-    );
+    const first = await appendSleepWindow(handle.db, {
+      personId,
+      version: 1,
+      windowStart: "23:30",
+      windowEnd: "06:00",
+      computedFrom: { rule: "initial_mean_sleep_plus_buffer" },
+      effectiveFrom: "2026-06-15",
+    });
+    const second = await appendSleepWindow(handle.db, {
+      personId,
+      version: 2,
+      windowStart: "23:15",
+      windowEnd: "06:00",
+      computedFrom: { rule: "expand_high_efficiency", previousVersion: 1 },
+      effectiveFrom: "2026-06-22",
+    });
+    const latest = await latestSleepWindowFor(handle.db, personId);
+
+    expect(first.version).toBe(1);
+    expect(latest?.id).toBe(second.id);
+    expect(latest?.computedFrom).toMatchObject({ previousVersion: 1 });
     await expect(
       handle.pool.query("UPDATE core.sleep_window SET window_start = '23:00' WHERE person_id = $1", [personId]),
     ).rejects.toThrow(/append-only/);

@@ -311,6 +311,119 @@ describe("logging", () => {
     expect(events.rows[0].count).toBe("1");
   });
 
+  it("computes and appends a versioned sleep window from recent diary entries", async () => {
+    const { personId, token } = await consentedUser("api-sleep-window");
+    for (let day = 1; day <= 7; day += 1) {
+      const response = await server.inject({
+        method: "POST",
+        url: "/logs/sleep-diary",
+        headers: asUser(token),
+        payload: {
+          date: `2026-06-${String(day).padStart(2, "0")}`,
+          bedTime: "23:00",
+          sleepOnsetLatencyMin: 20,
+          wasoMin: 40,
+          finalWakeTime: "06:45",
+          riseTime: "07:00",
+        },
+      });
+      expect(response.statusCode).toBe(201);
+    }
+
+    const created = await server.inject({
+      method: "POST",
+      url: "/sleep/windows",
+      headers: asUser(token),
+      payload: { desiredRiseTime: "07:00", effectiveFrom: "2026-06-08" },
+    });
+
+    expect(created.statusCode).toBe(201);
+    expect(created.json().data).toMatchObject({
+      version: 1,
+      windowStart: "23:30",
+      windowEnd: "07:00",
+      durationMin: 450,
+      decision: "initial",
+      safetyFloorApplied: false,
+      signpostRequired: false,
+    });
+    const { rows } = await handle.pool.query(
+      "SELECT version, window_start, window_end, computed_from FROM core.sleep_window WHERE person_id = $1",
+      [personId],
+    );
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({ version: 1, window_start: "23:30:00", window_end: "07:00:00" });
+    expect(rows[0].computed_from).toMatchObject({ rule: "initial_mean_sleep_plus_buffer", diaryDays: 7 });
+  });
+
+  it("rejects an initial sleep window when diary evidence is too thin", async () => {
+    const { token } = await consentedUser("api-sleep-window-thin");
+    for (let day = 1; day <= 3; day += 1) {
+      await server.inject({
+        method: "POST",
+        url: "/logs/sleep-diary",
+        headers: asUser(token),
+        payload: {
+          date: `2026-08-${String(day).padStart(2, "0")}`,
+          bedTime: "23:00",
+          sleepOnsetLatencyMin: 20,
+          wasoMin: 40,
+          finalWakeTime: "06:45",
+          riseTime: "07:00",
+        },
+      });
+    }
+
+    const created = await server.inject({
+      method: "POST",
+      url: "/sleep/windows",
+      headers: asUser(token),
+      payload: { desiredRiseTime: "07:00", effectiveFrom: "2026-08-08" },
+    });
+
+    expect(created.statusCode).toBe(409);
+    expect(created.json().error).toBe("at least 5 sleep diary entries required before titration");
+  });
+
+  it("applies the Nightshift safety floor when a safety-sensitive sleep profile is submitted", async () => {
+    const { token } = await consentedUser("api-sleep-window-safety");
+    for (let day = 1; day <= 7; day += 1) {
+      await server.inject({
+        method: "POST",
+        url: "/logs/sleep-diary",
+        headers: asUser(token),
+        payload: {
+          date: `2026-07-${String(day).padStart(2, "0")}`,
+          bedTime: "23:30",
+          sleepOnsetLatencyMin: 120,
+          wasoMin: 120,
+          finalWakeTime: "06:00",
+          riseTime: "06:00",
+        },
+      });
+    }
+
+    const created = await server.inject({
+      method: "POST",
+      url: "/sleep/windows",
+      headers: asUser(token),
+      payload: {
+        desiredRiseTime: "06:00",
+        effectiveFrom: "2026-07-08",
+        safetySensitiveOccupation: true,
+      },
+    });
+
+    expect(created.statusCode).toBe(201);
+    expect(created.json().data).toMatchObject({
+      windowStart: "22:00",
+      windowEnd: "06:00",
+      durationMin: 480,
+      safetyFloorApplied: true,
+      signpostRequired: true,
+    });
+  });
+
   it("craving log records an inbound contact and publishes contact.received", async () => {
     const { personId, token } = await consentedUser("api-craving");
     const response = await server.inject({ method: "POST", url: "/logs/craving", headers: asUser(token), payload: {} });

@@ -95,6 +95,13 @@ export interface SleepDiaryInput {
   readonly quality?: number;
 }
 
+export interface SleepWindowInput {
+  readonly desiredRiseTime: string;
+  readonly effectiveFrom: string;
+  readonly safetySensitiveOccupation?: boolean;
+  readonly excessiveDaytimeSleepiness?: boolean;
+}
+
 /** Marketing waitlist signup (public; mirrors apps/api waitlistSignupSchema). */
 export interface WaitlistInput {
   readonly email: string;
@@ -162,6 +169,18 @@ export interface DrinkLogged {
 export interface SleepDiaryLogged {
   readonly id: string;
   readonly date: string;
+}
+
+export interface SleepWindowView {
+  readonly id: string;
+  readonly version: number;
+  readonly windowStart: string;
+  readonly windowEnd: string;
+  readonly durationMin: number;
+  readonly decision: "initial" | "expand" | "restrict" | "hold";
+  readonly safetyFloorApplied: boolean;
+  readonly signpostRequired: boolean;
+  readonly computedFrom: Readonly<Record<string, unknown>>;
 }
 
 export interface CravingLogged {
