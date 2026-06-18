@@ -1,13 +1,23 @@
 import type { ConsentRecord, DecisionRecord } from "@preventos/domain";
 import { validateDecisionRecord } from "@preventos/domain";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import type { Db } from "./client.js";
-import { consentRecord, decisionRecord, enrolment, event, person, personIdentity } from "./schema.js";
+import {
+  consentRecord,
+  decisionRecord,
+  enrolment,
+  event,
+  person,
+  personIdentity,
+  sleepDiaryEntry,
+  sleepWindow,
+} from "./schema.js";
 
 type NewPerson = typeof person.$inferInsert;
 type NewIdentity = typeof personIdentity.$inferInsert;
 type NewEnrolment = typeof enrolment.$inferInsert;
 type NewEvent = typeof event.$inferInsert;
+type NewSleepWindow = typeof sleepWindow.$inferInsert;
 
 export async function createPerson(db: Db, row: NewPerson) {
   const [created] = await db.insert(person).values(row).returning();
@@ -76,4 +86,30 @@ export async function appendDecision(db: Db, record: Omit<DecisionRecord, "id" |
     .returning();
   if (created === undefined) throw new Error("decision insert returned no row");
   return created;
+}
+
+export async function appendSleepWindow(db: Db, row: NewSleepWindow) {
+  const [created] = await db.insert(sleepWindow).values(row).returning();
+  if (created === undefined) throw new Error("sleep window insert returned no row");
+  return created;
+}
+
+export async function latestSleepWindowFor(db: Db, personId: string) {
+  const [latest] = await db
+    .select()
+    .from(sleepWindow)
+    .where(eq(sleepWindow.personId, personId))
+    .orderBy(desc(sleepWindow.version))
+    .limit(1);
+  return latest;
+}
+
+export async function recentSleepDiaryEntriesFor(db: Db, personId: string, limit = 7) {
+  const recent = await db
+    .select()
+    .from(sleepDiaryEntry)
+    .where(eq(sleepDiaryEntry.personId, personId))
+    .orderBy(desc(sleepDiaryEntry.date))
+    .limit(limit);
+  return [...recent].sort((a, b) => String(a.date).localeCompare(String(b.date)));
 }

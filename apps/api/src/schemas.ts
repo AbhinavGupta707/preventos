@@ -82,6 +82,15 @@ export const sleepDiarySchema = z
   })
   .strict();
 
+export const sleepWindowSchema = z
+  .object({
+    desiredRiseTime: hhmm,
+    effectiveFrom: isoDate,
+    safetySensitiveOccupation: z.boolean().default(false),
+    excessiveDaytimeSleepiness: z.boolean().default(false),
+  })
+  .strict();
+
 export const cravingLogSchema = z
   .object({
     channel: z.enum(["app", "web"]).default("app"),

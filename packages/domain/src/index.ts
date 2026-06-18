@@ -11,6 +11,8 @@ export { CONSENT_PURPOSES, consentStateFromHistory, hasConsent } from "./consent
 export type { ConsentRecord, ConsentPurpose, ConsentAction } from "./consent.js";
 export { validateDecisionRecord } from "./events.js";
 export type { EventRecord, DecisionRecord } from "./events.js";
+export { DEFAULT_SLEEP_TITRATION_MIN_DIARY_DAYS, recommendSleepWindow, sleepWindowDurationMin } from "./sleep-titration.js";
+export type { SleepSafetyProfile, SleepTitrationDiaryEntry, SleepWindowRecommendation } from "./sleep-titration.js";
 export { RISK_CLASSES, ESCALATION_STATES, transitionEscalation } from "./escalation.js";
 export type { EscalationCase, RiskClass, EscalationState } from "./escalation.js";
 export { PLAN_TYPES, CONTACT_DIRECTIONS, CHANNELS } from "./plans.js";

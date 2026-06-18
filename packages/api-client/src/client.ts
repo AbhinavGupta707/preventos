@@ -21,6 +21,8 @@ import type {
   SignedUpPerson,
   SleepDiaryInput,
   SleepDiaryLogged,
+  SleepWindowInput,
+  SleepWindowView,
   WaitlistInput,
 } from "./types.js";
 
@@ -201,6 +203,11 @@ export class ApiClient {
 
   async logSleepDiary(input: SleepDiaryInput): Promise<Result<SleepDiaryLogged, ApiError>> {
     const res = await this.send({ method: "POST", path: "/logs/sleep-diary", body: input, auth: true });
+    return res.ok ? ok(ApiClient.data(res.value)) : res;
+  }
+
+  async createSleepWindow(input: SleepWindowInput): Promise<Result<SleepWindowView, ApiError>> {
+    const res = await this.send({ method: "POST", path: "/sleep/windows", body: input, auth: true });
     return res.ok ? ok(ApiClient.data(res.value)) : res;
   }
 

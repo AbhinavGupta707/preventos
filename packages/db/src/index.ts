@@ -12,6 +12,9 @@ export {
   consentHistoryFor,
   appendEvent,
   appendDecision,
+  appendSleepWindow,
+  latestSleepWindowFor,
+  recentSleepDiaryEntriesFor,
 } from "./repos.js";
 export {
   marketing,
