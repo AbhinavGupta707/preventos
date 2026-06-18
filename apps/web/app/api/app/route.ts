@@ -3,7 +3,7 @@
 // and avoids CORS. Best-effort: when the backend is unconfigured it reports
 // synced:false and the caller stays on its local-first state.
 import { NextResponse } from "next/server";
-import { apiConfigured, syncToApi } from "../../../lib/api";
+import { apiConfigured, syncResultPayload, syncToApi } from "../../../lib/api";
 import { syncActionSchema } from "../../../lib/sync-schema";
 
 export async function POST(request: Request): Promise<NextResponse> {
@@ -23,7 +23,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   const result = await syncToApi(parsed.data);
   return NextResponse.json(
-    { synced: result.synced, ...(result.error !== undefined ? { error: result.error } : {}) },
+    syncResultPayload(result),
     { status: result.error !== undefined ? 502 : 200 },
   );
 }

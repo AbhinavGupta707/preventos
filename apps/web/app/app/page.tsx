@@ -4,6 +4,7 @@ import { useAppStore, todayIso } from "../../lib/store/app-store";
 import { projectSavings } from "../../lib/calculators/savings";
 import { dayUnits, lastSevenDates, weekSummary } from "../../lib/diary/drinks";
 import { sleepEntryMetrics } from "../../lib/diary/sleep-entry";
+import { publicProgrammes } from "../../lib/programme-access";
 
 const gbp = new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP", maximumFractionDigits: 0 });
 
@@ -30,7 +31,8 @@ export default function TodayPage() {
   }
 
   const today = todayIso();
-  const quitting = state.programmes.includes("quitkit") || state.programmes.includes("exhale");
+  const programmes = publicProgrammes(state.programmes);
+  const quitting = programmes.includes("quitkit") || programmes.includes("exhale");
   const smokeFreeDays = state.quitDate ? daysSince(state.quitDate) : 0;
   const saved = state.dailySpendGbp ? projectSavings(state.dailySpendGbp).perDay * smokeFreeDays : 0;
   const latestSleep = state.sleepDiary.at(-1);
@@ -50,7 +52,7 @@ export default function TodayPage() {
             {saved > 0 ? <p>About {gbp.format(saved)} kept in your pocket so far.</p> : null}
           </li>
         ) : null}
-        {state.programmes.includes("nightshift") ? (
+        {programmes.includes("nightshift") ? (
           <li className="card" style={{ ["--card-accent" as string]: "var(--nightshift)" }}>
             <h2>Sleep</h2>
             {latestSleep ? (
@@ -65,7 +67,7 @@ export default function TodayPage() {
             )}
           </li>
         ) : null}
-        {state.programmes.includes("steady") ? (
+        {programmes.includes("steady") ? (
           <li className="card" style={{ ["--card-accent" as string]: "var(--steady)" }}>
             <h2>Drinks</h2>
             <p>

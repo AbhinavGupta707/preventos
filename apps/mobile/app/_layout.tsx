@@ -48,6 +48,8 @@ export default function RootLayout() {
         <Stack.Screen name="debrief" options={{ presentation: "modal" }} />
         <Stack.Screen name="plans-new" options={{ presentation: "modal" }} />
         <Stack.Screen name="push-primer" options={{ presentation: "modal" }} />
+        <Stack.Screen name="sleep-diary" options={{ presentation: "modal" }} />
+        <Stack.Screen name="steady-referral" options={{ presentation: "modal" }} />
       </Stack>
       <RescueButton />
     </SafeAreaProvider>

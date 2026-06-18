@@ -6,6 +6,7 @@ import { PROGRAMMES } from "../lib/copy/programmes";
 
 const ONBOARDING_PATH = join(__dirname, "..", "app", "app", "onboarding", "page.tsx");
 const DRINK_LOG_PATH = join(__dirname, "..", "app", "app", "drinks", "page.tsx");
+const PROGRAMME_ACCESS_PATH = join(__dirname, "..", "lib", "programme-access.ts");
 
 describe("Steady user-facing hard-stop copy — safety invariant 4", () => {
   it("programme copy routes dependence indicators to referral-only support", () => {
@@ -20,6 +21,7 @@ describe("Steady user-facing hard-stop copy — safety invariant 4", () => {
   it("web app Steady entry and drink-log surfaces keep dependence referral visible", () => {
     const onboarding = readFileSync(ONBOARDING_PATH, "utf8");
     const drinkLog = readFileSync(DRINK_LOG_PATH, "utf8");
+    const programmeAccess = readFileSync(PROGRAMME_ACCESS_PATH, "utf8");
 
     for (const source of [onboarding, drinkLog]) {
       expect(source).toMatch(/shakes, sweats/i);
@@ -28,6 +30,9 @@ describe("Steady user-facing hard-stop copy — safety invariant 4", () => {
       expect(source).not.toMatch(/detox plan|safe drinking|safe level/i);
     }
     expect(onboarding).toContain("Steady is not the right tool");
+    expect(programmeAccess).toContain("NEXT_PUBLIC_PREVENTOS_ENABLE_STEADY_INTERNAL");
     expect(drinkLog).toContain("that needs proper medical support");
+    expect(drinkLog).toContain("This log is not withdrawal support");
+    expect(drinkLog).toContain("programmeAccess(\"steady\")");
   });
 });

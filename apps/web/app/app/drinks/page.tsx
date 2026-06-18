@@ -1,12 +1,28 @@
 "use client";
 
+import { useState } from "react";
 import { useAppStore, todayIso } from "../../../lib/store/app-store";
+import { programmeAccess } from "../../../lib/programme-access";
 import { syncApp } from "../../../lib/sync";
 import { DRINK_PRESETS, drinkUnits, WEEKLY_LOW_RISK_UNITS } from "../../../lib/calculators/units";
 import { dayUnits, lastSevenDates, weekSummary } from "../../../lib/diary/drinks";
 
 export default function DrinkLogPage() {
   const { state, hydrated, update } = useAppStore();
+  const [context, setContext] = useState("");
+
+  if (programmeAccess("steady") === "gated") {
+    return (
+      <section className="section">
+        <h1>Steady is referral-only right now</h1>
+        <p className="notice prose">
+          Alcohol moderation is not open in this build. If stopping or cutting down brings shakes, sweats, seizures,
+          confusion, or a need to drink first thing in the morning, speak to your GP or call Drinkline on 0300 123 1110.
+          Steady is not the right tool on its own for that situation.
+        </p>
+      </section>
+    );
+  }
 
   if (!hydrated) return <p>Loading…</p>;
 
@@ -19,14 +35,22 @@ export default function DrinkLogPage() {
     const preset = DRINK_PRESETS.find((p) => p.id === presetId);
     if (!preset) return;
     const units = Math.round(drinkUnits(preset) * 100) / 100;
+    const note = context.trim();
     update((current) => ({
       ...current,
       drinkLog: [
         ...current.drinkLog,
-        { id: `${today}-${presetId}-${current.drinkLog.length}`, date: today, label: preset.label, units },
+        {
+          id: `${today}-${presetId}-${current.drinkLog.length}`,
+          date: today,
+          label: preset.label,
+          units,
+          ...(note !== "" ? { context: note } : {}),
+        },
       ],
     }));
-    syncApp({ action: "drink", date: today, units, label: preset.label });
+    syncApp({ action: "drink", date: today, units, label: preset.label, ...(note !== "" ? { context: note } : {}) });
+    setContext("");
   }
 
   function removeDrink(id: string) {
@@ -37,11 +61,28 @@ export default function DrinkLogPage() {
     <section className="section">
       <h1>Drink log</h1>
       <p className="prose">
-        Tap what you had — units are worked out for you. The UK low-risk guideline is not more than{" "}
-        {WEEKLY_LOW_RISK_UNITS} units a week, spread over three or more days.
+        Tap what you had — units are worked out for you. This is neutral record-keeping, not a score. The UK low-risk
+        guideline is not more than {WEEKLY_LOW_RISK_UNITS} units a week, spread over three or more days, and it is not a
+        target to drink up to.
+      </p>
+      <p className="notice prose">
+        This log is not withdrawal support. If cutting down brings shakes, sweats or a need to drink in the morning,
+        stop and speak to your GP or call Drinkline on 0300 123 1110.
       </p>
 
       <h2>Add a drink</h2>
+      <div className="field">
+        <label htmlFor="drinkContext">Optional note for pattern spotting</label>
+        <input
+          id="drinkContext"
+          name="drinkContext"
+          type="text"
+          maxLength={100}
+          value={context}
+          onChange={(event) => setContext(event.target.value)}
+          placeholder="e.g. after work, out with friends"
+        />
+      </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", maxWidth: "42rem" }}>
         {DRINK_PRESETS.map((preset) => (
           <button key={preset.id} className="button button-quiet" type="button" onClick={() => addDrink(preset.id)}>
@@ -58,6 +99,7 @@ export default function DrinkLogPage() {
           {todayEntries.map((entry) => (
             <li key={entry.id} style={{ marginBottom: "0.25rem" }}>
               {entry.label} — {entry.units.toFixed(1)} units{" "}
+              {entry.context !== undefined ? <span>({entry.context}) </span> : null}
               <button
                 type="button"
                 className="button button-quiet"

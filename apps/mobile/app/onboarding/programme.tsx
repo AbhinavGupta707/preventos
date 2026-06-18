@@ -9,11 +9,13 @@ interface ProgrammeCardProps {
   readonly tagline: string;
   readonly testID: string;
   readonly onPress?: () => void;
-  readonly status?: "open" | "private";
+  readonly status?: "open" | "private" | "referral";
 }
 
 function ProgrammeCard({ title, tagline, testID, onPress, status = "open" }: ProgrammeCardProps) {
-  const disabled = status !== "open";
+  const disabled = status === "private";
+  const chipLabel = status === "open" ? "Open beta" : status === "referral" ? "Referral only" : "Private";
+  const chipTone = status === "open" ? "success" : status === "referral" ? "peach" : "muted";
   return (
     <Pressable
       testID={testID}
@@ -25,7 +27,7 @@ function ProgrammeCard({ title, tagline, testID, onPress, status = "open" }: Pro
     >
       <View style={styles.cardTopline}>
         <Text variant="heading">{title}</Text>
-        <ProgrammeChip label={status === "open" ? "Open beta" : "Private"} tone={status === "open" ? "success" : "muted"} />
+        <ProgrammeChip label={chipLabel} tone={chipTone} />
       </View>
       <View style={{ height: space.xs }} />
       <Text variant="caption" color={color.inkMuted}>
@@ -67,8 +69,9 @@ export default function ProgrammePicker() {
         <ProgrammeCard
           testID="programme-alcohol"
           title="Steady — alcohol"
-          tagline="Referral-only safeguards stay private until launch gates clear."
-          status="private"
+          tagline="Referral-only information is available; moderation stays gated."
+          status="referral"
+          onPress={() => router.push("/steady-referral")}
         />
         <Text variant="caption" color={color.inkFaint}>
           Alcohol and sleep features stay internal for now; the app keeps their higher-risk paths

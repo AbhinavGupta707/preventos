@@ -74,6 +74,7 @@ export async function syncToApi(action: SyncAction): Promise<SyncResult> {
         date: action.date,
         units: action.units,
         ...(action.label !== undefined ? { drinkType: action.label } : {}),
+        ...(action.context !== undefined ? { context: action.context } : {}),
       });
       return res.ok ? { synced: true } : { synced: false, error: res.error.message };
     }
@@ -107,4 +108,12 @@ export async function syncToApi(action: SyncAction): Promise<SyncResult> {
       return res.ok ? { synced: true } : { synced: false, error: res.error.message };
     }
   }
+}
+
+export function syncResultPayload(result: SyncResult): Record<string, unknown> {
+  return {
+    synced: result.synced,
+    ...(result.error !== undefined ? { error: result.error } : {}),
+    ...(result.sleepWindow !== undefined ? { sleepWindow: result.sleepWindow } : {}),
+  };
 }
