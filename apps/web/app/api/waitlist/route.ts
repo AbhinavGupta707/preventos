@@ -7,6 +7,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { clientIpForRateLimit } from "../../../lib/client-ip";
 import { forwardWaitlist } from "../../../lib/marketing";
+import { createFixedWindowRateLimiter } from "../../../lib/rate-limit";
 
 // Number of trusted reverse proxies / CDN edges in front of this app. Default 1
 // (a single edge proxy that appends the real client IP). Set to your real hop
@@ -25,22 +26,16 @@ const signupSchema = z.object({
 
 const WINDOW_MS = 60_000;
 const MAX_PER_WINDOW = 5;
-const hits = new Map<string, { count: number; windowStart: number }>();
-
-function rateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = hits.get(ip);
-  if (!entry || now - entry.windowStart > WINDOW_MS) {
-    hits.set(ip, { count: 1, windowStart: now });
-    return false;
-  }
-  hits.set(ip, { ...entry, count: entry.count + 1 });
-  return entry.count + 1 > MAX_PER_WINDOW;
-}
+const MAX_RATE_LIMIT_BUCKETS = 4_096;
+const waitlistLimiter = createFixedWindowRateLimiter({
+  windowMs: WINDOW_MS,
+  maxPerWindow: MAX_PER_WINDOW,
+  maxBuckets: MAX_RATE_LIMIT_BUCKETS,
+});
 
 export async function POST(request: Request): Promise<NextResponse> {
   const ip = clientIpForRateLimit(request.headers.get("x-forwarded-for"), TRUSTED_PROXY_HOPS);
-  if (rateLimited(ip)) {
+  if (waitlistLimiter.isRateLimited(ip)) {
     return NextResponse.json({ success: false, error: "Too many attempts — please try again shortly." }, { status: 429 });
   }
 
