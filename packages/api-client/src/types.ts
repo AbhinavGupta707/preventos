@@ -188,3 +188,9 @@ export interface CravingLogged {
   readonly id: string;
   readonly occurredAt: string;
 }
+
+export interface PersonDataBundle {
+  readonly person: unknown;
+  readonly identity: unknown;
+  readonly [section: string]: unknown;
+}

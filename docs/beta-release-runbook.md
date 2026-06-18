@@ -70,6 +70,9 @@ Optional local development:
 - `DEV_SESSION_PERSON_ID`
 - `PREVENTOS_API_URL`
 - `EXPO_PUBLIC_API_URL`
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `EXPO_PUBLIC_CLERK_JWT_TEMPLATE`
 - `CONTENT_ROOT`
 - `PREVENTOS_CONTENT_ROOT`
 - `RATE_LIMIT_TRUSTED_PROXIES`
@@ -89,9 +92,13 @@ Clerk activation:
 - `CLERK_JWT_KEY`
 - `CLERK_JWT_AUDIENCE`
 - `CLERK_AUTHORIZED_PARTIES`
+- `CLERK_JWT_TEMPLATE`
 
 Current auth status: `apps/api` selects Clerk by default through the
-`@preventos/auth` `ClerkAuthProvider`. Fake auth remains available only when
+`@preventos/auth` `ClerkAuthProvider`. `apps/web` and `apps/mobile` load Clerk
+client SDKs only when their public publishable-key env vars are set, then pass
+session tokens through `@preventos/api-client` to server-backed routes including
+account export and deletion. Fake auth remains available only when
 `PREVENTOS_AUTH_PROVIDER=fake`, `ALLOW_DEV_SESSIONS=true`, or a seeded
 `DEV_SESSION_TOKEN`/`DEV_SESSION_PERSON_ID` pair explicitly asks for local dev
 auth. Local web/mobile live sync may use the gated `/dev/session` stand-in only
@@ -192,10 +199,15 @@ registration/discovery/install order before debugging runtime auth:
    verification; otherwise the Clerk SDK may retrieve JWKS through Clerk's
    backend API. Set `CLERK_AUTHORIZED_PARTIES` to the allowed web/console/mobile
    origins.
-7. Keep `PREVENTOS_AUTH_PROVIDER=clerk` (or leave it unset) in beta/prod.
-8. Disable `/dev/session` by leaving `ALLOW_DEV_SESSIONS` unset or false.
-9. Smoke-test a Clerk-issued bearer token against `/consents/check` or another
-   person-scoped API route before exposing real app traffic.
+7. Set `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` for apps/web and
+   `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY` for live mobile builds. If the API needs
+   a named Clerk JWT template, also set `CLERK_JWT_TEMPLATE` for web server
+   routes and `EXPO_PUBLIC_CLERK_JWT_TEMPLATE` for mobile.
+8. Keep `PREVENTOS_AUTH_PROVIDER=clerk` (or leave it unset) in beta/prod.
+9. Disable `/dev/session` by leaving `ALLOW_DEV_SESSIONS` unset or false.
+10. Smoke-test a Clerk-issued bearer token against `/consents/check`,
+   `/me/export`, and `DELETE /me` in a non-production account before exposing
+   real app traffic.
 
 Do not treat Clerk as active just because keys exist. The feature is present in
 code, but launch still requires the owner-created tenant, JWT template, allowed
@@ -278,6 +290,8 @@ Internal testing checklist:
   generated.
 - Verify notifications permission choreography without over-promising delivery.
 - Verify privacy/consent surfaces are reachable.
+- Verify export, deletion, logout, unauthenticated, and expired-session states
+  on web and mobile live API builds.
 - Verify `EXPO_PUBLIC_API_URL` points to beta API for live builds and is unset
   for offline/mock builds.
 
@@ -306,8 +320,12 @@ Web:
 
 - Deploy `apps/web`.
 - Set `PREVENTOS_API_URL` to the API origin for live sync.
+- Set `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` when Clerk web auth is active.
+- Set `CLERK_JWT_TEMPLATE` if web server routes must request a named API token.
 - Confirm marketing waitlist and funnel events reach the API-backed marketing
   schema; offline `.data` fallback should be development-only.
+- Confirm privacy export/delete routes use Clerk tokens or explicitly gated
+  dev sessions; do not silently fall back to server mocks.
 - Run `pnpm --filter @preventos/web build`.
 
 Console:
@@ -331,8 +349,9 @@ Worker:
 Mobile:
 
 - Build with EAS profiles above.
-- Use server-side secrets only. Mobile gets `EXPO_PUBLIC_API_URL`, never LLM or
-  database keys.
+- Use server-side secrets only. Mobile gets `EXPO_PUBLIC_API_URL`,
+  `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`, and optionally
+  `EXPO_PUBLIC_CLERK_JWT_TEMPLATE`, never LLM or database keys.
 - Confirm push credentials and notification copy before public rollout.
 
 Rollback:

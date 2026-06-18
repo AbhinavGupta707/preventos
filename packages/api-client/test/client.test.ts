@@ -53,6 +53,31 @@ describe("ApiClient", () => {
     expect(noToken.calls).toHaveLength(0); // never hits the network without a token
   });
 
+  it("exports and deletes account data on authenticated data-rights routes", async () => {
+    const { fetch, calls } = fakeFetch((url) => {
+      if (url.endsWith("/me/export")) {
+        return { status: 200, body: { data: { person: { id: "p1" }, identity: null, consent_record: [] } } };
+      }
+      if (url.endsWith("/me")) return { status: 204 };
+      return { status: 404, body: { error: "not found" } };
+    });
+    const client = new ApiClient({ baseUrl: "http://api", fetch, getToken: () => "clerk-jwt" });
+
+    const exported = await client.exportAccountData();
+    const deleted = await client.deleteAccount();
+
+    expect(exported).toEqual({
+      ok: true,
+      value: { person: { id: "p1" }, identity: null, consent_record: [] },
+    });
+    expect(deleted).toEqual({ ok: true, value: undefined });
+    expect(calls.map((call) => ({ method: call.init?.method, url: call.url }))).toEqual([
+      { method: "GET", url: "http://api/me/export" },
+      { method: "DELETE", url: "http://api/me" },
+    ]);
+    expect(calls.every((call) => call.init?.headers?.["authorization"] === "Bearer clerk-jwt")).toBe(true);
+  });
+
   it("builds a query string for consent checks and reads the granted flag", async () => {
     const { fetch, calls } = fakeFetch(() => ({ status: 200, body: { data: { granted: true } } }));
     const client = new ApiClient({ baseUrl: "http://api", fetch, getToken: () => "t" });

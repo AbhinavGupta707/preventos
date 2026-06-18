@@ -1,5 +1,5 @@
 import type { BfoSection } from "@preventos/domain";
-import type { SleepDiaryInput, SleepWindowInput, SleepWindowView } from "@preventos/api-client";
+import type { PersonDataBundle, SleepDiaryInput, SleepWindowInput, SleepWindowView } from "@preventos/api-client";
 import type { Result } from "@preventos/shared";
 import { ok } from "@preventos/shared";
 
@@ -83,6 +83,16 @@ export class MockApi implements ApiPort {
 
   async registerPushToken(_token: string): Promise<Result<void, string>> {
     await wait(50);
+    return ok(undefined);
+  }
+
+  async exportAccountData(): Promise<Result<PersonDataBundle, string>> {
+    await wait(40);
+    return ok({ person: { id: "mock-person" }, identity: null, localOnly: true });
+  }
+
+  async deleteAccount(): Promise<Result<void, string>> {
+    await wait(40);
     return ok(undefined);
   }
 }

@@ -32,7 +32,7 @@ beforeAll(async () => {
   handle = createDb(TEST_URL);
   await runMigrations(handle.pool);
   auth = new FakeAuthProvider();
-  server = await buildServer({ db: handle.db, auth, rateLimit: { max: 1000, timeWindowMs: 60_000 } });
+  server = await buildServer({ db: handle.db, pool: handle.pool, auth, rateLimit: { max: 1000, timeWindowMs: 60_000 } });
 });
 
 afterAll(async () => {
@@ -75,6 +75,72 @@ describe("sign-up", () => {
   it("rejects an empty pseudonym", async () => {
     const response = await server.inject({ method: "POST", url: "/people", payload: { pseudonym: "" } });
     expect(response.statusCode).toBe(400);
+  });
+});
+
+describe("account data rights", () => {
+  it("exports the authenticated person's data bundle and requires a valid session", async () => {
+    const unauthenticated = await server.inject({ method: "GET", url: "/me/export" });
+    expect(unauthenticated.statusCode).toBe(401);
+
+    const { personId, token } = await signUp("api-export");
+    await server.inject({
+      method: "POST",
+      url: "/consents/grant",
+      headers: asUser(token),
+      payload: { purpose: "programme_delivery" },
+    });
+
+    const response = await server.inject({ method: "GET", url: "/me/export", headers: asUser(token) });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.headers["content-disposition"]).toContain("preventos-my-data.json");
+    const { data } = response.json();
+    expect(data.person).toMatchObject({ id: personId, pseudonym: "api-export" });
+    expect(data.consent_record).toHaveLength(1);
+    expect(data.identity).toBeNull();
+  });
+
+  it("erases mutable account data for the authenticated person and rejects invalid tokens", async () => {
+    const invalid = await server.inject({ method: "DELETE", url: "/me", headers: asUser("expired-or-bad") });
+    expect(invalid.statusCode).toBe(401);
+
+    const { personId, token } = await signUp("api-erase");
+    await server.inject({
+      method: "POST",
+      url: "/consents/grant",
+      headers: asUser(token),
+      payload: { purpose: "programme_delivery" },
+    });
+    await server.inject({
+      method: "POST",
+      url: "/enrolments",
+      headers: asUser(token),
+      payload: { vertical: "smoking" },
+    });
+    await server.inject({
+      method: "POST",
+      url: "/plans",
+      headers: asUser(token),
+      payload: { vertical: "smoking", type: "quit", slots: { quitDate: "2026-06-20" } },
+    });
+
+    const erased = await server.inject({ method: "DELETE", url: "/me", headers: asUser(token) });
+
+    expect(erased.statusCode).toBe(204);
+    const person = await handle.pool.query("SELECT pseudonym, age_band FROM core.person WHERE id = $1", [personId]);
+    expect(person.rows[0]).toMatchObject({ pseudonym: `erased-${personId.slice(0, 8)}`, age_band: null });
+    const enrolments = await handle.pool.query("SELECT count(*) FROM core.enrolment WHERE person_id = $1", [personId]);
+    const plans = await handle.pool.query("SELECT count(*) FROM core.plan_object WHERE person_id = $1", [personId]);
+    const consent = await handle.pool.query("SELECT count(*) FROM core.consent_record WHERE person_id = $1", [personId]);
+    const erasedEvents = await handle.pool.query(
+      "SELECT count(*) FROM core.event WHERE person_id = $1 AND type = 'person.erased'",
+      [personId],
+    );
+    expect(enrolments.rows[0].count).toBe("0");
+    expect(plans.rows[0].count).toBe("0");
+    expect(consent.rows[0].count).toBe("1");
+    expect(erasedEvents.rows[0].count).toBe("1");
   });
 });
 

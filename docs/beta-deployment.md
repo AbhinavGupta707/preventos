@@ -65,9 +65,9 @@ beta branch itself is the deployment source.
 
 | Service | Runtime | Build command | Start command | Required env |
 |---|---|---|---|---|
-| API | Node/Fastify | `pnpm --filter @preventos/api typecheck` | `pnpm --filter @preventos/api start` | `DATABASE_URL`, `PORT`, `HOST=0.0.0.0`, `ALLOW_DEV_SESSIONS=false` |
+| API | Node/Fastify | `pnpm --filter @preventos/api typecheck` | `pnpm --filter @preventos/api start` | `DATABASE_URL`, `PORT`, `HOST=0.0.0.0`, `ALLOW_DEV_SESSIONS=false`, Clerk server env |
 | Worker | Node process | `pnpm --filter @preventos/worker typecheck` | `pnpm --filter @preventos/worker start` | `DATABASE_URL` |
-| Web | Next.js | `pnpm --filter @preventos/web build` | `pnpm --filter @preventos/web start` | `PREVENTOS_API_URL`, `PORT`, `RATE_LIMIT_TRUSTED_PROXIES` |
+| Web | Next.js | `pnpm --filter @preventos/web build` | `pnpm --filter @preventos/web start` | `PREVENTOS_API_URL`, `PORT`, `RATE_LIMIT_TRUSTED_PROXIES`, Clerk public/server env |
 | Console | Next.js | `pnpm --filter @preventos/console build` | `pnpm --filter @preventos/console start` | `DATABASE_URL`, `PORT` |
 | Postgres | Postgres 16 | n/a | n/a | owner-selected plan, backups, retention |
 
@@ -88,6 +88,9 @@ pnpm db:migrate
 | `DEV_SESSION_TOKEN` / `DEV_SESSION_PERSON_ID` | Optional local only | unset | unset |
 | `PREVENTOS_API_URL` | `http://127.0.0.1:3001` when syncing | Staging API origin | Beta/prod API origin |
 | `EXPO_PUBLIC_API_URL` | unset for MockApi, or LAN/API URL | Staging API origin for live internal builds | Beta/prod API origin for live internal builds |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | unset unless testing Clerk web locally | Web Clerk publishable key | Web Clerk publishable key |
+| `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY` | unset unless testing Clerk mobile locally | Mobile Clerk publishable key | Mobile Clerk publishable key |
+| `CLERK_JWT_TEMPLATE` / `EXPO_PUBLIC_CLERK_JWT_TEMPLATE` | optional named API token template | `preventos-api` if configured in Clerk | `preventos-api` if configured in Clerk |
 | `FIREWORKS_API_KEY` | normally unset | secret manager only | secret manager only |
 | `COACH_MODEL` | unset unless testing selection | owner-selected model or unset default | owner-selected model or unset default |
 | `CLERK_SECRET_KEY` / `CLERK_PUBLISHABLE_KEY` / `CLERK_WEBHOOK_SECRET` | unset unless testing Clerk locally | owner-created Clerk app keys | owner-created Clerk app keys |
@@ -119,6 +122,8 @@ GitHub and CI:
 - Confirm the PR has `ci / verify` green.
 - Confirm CI is using Postgres 16.
 - Confirm no real `.env` or secret value is committed.
+- Confirm Clerk publishable keys are public-only and Clerk secret/JWT keys live
+  only in server secret managers.
 - Confirm `pnpm verify` is green locally if GitHub Actions is unavailable.
 
 Database:
@@ -136,6 +141,8 @@ Content and claims:
 - Run `pnpm --filter @preventos/web build` to exercise claims lint in web
   `prebuild`.
 - Confirm no user-facing content bypasses the sign-off registry.
+- Confirm account export/deletion routes are reachable in API mode and return
+  unauthenticated/expired-session errors rather than silently using mocks.
 
 Safety:
 
@@ -151,8 +158,9 @@ App stores and mobile:
 - Confirm Google Play Console access.
 - Confirm Expo account/project access and EAS credentials.
 - Choose MockApi vs live API for each internal build.
-- Set only `EXPO_PUBLIC_API_URL` for live mobile builds; never embed server
-  secrets in mobile.
+- Set only `EXPO_PUBLIC_API_URL`, `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`, and
+  optionally `EXPO_PUBLIC_CLERK_JWT_TEMPLATE` for live mobile builds; never
+  embed server secrets in mobile.
 - Build with the intended EAS profile and install on clean iOS and Android
   devices.
 

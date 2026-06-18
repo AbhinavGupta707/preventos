@@ -8,6 +8,7 @@ import { loadCoachConfig } from "./coach-deps.js";
 import type { CoachConfig } from "./coach-deps.js";
 import { registerCoachRoutes } from "./routes/coach.js";
 import { registerConsentRoutes } from "./routes/consents.js";
+import { registerDataRightsRoutes } from "./routes/data-rights.js";
 import { registerDevRoutes, type DevSessionIssuer } from "./routes/dev.js";
 import { registerEnrolmentRoutes } from "./routes/enrolments.js";
 import { registerLogRoutes } from "./routes/logs.js";
@@ -18,6 +19,7 @@ import { registerSleepRoutes } from "./routes/sleep.js";
 
 export interface ServerDeps {
   readonly db: Db;
+  readonly pool?: import("pg").Pool;
   readonly auth: AuthPort;
   readonly rateLimit?: { readonly max: number; readonly timeWindowMs: number };
   readonly logger?: boolean;
@@ -76,6 +78,7 @@ export async function buildServer(deps: ServerDeps): Promise<FastifyInstance> {
   await app.register((scope) => {
     scope.addHook("preHandler", makeAuthenticate(deps.auth));
     registerConsentRoutes(scope, deps.db);
+    if (deps.pool !== undefined) registerDataRightsRoutes(scope, { db: deps.db, pool: deps.pool });
     registerEnrolmentRoutes(scope, deps.db);
     registerLogRoutes(scope, deps.db);
     registerPlanRoutes(scope, deps.db);

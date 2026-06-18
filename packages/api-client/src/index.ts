@@ -17,6 +17,7 @@ export type {
   HttpResponseLike,
   PlanCreateInput,
   PlanView,
+  PersonDataBundle,
   SafetyScreen,
   SignUpInput,
   SignedUpPerson,

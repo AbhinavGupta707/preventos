@@ -2,6 +2,7 @@ import {
   ApiClient,
   type DevSession,
   type FetchLike,
+  type PersonDataBundle,
   type SleepDiaryInput,
   type SleepWindowInput,
   type SleepWindowView,
@@ -108,6 +109,20 @@ export class FetchApi implements ApiPort {
     if (!session.ok) return session;
     const res = await this.client.createSleepWindow(input);
     return res.ok ? ok(res.value) : err(res.error.message);
+  }
+
+  async exportAccountData(): Promise<Result<PersonDataBundle, string>> {
+    const session = await this.ensureSession();
+    if (!session.ok) return session;
+    const res = await this.client.exportAccountData();
+    return res.ok ? ok(res.value) : err(res.error.message);
+  }
+
+  async deleteAccount(): Promise<Result<void, string>> {
+    const session = await this.ensureSession();
+    if (!session.ok) return session;
+    const res = await this.client.deleteAccount();
+    return res.ok ? ok(undefined) : err(res.error.message);
   }
 
   // ---- not yet server-backed: served locally until their WPs land ----

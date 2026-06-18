@@ -6,7 +6,7 @@
 // until owner keys land (PROGRESS WP1.5). Unset PREVENTOS_API_URL → no-op
 // (synced:false), so the app still runs fully local with no backend.
 import { ApiClient } from "@preventos/api-client";
-import type { SleepWindowView } from "@preventos/api-client";
+import type { ApiError, PersonDataBundle, SleepWindowView } from "@preventos/api-client";
 import type { SyncAction } from "./sync-schema";
 
 const PROGRAMME_VERTICAL = {
@@ -46,16 +46,29 @@ export interface SyncResult {
   readonly sleepWindow?: SleepWindowView;
 }
 
-export async function syncToApi(action: SyncAction, bearerToken?: string): Promise<SyncResult> {
+export type AccountApiResult<T> = { readonly ok: true; readonly value: T } | { readonly ok: false; readonly error: ApiError };
+
+async function authenticatedApi(bearerToken?: string): Promise<AccountApiResult<ApiClient>> {
   const api = client(bearerToken);
-  if (api === undefined) return { synced: false };
+  if (api === undefined) return { ok: false, error: { status: 424, message: "API not configured." } };
 
   if (bearerToken === undefined && devSessionToken === undefined) {
-    if (!devSessionsAllowed()) return { synced: false, error: "Authentication required." };
+    if (!devSessionsAllowed()) return { ok: false, error: { status: 401, message: "Authentication required." } };
     const session = await api.createDevSession();
-    if (!session.ok) return { synced: false, error: session.error.message };
+    if (!session.ok) return { ok: false, error: session.error };
     devSessionToken = session.value.token;
   }
+
+  return { ok: true, value: api };
+}
+
+export async function syncToApi(action: SyncAction, bearerToken?: string): Promise<SyncResult> {
+  const authenticated = await authenticatedApi(bearerToken);
+  if (!authenticated.ok) {
+    if (authenticated.error.status === 424) return { synced: false };
+    return { synced: false, error: authenticated.error.message };
+  }
+  const api = authenticated.value;
 
   switch (action.action) {
     case "enrol": {
@@ -113,6 +126,18 @@ export async function syncToApi(action: SyncAction, bearerToken?: string): Promi
       return res.ok ? { synced: true } : { synced: false, error: res.error.message };
     }
   }
+}
+
+export async function exportAccountDataToApi(bearerToken?: string): Promise<AccountApiResult<PersonDataBundle>> {
+  const authenticated = await authenticatedApi(bearerToken);
+  if (!authenticated.ok) return authenticated;
+  return authenticated.value.exportAccountData();
+}
+
+export async function deleteAccountInApi(bearerToken?: string): Promise<AccountApiResult<void>> {
+  const authenticated = await authenticatedApi(bearerToken);
+  if (!authenticated.ok) return authenticated;
+  return authenticated.value.deleteAccount();
 }
 
 export function syncResultPayload(result: SyncResult): Record<string, unknown> {

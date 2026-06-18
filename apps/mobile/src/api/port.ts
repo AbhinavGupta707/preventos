@@ -1,5 +1,5 @@
 import type { BfoSection, ReadinessStage, Vertical } from "@preventos/domain";
-import type { SleepDiaryInput, SleepWindowInput, SleepWindowView } from "@preventos/api-client";
+import type { PersonDataBundle, SleepDiaryInput, SleepWindowInput, SleepWindowView } from "@preventos/api-client";
 import type { Result } from "@preventos/shared";
 
 import type { NextAction, TodayContext } from "../core/nextBestAction";
@@ -51,4 +51,10 @@ export interface ApiPort {
 
   /** Register an Expo push token once permission is granted. */
   registerPushToken(token: string): Promise<Result<void, string>>;
+
+  /** Export the authenticated account's server-side data bundle. */
+  exportAccountData(): Promise<Result<PersonDataBundle, string>>;
+
+  /** Delete the authenticated account's mutable server-side data, then callers clear local state. */
+  deleteAccount(): Promise<Result<void, string>>;
 }

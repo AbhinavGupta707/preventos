@@ -4,6 +4,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 
 import { api } from "../src/api";
+import { PreventOSAuthProvider } from "../src/auth/clerk";
 import { color, radius, shadow, type } from "../src/ui/tokens";
 
 /** Routes where the floating rescue button would obscure setup, privacy, or safety actions. */
@@ -32,25 +33,27 @@ function RescueButton() {
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <StatusBar style="dark" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: color.background },
-        }}
-      >
-        <Stack.Screen name="rescue" options={{ presentation: "fullScreenModal" }} />
-        <Stack.Screen name="crisis" options={{ presentation: "fullScreenModal" }} />
-        <Stack.Screen name="checkin" options={{ presentation: "modal" }} />
-        <Stack.Screen name="debrief" options={{ presentation: "modal" }} />
-        <Stack.Screen name="plans-new" options={{ presentation: "modal" }} />
-        <Stack.Screen name="push-primer" options={{ presentation: "modal" }} />
-        <Stack.Screen name="sleep-diary" options={{ presentation: "modal" }} />
-        <Stack.Screen name="steady-referral" options={{ presentation: "modal" }} />
-      </Stack>
-      <RescueButton />
-    </SafeAreaProvider>
+    <PreventOSAuthProvider>
+      <SafeAreaProvider>
+        <StatusBar style="dark" />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: color.background },
+          }}
+        >
+          <Stack.Screen name="rescue" options={{ presentation: "fullScreenModal" }} />
+          <Stack.Screen name="crisis" options={{ presentation: "fullScreenModal" }} />
+          <Stack.Screen name="checkin" options={{ presentation: "modal" }} />
+          <Stack.Screen name="debrief" options={{ presentation: "modal" }} />
+          <Stack.Screen name="plans-new" options={{ presentation: "modal" }} />
+          <Stack.Screen name="push-primer" options={{ presentation: "modal" }} />
+          <Stack.Screen name="sleep-diary" options={{ presentation: "modal" }} />
+          <Stack.Screen name="steady-referral" options={{ presentation: "modal" }} />
+        </Stack>
+        <RescueButton />
+      </SafeAreaProvider>
+    </PreventOSAuthProvider>
   );
 }
 

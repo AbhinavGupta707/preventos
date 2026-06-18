@@ -17,6 +17,7 @@ import type {
   HttpRequestInit,
   PlanCreateInput,
   PlanView,
+  PersonDataBundle,
   SignUpInput,
   SignedUpPerson,
   SleepDiaryInput,
@@ -215,5 +216,17 @@ export class ApiClient {
   async logCraving(channel: "app" | "web" = "app"): Promise<Result<CravingLogged, ApiError>> {
     const res = await this.send({ method: "POST", path: "/logs/craving", body: { channel }, auth: true });
     return res.ok ? ok(ApiClient.data(res.value)) : res;
+  }
+
+  // ---- account data rights ----
+
+  async exportAccountData(): Promise<Result<PersonDataBundle, ApiError>> {
+    const res = await this.send({ method: "GET", path: "/me/export", auth: true });
+    return res.ok ? ok(ApiClient.data(res.value)) : res;
+  }
+
+  async deleteAccount(): Promise<Result<void, ApiError>> {
+    const res = await this.send({ method: "DELETE", path: "/me", auth: true });
+    return res.ok ? ok(undefined) : res;
   }
 }

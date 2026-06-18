@@ -33,6 +33,8 @@ function harness(enrolStatus = 201): { fetch: FetchLike; calls: Call[] } {
     if (path === "/plans") return route(201, { data: { id: "pl1", version: 1 } });
     if (path === "/logs/craving") return route(201, { data: { id: "c1", occurredAt: "now" } });
     if (path === "/logs/sleep-diary") return route(201, { data: { id: "s1", date: "2026-06-18" } });
+    if (path === "/me/export") return route(200, { data: { person: { id: "p1" }, identity: null } });
+    if (path === "/me") return route(204, {});
     if (path === "/sleep/windows") {
       return route(201, {
         data: {
@@ -125,6 +127,18 @@ describe("FetchApi adapter", () => {
     const res = await api.logCraving();
     expect(res.ok).toBe(true);
     expect(calls.map((c) => c.path)).toEqual(["/logs/craving"]);
+  });
+
+  it("exports and deletes account data through the live API when authenticated", async () => {
+    const { fetch, calls } = harness();
+    const api = new FetchApi({ baseUrl: "http://api", fetch, getAuthToken: () => "clerk-jwt" });
+
+    const exported = await api.exportAccountData();
+    const deleted = await api.deleteAccount();
+
+    expect(exported).toEqual({ ok: true, value: { person: { id: "p1" }, identity: null } });
+    expect(deleted).toEqual({ ok: true, value: undefined });
+    expect(calls.map((c) => c.path)).toEqual(["/me/export", "/me"]);
   });
 
   it("fails closed without a Clerk token or explicit dev-session allowance", async () => {
