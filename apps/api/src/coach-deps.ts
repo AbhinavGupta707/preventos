@@ -13,6 +13,10 @@ const REGISTER_PATH = fileURLToPath(
   new URL("../../../compliance/claims/claims-register.json", import.meta.url),
 );
 
+export function selectCoachProviderFromEnv(env: NodeJS.ProcessEnv = process.env): CoachLlmProvider {
+  return fireworksProviderFromEnv(env) ?? claudeProviderFromEnv(env) ?? new FakeCoachProvider();
+}
+
 /**
  * Build the boot-time coach configuration: the compiled claims register
  * (post-filter fences, single source of truth = compliance/claims) and the LLM
@@ -23,7 +27,5 @@ const REGISTER_PATH = fileURLToPath(
  */
 export async function loadCoachConfig(): Promise<CoachConfig> {
   const claimsFences = compileClaimsRegister(await loadClaimsRegister(REGISTER_PATH));
-  const provider: CoachLlmProvider =
-    fireworksProviderFromEnv() ?? claudeProviderFromEnv() ?? new FakeCoachProvider();
-  return { provider, claimsFences };
+  return { provider: selectCoachProviderFromEnv(), claimsFences };
 }
