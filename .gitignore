@@ -1,6 +1,8 @@
 node_modules/
 dist/
 .turbo/
+.pnpm-store/
+.worktrees/
 coverage/
 .env
 .env.*
@@ -11,6 +13,7 @@ coverage/
 .next/
 .claude/worktrees/
 .data/
+Design Inspiration/
 
 # TypeScript incremental build cache
 *.tsbuildinfo
