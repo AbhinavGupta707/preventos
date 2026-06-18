@@ -54,12 +54,14 @@ beforeEach(() => {
   calls = [];
   resetApiSessionForTest();
   process.env["PREVENTOS_API_URL"] = "http://api";
+  process.env["ALLOW_DEV_SESSIONS"] = "true";
   stubApi();
 });
 
 afterEach(() => {
   globalThis.fetch = realFetch;
   delete process.env["PREVENTOS_API_URL"];
+  delete process.env["ALLOW_DEV_SESSIONS"];
 });
 
 describe("web → apps/api sync proxy", () => {
@@ -76,6 +78,19 @@ describe("web → apps/api sync proxy", () => {
     expect(res.synced).toBe(true);
     expect(calls.map((c) => c.path)).toEqual(["/dev/session", "/logs/drink"]);
     expect(calls[1]?.body).toEqual({ date: "2026-06-13", units: 2.5, drinkType: "Pint of lager" });
+  });
+
+  it("uses a provided Clerk bearer token without creating a dev session", async () => {
+    const res = await syncToApi({ action: "drink", date: "2026-06-13", units: 2.5 }, "clerk-jwt");
+    expect(res.synced).toBe(true);
+    expect(calls.map((c) => c.path)).toEqual(["/logs/drink"]);
+  });
+
+  it("does not call /dev/session unless explicitly allowed", async () => {
+    delete process.env["ALLOW_DEV_SESSIONS"];
+    const res = await syncToApi({ action: "drink", date: "2026-06-13", units: 2.5 });
+    expect(res).toEqual({ synced: false, error: "Authentication required." });
+    expect(calls).toHaveLength(0);
   });
 
   it("enrols: consent → enrolment → quit plan for a smoking programme with a quit date", async () => {

@@ -18,11 +18,11 @@ const PROGRAMME_VERTICAL = {
 
 const CONSENT_PURPOSE = { reminders: "proactive_contact", analytics: "analytics" } as const;
 
-let sessionToken: string | undefined;
+let devSessionToken: string | undefined;
 
 /** Test seam: drop the cached dev session between cases. */
 export function resetApiSessionForTest(): void {
-  sessionToken = undefined;
+  devSessionToken = undefined;
 }
 
 export function apiConfigured(): boolean {
@@ -30,10 +30,14 @@ export function apiConfigured(): boolean {
   return url !== undefined && url !== "";
 }
 
-function client(): ApiClient | undefined {
+function devSessionsAllowed(): boolean {
+  return process.env["ALLOW_DEV_SESSIONS"] === "true";
+}
+
+function client(token: string | undefined): ApiClient | undefined {
   const baseUrl = process.env["PREVENTOS_API_URL"];
   if (baseUrl === undefined || baseUrl === "") return undefined;
-  return new ApiClient({ baseUrl, getToken: () => sessionToken });
+  return new ApiClient({ baseUrl, getToken: () => token ?? devSessionToken });
 }
 
 export interface SyncResult {
@@ -42,14 +46,15 @@ export interface SyncResult {
   readonly sleepWindow?: SleepWindowView;
 }
 
-export async function syncToApi(action: SyncAction): Promise<SyncResult> {
-  const api = client();
+export async function syncToApi(action: SyncAction, bearerToken?: string): Promise<SyncResult> {
+  const api = client(bearerToken);
   if (api === undefined) return { synced: false };
 
-  if (sessionToken === undefined) {
+  if (bearerToken === undefined && devSessionToken === undefined) {
+    if (!devSessionsAllowed()) return { synced: false, error: "Authentication required." };
     const session = await api.createDevSession();
     if (!session.ok) return { synced: false, error: session.error.message };
-    sessionToken = session.value.token;
+    devSessionToken = session.value.token;
   }
 
   switch (action.action) {

@@ -21,7 +21,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ synced: false, error: "Invalid action." }, { status: 400 });
   }
 
-  const result = await syncToApi(parsed.data);
+  const authHeader = request.headers.get("authorization");
+  const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice("Bearer ".length) : undefined;
+  const result = await syncToApi(parsed.data, bearerToken);
   return NextResponse.json(
     { synced: result.synced, ...(result.error !== undefined ? { error: result.error } : {}) },
     { status: result.error !== undefined ? 502 : 200 },

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { ClerkAuthProvider, principalFromClerkClaims } from "../src/clerk.js";
 import { suppressSmallGroups } from "../src/kanon.js";
 import { FakeAuthProvider } from "../src/port.js";
 import { ROW_LEVEL_ACTIONS, STAFF_ACTIONS, STAFF_ROLES, can } from "../src/rbac.js";
@@ -57,5 +58,86 @@ describe("auth port", () => {
     expect(valid.ok).toBe(true);
     const invalid = await provider.verifySession("tok-2");
     expect(invalid.ok).toBe(false);
+  });
+});
+
+describe("clerk auth adapter", () => {
+  const personId = "11111111-1111-4111-8111-111111111111";
+
+  it("maps Clerk end-user claims to the AuthPort principal without health metadata", () => {
+    const principal = principalFromClerkClaims({
+      sub: "user_123",
+      preventos_user_kind: "end_user",
+      preventos_person_id: personId,
+      unsafe_note: "ignored",
+    });
+    expect(principal).toEqual({ ok: true, value: { kind: "end_user", personRef: personId } });
+  });
+
+  it("maps Clerk staff claims and leaves row-level authorization to RBAC", () => {
+    const principal = principalFromClerkClaims({
+      sub: "user_staff",
+      preventos_user_kind: "staff",
+      preventos_staff_role: "analyst",
+    });
+    expect(principal).toEqual({ ok: true, value: { kind: "staff", staffId: "user_staff", role: "analyst" } });
+    for (const action of ROW_LEVEL_ACTIONS) {
+      expect(can("analyst", action)).toBe(false);
+    }
+  });
+
+  it("rejects missing kind, invalid person ids, and unknown staff roles", () => {
+    expect(principalFromClerkClaims({ sub: "user_123" }).ok).toBe(false);
+    expect(
+      principalFromClerkClaims({
+        preventos_user_kind: "end_user",
+        preventos_person_id: "user_123",
+      }).ok,
+    ).toBe(false);
+    expect(
+      principalFromClerkClaims({
+        preventos_user_kind: "staff",
+        preventos_staff_id: "s1",
+        preventos_staff_role: "superuser",
+      }).ok,
+    ).toBe(false);
+  });
+
+  it("verifies sessions through an injected Clerk verifier and passes verification options", async () => {
+    const seen: unknown[] = [];
+    const provider = new ClerkAuthProvider({
+      secretKey: "sk_test",
+      jwtKey: "-----BEGIN PUBLIC KEY-----",
+      audience: ["preventos-api"],
+      authorizedParties: ["https://app.preventos.example"],
+      verifier: async (token, options) => {
+        seen.push({ token, options });
+        return { preventos_user_kind: "end_user", preventos_person_id: personId };
+      },
+    });
+
+    const verified = await provider.verifySession("jwt");
+    expect(verified).toEqual({ ok: true, value: { kind: "end_user", personRef: personId } });
+    expect(seen).toEqual([
+      {
+        token: "jwt",
+        options: {
+          secretKey: "sk_test",
+          jwtKey: "-----BEGIN PUBLIC KEY-----",
+          audience: ["preventos-api"],
+          authorizedParties: ["https://app.preventos.example"],
+        },
+      },
+    ]);
+  });
+
+  it("fails closed when Clerk verification throws", async () => {
+    const provider = new ClerkAuthProvider({
+      secretKey: "sk_test",
+      verifier: async () => {
+        throw new Error("bad jwt");
+      },
+    });
+    await expect(provider.verifySession("bad")).resolves.toEqual({ ok: false, error: "invalid session" });
   });
 });
