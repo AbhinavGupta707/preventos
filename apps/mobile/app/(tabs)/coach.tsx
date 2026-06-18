@@ -1,4 +1,5 @@
 import { router } from "expo-router";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useReducer, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -14,7 +15,7 @@ import { api } from "../../src/api";
 import { chatReducer, emptyChat } from "../../src/core/chat";
 import { daysWonFor, todayIso, useAppStore } from "../../src/state/store";
 import { Companion } from "../../src/ui/Companion";
-import { Screen, Text } from "../../src/ui/primitives";
+import { ProgrammeChip, Screen, Text } from "../../src/ui/primitives";
 import { color, radius, space, type } from "../../src/ui/tokens";
 
 /** Session-frame affordances — vertical-specialised entry points (WP2.6). */
@@ -64,7 +65,7 @@ export default function Coach() {
       >
         <Text variant="display">Coach</Text>
         <Text variant="caption" color={color.inkFaint}>
-          Preview — the live coach arrives with a later update. In a crisis, this chat steps aside.
+          Warm support for QuitKit and Exhale. If a message sounds urgent, this chat steps aside.
         </Text>
         <Companion context="coach" daysWon={companionDaysWon} hour={new Date().getHours()} />
         <View style={{ height: space.sm }} />
@@ -78,10 +79,14 @@ export default function Coach() {
           {state.messages.length === 0 ? (
             <View style={styles.frames}>
               {FRAMES.map((f) => (
-                <Pressable key={f} style={styles.frameChip} onPress={() => send(f)}>
-                  <Text variant="caption" color={color.primary}>
-                    {f}
-                  </Text>
+                <Pressable
+                  key={f}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Start coach frame: ${f}`}
+                  style={({ pressed }) => [styles.frameChip, pressed ? styles.pressed : null]}
+                  onPress={() => send(f)}
+                >
+                  <ProgrammeChip label={f} tone={f === "Wins this week" ? "success" : "peach"} />
                 </Pressable>
               ))}
             </View>
@@ -109,6 +114,7 @@ export default function Coach() {
             multiline
           />
           <Pressable testID="coach-send" style={styles.sendButton} onPress={() => send(draft)}>
+            <Ionicons name="arrow-up" size={16} color={color.onPrimary} />
             <Text variant="bodyStrong" color={color.onPrimary}>
               Send
             </Text>
@@ -128,12 +134,7 @@ const styles = StyleSheet.create({
   },
   coachBubble: { alignSelf: "flex-start", backgroundColor: color.surface },
   flex: { flex: 1 },
-  frameChip: {
-    backgroundColor: color.primarySoft,
-    borderRadius: radius.pill,
-    paddingHorizontal: space.md,
-    paddingVertical: space.sm,
-  },
+  frameChip: { borderRadius: radius.pill },
   frames: { flexDirection: "row", flexWrap: "wrap", gap: space.sm, paddingVertical: space.md },
   input: {
     ...type.body,
@@ -150,8 +151,12 @@ const styles = StyleSheet.create({
   // marginBottom clears the floating rescue button so Send stays tappable
   inputRow: { flexDirection: "row", gap: space.sm, marginBottom: 64, paddingTop: space.sm },
   messages: { paddingBottom: space.md },
+  pressed: { opacity: 0.82, transform: [{ scale: 0.98 }] },
   sendButton: {
+    alignItems: "center",
     alignSelf: "flex-end",
+    flexDirection: "row",
+    gap: 6,
     backgroundColor: color.primary,
     borderRadius: radius.pill,
     paddingHorizontal: space.md,

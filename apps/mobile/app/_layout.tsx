@@ -1,4 +1,5 @@
 import { Stack, router, usePathname } from "expo-router";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable, StyleSheet, Text } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -25,6 +26,7 @@ function RescueButton() {
       }}
       style={({ pressed }) => [styles.fab, { opacity: pressed ? 0.85 : 1 }]}
     >
+      <Ionicons name="heart-circle" color={color.onRescue} size={18} />
       <Text style={styles.fabText}>Rescue</Text>
     </Pressable>
   );
@@ -54,9 +56,12 @@ export default function RootLayout() {
 
 const styles = StyleSheet.create({
   fab: {
+    alignItems: "center",
     backgroundColor: color.rescue,
     borderRadius: radius.pill,
     bottom: 96,
+    flexDirection: "row",
+    gap: 6,
     paddingHorizontal: 22,
     paddingVertical: 14,
     position: "absolute",

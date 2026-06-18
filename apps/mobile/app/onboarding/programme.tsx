@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
-import { Screen, Text } from "../../src/ui/primitives";
+import { ProgrammeChip, Screen, Text } from "../../src/ui/primitives";
 import { color, radius, space } from "../../src/ui/tokens";
 
 interface ProgrammeCardProps {
@@ -9,30 +9,28 @@ interface ProgrammeCardProps {
   readonly tagline: string;
   readonly testID: string;
   readonly onPress?: () => void;
-  readonly comingSoon?: boolean;
+  readonly status?: "open" | "private";
 }
 
-function ProgrammeCard({ title, tagline, testID, onPress, comingSoon }: ProgrammeCardProps) {
+function ProgrammeCard({ title, tagline, testID, onPress, status = "open" }: ProgrammeCardProps) {
+  const disabled = status !== "open";
   return (
     <Pressable
       testID={testID}
       accessibilityRole="button"
-      disabled={comingSoon}
+      accessibilityState={{ disabled }}
+      disabled={disabled}
       onPress={onPress}
-      style={({ pressed }) => [styles.card, { opacity: comingSoon ? 0.55 : pressed ? 0.9 : 1 }]}
+      style={({ pressed }) => [styles.card, disabled ? styles.disabledCard : null, pressed ? styles.pressed : null]}
     >
-      <Text variant="heading">{title}</Text>
+      <View style={styles.cardTopline}>
+        <Text variant="heading">{title}</Text>
+        <ProgrammeChip label={status === "open" ? "Open beta" : "Private"} tone={status === "open" ? "success" : "muted"} />
+      </View>
       <View style={{ height: space.xs }} />
       <Text variant="caption" color={color.inkMuted}>
         {tagline}
       </Text>
-      {comingSoon ? (
-        <View style={styles.soonBadge}>
-          <Text variant="caption" color={color.inkMuted}>
-            Coming soon
-          </Text>
-        </View>
-      ) : null}
     </Pressable>
   );
 }
@@ -41,10 +39,11 @@ export default function ProgrammePicker() {
   return (
     <Screen testID="onboarding-programme">
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <Text variant="title">What would you like to work on first?</Text>
+        <Text variant="title">What would you like support with first?</Text>
         <View style={{ height: space.xs }} />
         <Text variant="caption" color={color.inkMuted}>
-          You can add another programme any time — everything shows up in one place.
+          QuitKit and Exhale are open for this beta. Everything you add still lands on one Today
+          surface.
         </Text>
         <View style={{ height: space.lg }} />
         <ProgrammeCard
@@ -62,17 +61,18 @@ export default function ProgrammePicker() {
         <ProgrammeCard
           testID="programme-sleep"
           title="Nightshift — sleep"
-          tagline="Quieter nights, built from your own mornings."
-          onPress={() => router.push("/onboarding/sleep")}
+          tagline="Private testing while safety assumptions are reviewed."
+          status="private"
         />
         <ProgrammeCard
           testID="programme-alcohol"
           title="Steady — alcohol"
-          tagline="A calmer relationship with drinking."
-          comingSoon
+          tagline="Referral-only safeguards stay private until launch gates clear."
+          status="private"
         />
         <Text variant="caption" color={color.inkFaint}>
-          Steady opens once its safety checks are in place — it deserves to be done right.
+          Alcohol and sleep features stay internal for now; the app keeps their higher-risk paths
+          behind safety gates.
         </Text>
       </ScrollView>
     </Screen>
@@ -88,13 +88,8 @@ const styles = StyleSheet.create({
     marginBottom: space.md,
     padding: space.md,
   },
+  cardTopline: { alignItems: "flex-start", gap: space.sm },
+  disabledCard: { backgroundColor: color.surfaceSunken, opacity: 0.68 },
+  pressed: { opacity: 0.86, transform: [{ scale: 0.99 }] },
   scroll: { paddingBottom: space.xxl, paddingTop: space.lg },
-  soonBadge: {
-    backgroundColor: color.surfaceSunken,
-    borderRadius: radius.pill,
-    marginTop: space.sm,
-    paddingHorizontal: space.sm,
-    paddingVertical: 2,
-    alignSelf: "flex-start",
-  },
 });

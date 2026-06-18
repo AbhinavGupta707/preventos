@@ -5,7 +5,7 @@ import { Animated, Easing, Pressable, ScrollView, StyleSheet, View } from "react
 import { rescueMode } from "../src/core/rescue";
 import { daysWonFor, todayIso, useAppStore } from "../src/state/store";
 import { Companion } from "../src/ui/Companion";
-import { Button, Screen, Text } from "../src/ui/primitives";
+import { Button, ProgrammeChip, Screen, Text } from "../src/ui/primitives";
 import { color, radius, space } from "../src/ui/tokens";
 
 /**
@@ -98,6 +98,7 @@ export default function Rescue() {
   const inkMuted = night ? color.nightInkMuted : color.inkMuted;
 
   const slipVertical = mode === "craving" ? "smoking" : "vaping";
+  const [selectedDistraction, setSelectedDistraction] = useState<string | null>(null);
 
   return (
     <Screen background={bg} testID="rescue-screen">
@@ -111,6 +112,8 @@ export default function Rescue() {
         />
         {night ? (
           <View testID="rescue-night">
+            <ProgrammeChip label="Night support" tone="muted" />
+            <View style={{ height: space.sm }} />
             <Text variant="title" color={ink}>
               Can't sleep. That's okay.
             </Text>
@@ -127,6 +130,8 @@ export default function Rescue() {
           </View>
         ) : (
           <View testID={`rescue-${mode}`}>
+            <ProgrammeChip label={mode === "craving" ? "QuitKit SOS" : "Exhale SOS"} tone="peach" />
+            <View style={{ height: space.sm }} />
             <Text variant="title" color={ink}>
               {mode === "craving" ? "Riding out a craving" : "Riding out the urge"}
             </Text>
@@ -140,11 +145,26 @@ export default function Rescue() {
             </Text>
             <View style={{ height: space.sm }} />
             {DISTRACTIONS[mode].map((d) => (
-              <View key={d} style={styles.distraction}>
-                <Text variant="body" color={ink}>
+              <Pressable
+                key={d}
+                accessibilityRole="button"
+                accessibilityState={{ selected: selectedDistraction === d }}
+                onPress={() => setSelectedDistraction(d)}
+                style={({ pressed }) => [
+                  styles.distraction,
+                  selectedDistraction === d ? styles.distractionSelected : null,
+                  pressed ? styles.pressed : null,
+                ]}
+              >
+                <Text variant="bodyStrong" color={selectedDistraction === d ? color.primary : ink}>
                   {d}
                 </Text>
-              </View>
+                {selectedDistraction === d ? (
+                  <Text variant="caption" color={color.inkMuted}>
+                    Stay with this one small action until the timer changes.
+                  </Text>
+                ) : null}
+              </Pressable>
             ))}
           </View>
         )}
@@ -178,10 +198,16 @@ export default function Rescue() {
 
 const styles = StyleSheet.create({
   distraction: {
-    backgroundColor: "rgba(127,127,127,0.08)",
+    backgroundColor: color.surface,
+    borderColor: color.border,
     borderRadius: radius.md,
+    borderWidth: 1,
     marginBottom: space.sm,
     padding: space.sm + 4,
+  },
+  distractionSelected: {
+    backgroundColor: color.primarySoft,
+    borderColor: color.primary,
   },
   pacerCircle: {
     borderRadius: 999,
@@ -190,5 +216,6 @@ const styles = StyleSheet.create({
     width: 120,
   },
   pacerWrap: { alignItems: "center", paddingVertical: space.xl },
+  pressed: { opacity: 0.82, transform: [{ scale: 0.99 }] },
   scroll: { paddingBottom: space.xxl, paddingTop: space.lg },
 });

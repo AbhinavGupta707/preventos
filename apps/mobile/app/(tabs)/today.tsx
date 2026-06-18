@@ -4,10 +4,11 @@ import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
 import { api } from "../../src/api";
 import type { NextAction } from "../../src/core/nextBestAction";
+import { totalSavings } from "../../src/core/savings";
 import { crossedMilestones } from "../../src/core/streaks";
 import { daysWonFor, todayIso, useAppStore } from "../../src/state/store";
 import { Companion } from "../../src/ui/Companion";
-import { Button, Card, Screen, Text } from "../../src/ui/primitives";
+import { ActionCard, Button, Card, ProgrammeChip, ProgressMetric, Screen, Text } from "../../src/ui/primitives";
 import { color, space } from "../../src/ui/tokens";
 
 const VERTICAL_LABELS: Record<string, string> = {
@@ -71,11 +72,27 @@ export default function Today() {
     () => enrolments.reduce((max, e) => Math.max(max, daysWonFor(e, lapses[e.vertical] ?? [], today)), 0),
     [enrolments, lapses, today],
   );
+  const saved = totalSavings(
+    enrolments
+      .filter((e) => e.spendProfile)
+      .map((e) => ({
+        profile: e.spendProfile!,
+        daysWon: daysWonFor(e, lapses[e.vertical] ?? [], today),
+      })),
+  );
 
   return (
     <Screen testID="today-screen">
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <Text variant="display">Today</Text>
+        <View style={styles.header}>
+          <View style={styles.headerText}>
+            <Text variant="display">Today</Text>
+            <Text variant="body" color={color.inkMuted}>
+              One good next step. No feed to keep up with.
+            </Text>
+          </View>
+          <ProgrammeChip label="QuitKit + Exhale beta" tone="peach" />
+        </View>
         <Companion
           context="home"
           daysWon={companionDaysWon}
@@ -86,8 +103,21 @@ export default function Today() {
         />
         <View style={{ height: space.md }} />
 
+        {enrolments.length === 0 ? (
+          <Card tone="peach" testID="today-empty">
+            <Text variant="heading">Let's set up your first support plan.</Text>
+            <View style={{ height: space.xs }} />
+            <Text variant="body" color={color.inkMuted}>
+              QuitKit and Exhale are open for this beta. Steady and Nightshift stay private while
+              the heavier safety checks are finished.
+            </Text>
+            <View style={{ height: space.md }} />
+            <Button label="Choose a programme" onPress={() => router.push("/onboarding/programme")} />
+          </Card>
+        ) : null}
+
         {milestone ? (
-          <Card tone="accent" testID="milestone-card">
+          <Card tone="success" testID="milestone-card">
             <Text variant="heading">{`${milestone.days} days won`}</Text>
             <View style={{ height: space.xs }} />
             <Text variant="body" color={color.inkMuted}>
@@ -96,7 +126,7 @@ export default function Today() {
             <View style={{ height: space.sm }} />
             <Button
               label="Noted"
-              kind="secondary"
+              kind="success"
               onPress={() => ackMilestone(milestone.vertical, milestone.won)}
             />
           </Card>
@@ -105,24 +135,32 @@ export default function Today() {
         {milestone ? <View style={{ height: space.md }} /> : null}
 
         {action ? (
-          <Card testID="nba-card">
-            <Text variant="caption" color={color.primary}>
-              NEXT UP
-            </Text>
-            <View style={{ height: space.xs }} />
-            <Text variant="heading">{action.title}</Text>
-            <View style={{ height: space.xs }} />
-            <Text variant="body" color={color.inkMuted}>
-              {action.body}
-            </Text>
-            <View style={{ height: space.md }} />
-            <Button
-              testID="nba-go"
-              label="Go"
-              onPress={() => router.push(action.route as never)}
-            />
-          </Card>
+          <ActionCard
+            testID="nba-card"
+            actionTestID="nba-go"
+            eyebrow="Next best action"
+            title={action.title}
+            body={action.body}
+            actionLabel="Start"
+            onPress={() => router.push(action.route as never)}
+          />
         ) : null}
+
+        <View style={{ height: space.md }} />
+        <View style={styles.metricRow}>
+          <ProgressMetric
+            label="DAYS WON"
+            value={String(companionDaysWon)}
+            detail="Longest active run across your programmes"
+            tone="success"
+          />
+          <ProgressMetric
+            label="MONEY KEPT"
+            value={`£${saved.toFixed(2)}`}
+            detail="Smoking and vaping spend avoided"
+            tone="peach"
+          />
+        </View>
 
         <View style={{ height: space.md }} />
         <View style={styles.streakRow}>
@@ -130,9 +168,16 @@ export default function Today() {
             const won = daysWonFor(e, lapses[e.vertical] ?? [], today);
             return (
               <Card key={e.vertical} style={styles.streakCard} tone="soft">
-                <Text variant="title" testID={`dayswon-${e.vertical}`}>{String(won)}</Text>
+                <ProgrammeChip
+                  label={e.vertical === "smoking" ? "QuitKit" : e.vertical === "vaping" ? "Exhale" : e.vertical}
+                  tone={e.vertical === "vaping" ? "peach" : "primary"}
+                />
+                <View style={{ height: space.sm }} />
+                <Text variant="title" testID={`dayswon-${e.vertical}`}>
+                  {String(won)}
+                </Text>
                 <Text variant="caption" color={color.inkMuted}>
-                  {`days won · ${e.vertical}`}
+                  days won
                 </Text>
               </Card>
             );
@@ -151,7 +196,10 @@ export default function Today() {
 }
 
 const styles = StyleSheet.create({
+  header: { flexDirection: "row", gap: space.sm, justifyContent: "space-between" },
+  headerText: { flex: 1 },
+  metricRow: { flexDirection: "row", gap: space.sm },
   scroll: { paddingBottom: 120, paddingTop: space.lg },
   streakCard: { flex: 1 },
-  streakRow: { flexDirection: "row", gap: space.sm },
+  streakRow: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
 });
