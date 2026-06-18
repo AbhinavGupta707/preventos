@@ -19,6 +19,8 @@ Code status:
 - CI runs on pull requests and pushes to `main`.
 - CI provisions Postgres 16, installs with `pnpm install --frozen-lockfile`, and
   runs `pnpm verify`.
+- Concrete deployment prep lives in `docs/beta-deployment.md`, with a
+  non-auto-applied Render template at `deploy/render/render.yaml.template`.
 - `pnpm verify` runs typecheck, lint, tests, license check, and content
   validation.
 - EAS config exists at `apps/mobile/eas.json` with `development`, `preview`,
@@ -61,6 +63,7 @@ Required for local API, worker, console live data, and integration tests:
 Optional local development:
 
 - `PORT`
+- `HOST`
 - `ALLOW_DEV_SESSIONS`
 - `DEV_SESSION_TOKEN`
 - `DEV_SESSION_PERSON_ID`
@@ -253,8 +256,8 @@ Submission:
 API:
 
 - Provision Postgres 16 and set `DATABASE_URL`.
-- Run migrations before first traffic.
-- Set `PORT` per host.
+- Run migrations before first traffic with `pnpm db:migrate`.
+- Set `PORT` per host and `HOST=0.0.0.0`.
 - Keep `ALLOW_DEV_SESSIONS=false`.
 - Set LLM keys only in the server secret manager.
 - Confirm `/coach/messages` uses the provider chain and crisis bypass tests pass.
@@ -304,6 +307,8 @@ Rollback:
 
 - Branch pushed before work starts.
 - `.env.example` updated without secrets.
+- `docs/beta-deployment.md` owner decisions are still accurate.
+- Deployment templates contain placeholders only, never real secrets.
 - Runbook owner actions are explicit.
 - `pnpm check-licenses` green.
 - `pnpm content:validate` green.
