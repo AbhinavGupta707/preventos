@@ -18,6 +18,7 @@ export const syncActionSchema = z.discriminatedUnion("action", [
     date: isoDate,
     units: z.number().positive().max(100),
     label: z.string().max(100).optional(),
+    context: z.string().max(100).optional(),
   }),
   z.object({
     action: z.literal("sleep"),

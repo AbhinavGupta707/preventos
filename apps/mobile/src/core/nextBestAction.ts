@@ -8,7 +8,7 @@ export interface TodayContext {
   readonly daysUntilQuitDate?: number;
 }
 
-export type ActionKind = "debrief" | "checkin" | "countdown" | "make_plan" | "encourage";
+export type ActionKind = "debrief" | "sleep_diary" | "checkin" | "countdown" | "make_plan" | "encourage";
 
 export interface NextAction {
   readonly id: string;
@@ -35,6 +35,15 @@ export const nextBestAction = (ctx: TodayContext): NextAction => {
     };
   }
   if (!ctx.checkinDoneToday) {
+    if (ctx.enrolledVerticals.includes("sleep")) {
+      return {
+        id: "sleep-diary",
+        kind: "sleep_diary",
+        title: "Morning sleep check-in",
+        body: "Four quick numbers from last night, then your week stays visible.",
+        route: "/sleep-diary",
+      };
+    }
     return {
       id: "checkin",
       kind: "checkin",

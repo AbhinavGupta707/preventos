@@ -31,6 +31,18 @@ describe("nextBestAction — one card across all programmes, never per-programme
     ).toBe("make_plan");
   });
 
+  it("routes Nightshift users to the sleep diary instead of the generic check-in", () => {
+    const action = nextBestAction({
+      ...base,
+      enrolledVerticals: ["sleep"],
+      checkinDoneToday: false,
+      daysUntilQuitDate: undefined,
+    });
+    expect(action.kind).toBe("sleep_diary");
+    expect(action.route).toBe("/sleep-diary");
+    expect(`${action.title} ${action.body}`).not.toMatch(/treat|insomnia|therapy|restriction/i);
+  });
+
   it("always returns a steady-state action when nothing is pending", () => {
     const action = nextBestAction({
       ...base,

@@ -32,6 +32,7 @@ export const drinkEntrySchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   label: z.string().max(80),
   units: z.number().min(0).max(50),
+  context: z.string().max(100).optional(),
 });
 export type DrinkEntry = z.infer<typeof drinkEntrySchema>;
 

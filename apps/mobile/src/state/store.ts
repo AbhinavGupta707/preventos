@@ -2,12 +2,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import type { SleepWindowView } from "@preventos/api-client";
 import type { BfoSection, Vertical } from "@preventos/domain";
 // Deep import: the decisions index pulls in node:crypto (ruleSetHash), which
 // React Native lacks. The relapse module is platform-neutral.
 import { daysWon } from "@preventos/decisions/src/relapse";
 
 import type { SpendProfile } from "../core/savings";
+import type { MobileSleepDiaryEntry } from "../core/sleepDiary";
 import type { ChoreographyEvent, ChoreographyState } from "../core/pushChoreography";
 import { choreographyReducer, initialChoreography } from "../core/pushChoreography";
 
@@ -34,11 +36,15 @@ interface AppState {
   readonly plans: readonly IfThenPlan[];
   readonly milestonesAcked: Readonly<Partial<Record<Vertical, number>>>;
   readonly choreography: ChoreographyState;
+  readonly sleepDiary: readonly MobileSleepDiaryEntry[];
+  readonly sleepWindow: SleepWindowView | null;
   readonly hydrated: boolean;
 
   enrol(enrolment: LocalEnrolment, section: BfoSection | null): void;
   recordLapse(vertical: Vertical, isoDate: string): void;
   recordCheckin(isoDate: string): void;
+  recordSleepDiary(entry: MobileSleepDiaryEntry): void;
+  setSleepWindow(window: SleepWindowView): void;
   addPlan(plan: IfThenPlan): void;
   ackMilestone(vertical: Vertical, daysWonNow: number): void;
   applyChoreography(event: ChoreographyEvent): void;
@@ -55,6 +61,8 @@ const initial = {
   plans: [] as readonly IfThenPlan[],
   milestonesAcked: {} as Readonly<Partial<Record<Vertical, number>>>,
   choreography: initialChoreography,
+  sleepDiary: [] as readonly MobileSleepDiaryEntry[],
+  sleepWindow: null as SleepWindowView | null,
   hydrated: false,
 };
 
@@ -78,6 +86,15 @@ export const useAppStore = create<AppState>()(
         })),
 
       recordCheckin: (isoDate) => set(() => ({ lastCheckinDate: isoDate })),
+
+      recordSleepDiary: (entry) =>
+        set((s) => ({
+          sleepDiary: [...s.sleepDiary.filter((existing) => existing.date !== entry.date), entry].sort((a, b) =>
+            a.date.localeCompare(b.date),
+          ),
+        })),
+
+      setSleepWindow: (window) => set(() => ({ sleepWindow: window })),
 
       addPlan: (plan) => set((s) => ({ plans: [...s.plans, plan] })),
 

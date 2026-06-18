@@ -6,6 +6,7 @@ import { useAppStore, todayIso } from "../../../../lib/store/app-store";
 import { requestSleepWindow, syncApp } from "../../../../lib/sync";
 import { sleepEntryMetrics } from "../../../../lib/diary/sleep-entry";
 import { sleepEntrySchema } from "../../../../lib/store/types";
+import { programmeAccess } from "../../../../lib/programme-access";
 
 function durationLabel(minutes: number): string {
   const hours = Math.floor(minutes / 60);
@@ -17,6 +18,18 @@ export default function SleepDiaryPage() {
   const { state, hydrated, update } = useAppStore();
   const [windowStatus, setWindowStatus] = useState<string | null>(null);
   const [windowPending, setWindowPending] = useState(false);
+
+  if (programmeAccess("nightshift") === "gated") {
+    return (
+      <section className="section">
+        <h1>Nightshift is internal right now</h1>
+        <p className="notice">
+          The sleep diary and sleep-window tools are limited while the safety constants and claims posture are reviewed.
+          You can still use QuitKit and Exhale in this beta.
+        </p>
+      </section>
+    );
+  }
 
   if (!hydrated) return <p>Loading…</p>;
 

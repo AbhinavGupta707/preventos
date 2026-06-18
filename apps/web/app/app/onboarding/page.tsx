@@ -3,14 +3,15 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useAppStore, todayIso } from "../../../lib/store/app-store";
+import { programmeAccess, publicProgrammes } from "../../../lib/programme-access";
 import { syncApp } from "../../../lib/sync";
 import type { AppProgramme } from "../../../lib/store/types";
 
-const PROGRAMME_OPTIONS: ReadonlyArray<{ slug: AppProgramme; label: string }> = [
+const PROGRAMME_OPTIONS: ReadonlyArray<{ slug: AppProgramme; label: string; gatedLabel?: string }> = [
   { slug: "quitkit", label: "QuitKit — quit smoking" },
   { slug: "exhale", label: "Exhale — step down vaping" },
-  { slug: "steady", label: "Steady — drink less" },
-  { slug: "nightshift", label: "Nightshift — sleep better" },
+  { slug: "steady", label: "Steady — internal alcohol build", gatedLabel: "Steady — referral-only boundary" },
+  { slug: "nightshift", label: "Nightshift — internal sleep build", gatedLabel: "Nightshift — internal only" },
 ];
 
 export default function OnboardingPage() {
@@ -20,11 +21,14 @@ export default function OnboardingPage() {
 
   if (!hydrated) return <p>Loading…</p>;
 
-  const programmes = selected ?? state.programmes;
+  const programmes = publicProgrammes(selected ?? state.programmes);
   const needsQuitDate = programmes.includes("quitkit") || programmes.includes("exhale");
   const includesSteady = programmes.includes("steady");
+  const gatedSteady = programmeAccess("steady") === "gated";
+  const gatedNightshift = programmeAccess("nightshift") === "gated";
 
   function toggle(slug: AppProgramme) {
+    if (programmeAccess(slug) === "gated") return;
     setSaved(false);
     setSelected(programmes.includes(slug) ? programmes.filter((p) => p !== slug) : [...programmes, slug]);
   }
@@ -60,19 +64,43 @@ export default function OnboardingPage() {
       <form onSubmit={onSubmit}>
         <fieldset style={{ border: "none", padding: 0, margin: "0 0 1.5rem" }}>
           <legend style={{ fontWeight: 600, marginBottom: "0.5rem" }}>Choose one or more programmes</legend>
-          {PROGRAMME_OPTIONS.map((option) => (
-            <div key={option.slug} style={{ marginBottom: "0.5rem" }}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={programmes.includes(option.slug)}
-                  onChange={() => toggle(option.slug)}
-                />{" "}
-                {option.label}
-              </label>
-            </div>
-          ))}
+          {PROGRAMME_OPTIONS.map((option) => {
+            const access = programmeAccess(option.slug);
+            const gated = access === "gated";
+            return (
+              <div key={option.slug} style={{ marginBottom: "0.5rem" }}>
+                <label aria-disabled={gated}>
+                  <input
+                    type="checkbox"
+                    checked={programmes.includes(option.slug)}
+                    disabled={gated}
+                    onChange={() => toggle(option.slug)}
+                  />{" "}
+                  {gated ? option.gatedLabel ?? option.label : option.label}
+                  {access === "internal" ? " (internal)" : gated ? " (gated)" : ""}
+                </label>
+              </div>
+            );
+          })}
         </fieldset>
+
+        {gatedSteady || gatedNightshift ? (
+          <div className="notice" style={{ marginBottom: "1.5rem" }}>
+            {gatedSteady ? (
+              <p style={{ marginTop: 0 }}>
+                <strong>Steady:</strong> alcohol moderation is not open in this build. If stopping or cutting down
+                brings shakes, sweats, seizures, confusion, or a need to drink first thing in the morning, speak to your
+                GP or call Drinkline on 0300 123 1110.
+              </p>
+            ) : null}
+            {gatedNightshift ? (
+              <p style={{ marginBottom: 0 }}>
+                <strong>Nightshift:</strong> sleep diary and sleep-window tools are internal while the safety constants
+                and claims posture are reviewed.
+              </p>
+            ) : null}
+          </div>
+        ) : null}
 
         {includesSteady ? (
           <div className="notice" style={{ marginBottom: "1.5rem" }}>

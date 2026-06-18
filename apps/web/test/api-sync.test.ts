@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { apiConfigured, resetApiSessionForTest, syncToApi } from "../lib/api";
+import { apiConfigured, resetApiSessionForTest, syncResultPayload, syncToApi } from "../lib/api";
 
 interface Call {
   method: string;
@@ -71,11 +71,22 @@ describe("web → apps/api sync proxy", () => {
     expect(calls).toHaveLength(0);
   });
 
-  it("logs a drink: dev session then POST /logs/drink with the mapped body", async () => {
-    const res = await syncToApi({ action: "drink", date: "2026-06-13", units: 2.5, label: "Pint of lager" });
+  it("logs a drink: dev session then POST /logs/drink with the safety-screened context", async () => {
+    const res = await syncToApi({
+      action: "drink",
+      date: "2026-06-13",
+      units: 2.5,
+      label: "Pint of lager",
+      context: "after work",
+    });
     expect(res.synced).toBe(true);
     expect(calls.map((c) => c.path)).toEqual(["/dev/session", "/logs/drink"]);
-    expect(calls[1]?.body).toEqual({ date: "2026-06-13", units: 2.5, drinkType: "Pint of lager" });
+    expect(calls[1]?.body).toEqual({
+      date: "2026-06-13",
+      units: 2.5,
+      drinkType: "Pint of lager",
+      context: "after work",
+    });
   });
 
   it("enrols: consent → enrolment → quit plan for a smoking programme with a quit date", async () => {
@@ -124,5 +135,23 @@ describe("web → apps/api sync proxy", () => {
       safetySensitiveOccupation: false,
       excessiveDaytimeSleepiness: false,
     });
+  });
+
+  it("keeps the sleep-window result in the route response payload", () => {
+    const payload = syncResultPayload({
+      synced: true,
+      sleepWindow: {
+        id: "w1",
+        version: 1,
+        windowStart: "23:30",
+        windowEnd: "07:00",
+        durationMin: 450,
+        decision: "initial",
+        safetyFloorApplied: false,
+        signpostRequired: false,
+        computedFrom: { rule: "initial_mean_sleep_plus_buffer" },
+      },
+    });
+    expect(payload).toMatchObject({ synced: true, sleepWindow: { windowStart: "23:30", windowEnd: "07:00" } });
   });
 });
