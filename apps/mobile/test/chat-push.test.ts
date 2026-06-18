@@ -18,6 +18,22 @@ describe("deterministic crisis gate — invariant 1: runs before any LLM, no byp
     });
   }
 
+  const elevatedSafetyTexts = [
+    "I need to detox from alcohol at home tonight",
+    "I get shakes and sweats when I try to stop drinking",
+    "I think I'm dependent on alcohol but want to cut down by myself",
+  ];
+
+  for (const text of elevatedSafetyTexts) {
+    it(`routes elevated risk before coach: "${text.slice(0, 30)}…"`, () => {
+      const next = chatReducer(emptyChat(), { type: "send", text });
+      expect(classifyOutbound(text)).toBe("tier1");
+      expect(next.pendingCoachRequest).toBeNull();
+      expect(next.crisisActive).toBe(true);
+      expect(next.messages).toEqual([]);
+    });
+  }
+
   it("does not flag ordinary coaching messages", () => {
     expect(classifyOutbound("I'm dying for a cigarette right now")).toBe("none");
     expect(classifyOutbound("these cravings are killing me")).toBe("none");

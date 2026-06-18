@@ -579,6 +579,26 @@ describe("safety gate on inbound free text (invariant 1, server side)", () => {
     expect(cases.rows[0].state).toBe("open");
   });
 
+  it("alcohol withdrawal/dependence context is routed through the deterministic safety path", async () => {
+    const { personId, token } = await readyUser("api-safety-withdrawal");
+    const res = await server.inject({
+      method: "POST",
+      url: "/logs/drink",
+      headers: asUser(token),
+      payload: { date: "2026-06-13", units: 1, context: "I get shakes and sweats when I try to stop drinking" },
+    });
+    expect(res.statusCode).toBe(201);
+    expect(res.json().safety.crisis).toBe(true);
+    expect(res.json().safety.tier).toBe(2);
+
+    const cases = await handle.pool.query(
+      "SELECT risk_class, tier, state FROM core.escalation_case WHERE person_id = $1",
+      [personId],
+    );
+    expect(cases.rowCount).toBe(1);
+    expect(cases.rows[0]).toMatchObject({ risk_class: "withdrawal_risk", tier: 2, state: "open" });
+  });
+
   it("benign context logs normally with no escalation", async () => {
     const { personId, token } = await readyUser("api-safety-benign");
     const res = await server.inject({
