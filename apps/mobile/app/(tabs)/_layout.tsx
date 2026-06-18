@@ -46,6 +46,14 @@ export default function TabsLayout() {
           tabBarIcon: ({ color: c, size }) => <Ionicons name="chatbubble-ellipses-outline" color={c} size={size} />,
         }}
       />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Privacy",
+          tabBarButtonTestID: "tab-settings",
+          tabBarIcon: ({ color: c, size }) => <Ionicons name="shield-checkmark-outline" color={c} size={size} />,
+        }}
+      />
     </Tabs>
   );
 }

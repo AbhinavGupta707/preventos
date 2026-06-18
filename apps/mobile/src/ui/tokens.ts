@@ -1,6 +1,6 @@
 /**
  * PreventOS design tokens — calm, non-clinical, distinctive (WP2.1).
- * Warm paper neutrals + deep sage primary; no clinical blue/white, no alarm red.
+ * Warm paper neutrals + terracotta actions; no clinical blue/white, no alarm red.
  * The crisis palette is intentionally unlike everything else in the app
  * (deep night indigo, high contrast) so crisis flows are visually distinct.
  */
@@ -14,18 +14,25 @@ export const color = {
   inkMuted: "#6E675D",
   inkFaint: "#9A9286",
 
-  // Primary — deep sage: growth, steadiness
-  primary: "#3E6B4F",
-  primaryPressed: "#32563F",
-  primarySoft: "#E4EFE7",
+  // Primary — terracotta: warm, present, action-oriented
+  primary: "#B65F45",
+  primaryPressed: "#984E38",
+  primarySoft: "#F5E2DA",
   onPrimary: "#FFFFFF",
 
-  // Accent — warm amber: savings, milestones, celebration
-  accent: "#C77F2B",
-  accentSoft: "#F7EBD9",
+  // Accent — peach/coral: companion chips and gentle highlights
+  accent: "#D88963",
+  accentSoft: "#F8E7DC",
+  peach: "#F3B493",
+  peachSoft: "#FBE9DF",
+
+  // Success — sage: growth, steadiness
+  success: "#5B7F62",
+  successPressed: "#47664E",
+  successSoft: "#E5EFE6",
 
   // Rescue — warm clay: present and findable, never alarm-red
-  rescue: "#B85C49",
+  rescue: "#AA4F43",
   rescueSoft: "#F6E6E1",
   onRescue: "#FFFFFF",
 
@@ -44,7 +51,6 @@ export const color = {
   crisisAction: "#FFD27D",
   onCrisisAction: "#272727",
 
-  success: "#3E6B4F",
   danger: "#9C3D2E",
 } as const;
 
@@ -58,15 +64,15 @@ export const space = {
 } as const;
 
 export const radius = {
-  sm: 10,
-  md: 16,
-  lg: 22,
+  sm: 8,
+  md: 12,
+  lg: 16,
   pill: 999,
 } as const;
 
 export const type = {
-  display: { fontSize: 32, lineHeight: 38, fontWeight: "700" },
-  title: { fontSize: 24, lineHeight: 30, fontWeight: "700" },
+  display: { fontFamily: "serif", fontSize: 34, lineHeight: 40, fontWeight: "700" },
+  title: { fontFamily: "serif", fontSize: 25, lineHeight: 31, fontWeight: "700" },
   heading: { fontSize: 19, lineHeight: 25, fontWeight: "600" },
   body: { fontSize: 16, lineHeight: 23, fontWeight: "400" },
   bodyStrong: { fontSize: 16, lineHeight: 23, fontWeight: "600" },
