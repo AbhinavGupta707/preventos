@@ -11,6 +11,7 @@
     "test": "turbo run test",
     "check-licenses": "node scripts/check-licenses.mjs",
     "content:validate": "tsx packages/content/src/cli.ts",
+    "smoke:coach:fireworks": "tsx scripts/smoke-fireworks-coach.ts",
     "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm check-licenses && pnpm content:validate"
   },
   "devDependencies": {

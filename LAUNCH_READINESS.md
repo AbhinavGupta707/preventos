@@ -28,6 +28,7 @@ consumer beta until their extra safety assumptions are explicitly accepted.
 | G3 Clinical sign-off | Formal sign-off not available now | For consumer beta, replace with owner-adopted safety assumptions per enabled programme; keep high-risk features flagged or referral-only | Owner + Compliance agent |
 | G4 Privacy pack | Drafts exist | Adopt consumer privacy policy, retention/deletion schedule, Art. 9 basis, processor list, LLM data handling, wearable data stance | Privacy/Store agent |
 | G5 Store + claims compliance | Claims lint exists | Apple/Google health disclaimers, no-medical-device language, app review notes, age gates, data safety declarations | Privacy/Store agent |
+| G6 Coach provider activation | Fireworks is primary in code; CI uses Fake with no key | Owner supplies `FIREWORKS_API_KEY` in staging, runs Fireworks smoke command, then sets server secret for beta | Fireworks Activation agent + owner |
 
 ## Clinical/Legal Blockers
 
@@ -207,4 +208,3 @@ Deliverable:
 - A recommended implementation split for a later UI agent.
 - No broad code edits in this recon pass.
 ```
-

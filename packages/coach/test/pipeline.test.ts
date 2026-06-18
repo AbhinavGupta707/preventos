@@ -2,7 +2,7 @@ import { fileURLToPath } from "node:url";
 import { beforeAll, describe, expect, it } from "vitest";
 import { compileClaimsRegister, loadClaimsRegister } from "@preventos/content";
 import type { CompiledBlocklist } from "@preventos/content";
-import { FakeCoachProvider, SAFE_FALLBACK, runCoachTurn } from "../src/index.js";
+import { FakeCoachProvider, FireworksCoachProvider, SAFE_FALLBACK, runCoachTurn } from "../src/index.js";
 import type { CoachInput, CoachLogEntry, CoachLogSink } from "../src/index.js";
 
 const REGISTER = fileURLToPath(new URL("../../../compliance/claims/claims-register.json", import.meta.url));
@@ -82,6 +82,46 @@ describe("runCoachTurn — policy-enforcement proxy", () => {
     expect(turn.disposition).toBe("crisis_bypass");
     expect(turn.preAssessment.tier).toBe(2);
     expect(provider.calls).toHaveLength(0);
+  });
+
+  it("tier-1 and tier-2 bypass Fireworks when it is configured", async () => {
+    const fetchCalls: string[] = [];
+    const provider = new FireworksCoachProvider({
+      apiKey: "test-fireworks-key",
+      fetch: (url) => {
+        fetchCalls.push(url);
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              model: "accounts/fireworks/models/llama-v3p3-70b-instruct",
+              choices: [{ message: { content: "This should never be reached." } }],
+            }),
+          ),
+        );
+      },
+    });
+    const sink = new RecordingSink();
+
+    const tier1 = await runCoachTurn(baseInput("I'm going to kill myself tonight"), {
+      provider,
+      claimsFences: fences,
+      logSink: sink,
+    });
+    const tier2 = await runCoachTurn(baseInput("I've thought about suicide most days this week"), {
+      provider,
+      claimsFences: fences,
+      logSink: sink,
+    });
+
+    expect(tier1.disposition).toBe("crisis_bypass");
+    expect(tier1.preAssessment.tier).toBe(1);
+    expect(tier1.llm).toBeUndefined();
+    expect(tier2.disposition).toBe("crisis_bypass");
+    expect(tier2.preAssessment.tier).toBe(2);
+    expect(tier2.llm).toBeUndefined();
+    expect(fetchCalls).toHaveLength(0);
+    expect(sink.entries).toHaveLength(2);
+    expect(sink.entries.map((entry) => entry.llmProvider)).toEqual([undefined, undefined]);
   });
 
   it("post-filter: a forbidden model claim is blocked and replaced with a safe substitute", async () => {

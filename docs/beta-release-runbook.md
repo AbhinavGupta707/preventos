@@ -42,8 +42,8 @@ Non-negotiable release boundaries:
   Postgres.
 - Create the Clerk tenant and hand engineering the non-production and production
   key sets.
-- Create the Fireworks key, or explicitly choose Claude fallback, and set the
-  beta model policy.
+- Create the Fireworks key and set the beta model policy. Claude remains a
+  legacy fallback, not the preferred production path.
 - Confirm Apple Developer and Google Play Console access for internal testing.
 - Adopt consumer privacy/store documents, including LLM processor language,
   retention/deletion schedule, and no-medical-device positioning.
@@ -70,11 +70,13 @@ Optional local development:
 - `PREVENTOS_CONTENT_ROOT`
 - `RATE_LIMIT_TRUSTED_PROXIES`
 
-LLM activation:
+LLM activation. Fireworks is the chosen production coach provider; leave these
+unset in CI and local verification unless you are deliberately running a staging
+smoke test:
 
 - `FIREWORKS_API_KEY`
-- `ANTHROPIC_API_KEY`
 - `COACH_MODEL`
+- `ANTHROPIC_API_KEY` (legacy fallback only)
 
 Future Clerk activation placeholders:
 
@@ -179,8 +181,8 @@ end-to-end.
 
 Provider selection in `apps/api/src/coach-deps.ts` is:
 
-1. `FIREWORKS_API_KEY` -> Fireworks
-2. `ANTHROPIC_API_KEY` -> Claude
+1. `FIREWORKS_API_KEY` -> Fireworks (chosen production/beta provider)
+2. `ANTHROPIC_API_KEY` -> Claude legacy fallback only
 3. no key -> deterministic fake provider
 
 Fireworks defaults to:
@@ -199,6 +201,22 @@ activating a real key in staging:
 5. Confirm coach logs are written and no raw identifiers are sent in the LLM
    frame.
 6. Remove the key and confirm the API falls back to the fake provider locally.
+
+Manual staging smoke command:
+
+```sh
+FIREWORKS_API_KEY=... pnpm smoke:coach:fireworks
+```
+
+Optional model override:
+
+```sh
+FIREWORKS_API_KEY=... COACH_MODEL=accounts/fireworks/models/llama-v3p3-70b-instruct pnpm smoke:coach:fireworks
+```
+
+The smoke script runs one real tier-0 Fireworks turn, then sends tier-1 and
+tier-2 crisis text through the same configured provider and fails if Fireworks
+is called for either elevated-risk turn. Do not run it in CI.
 
 Never debug LLM behavior before proving the deterministic safety classifier is
 registered and reachable.
@@ -257,6 +275,7 @@ API:
 - Set `PORT` per host.
 - Keep `ALLOW_DEV_SESSIONS=false`.
 - Set LLM keys only in the server secret manager.
+- Set `FIREWORKS_API_KEY` and, only if explicitly chosen, `COACH_MODEL`.
 - Confirm `/coach/messages` uses the provider chain and crisis bypass tests pass.
 
 Web:
