@@ -1,5 +1,4 @@
 import { Stack, router, usePathname } from "expo-router";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable, StyleSheet, Text } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -7,8 +6,8 @@ import { StatusBar } from "expo-status-bar";
 import { api } from "../src/api";
 import { color, radius, shadow, type } from "../src/ui/tokens";
 
-/** Routes where the floating rescue button would be in the way of itself. */
-const RESCUE_HIDDEN_ON = ["/rescue", "/crisis"];
+/** Routes where the floating rescue button would obscure setup, privacy, or safety actions. */
+const RESCUE_HIDDEN_ON = ["/rescue", "/crisis", "/onboarding", "/settings"];
 
 function RescueButton() {
   const pathname = usePathname();
@@ -26,8 +25,7 @@ function RescueButton() {
       }}
       style={({ pressed }) => [styles.fab, { opacity: pressed ? 0.85 : 1 }]}
     >
-      <Ionicons name="heart-circle" color={color.onRescue} size={18} />
-      <Text style={styles.fabText}>Rescue</Text>
+      <Text style={styles.fabText}>SOS</Text>
     </Pressable>
   );
 }
@@ -59,13 +57,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: color.rescue,
     borderRadius: radius.pill,
-    bottom: 96,
-    flexDirection: "row",
-    gap: 6,
-    paddingHorizontal: 22,
-    paddingVertical: 14,
+    bottom: 88,
+    height: 64,
+    justifyContent: "center",
     position: "absolute",
     right: 16,
+    width: 64,
     ...shadow.card,
   },
   fabText: {
