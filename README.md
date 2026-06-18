@@ -6,6 +6,7 @@ smoking (QuitKit), adult vaping (Exhale), alcohol (Steady), sleep (Nightshift).
 - Product spec: [PreventOS_Product_Requirements_Document_v1.md](./PreventOS_Product_Requirements_Document_v1.md)
 - Build plan: [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md)
 - Beta release runbook: [docs/beta-release-runbook.md](./docs/beta-release-runbook.md)
+- Beta deployment prep: [docs/beta-deployment.md](./docs/beta-deployment.md)
 
 ## Development
 

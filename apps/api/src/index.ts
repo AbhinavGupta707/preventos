@@ -34,4 +34,4 @@ const server = await buildServer({
   logger: true,
   ...(allowDevSessions ? { devSessions: issueDevSession } : {}),
 });
-await server.listen({ port: Number(process.env["PORT"] ?? 3001), host: "127.0.0.1" });
+await server.listen({ port: Number(process.env["PORT"] ?? 3001), host: process.env["HOST"] ?? "0.0.0.0" });

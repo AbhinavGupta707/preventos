@@ -6,7 +6,7 @@
     "dev": "next dev --port 3000",
     "prebuild": "node scripts/check-copy.mjs",
     "build": "next build",
-    "start": "next start --port 3000",
+    "start": "next start --hostname 0.0.0.0 --port ${PORT:-3000}",
     "typecheck": "tsc --noEmit",
     "lint": "eslint app components lib test && node scripts/check-copy.mjs",
     "test": "vitest run"

@@ -11,6 +11,7 @@
     "test": "turbo run test",
     "check-licenses": "node scripts/check-licenses.mjs",
     "content:validate": "tsx packages/content/src/cli.ts",
+    "db:migrate": "pnpm --filter @preventos/api migrate",
     "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm check-licenses && pnpm content:validate"
   },
   "devDependencies": {
