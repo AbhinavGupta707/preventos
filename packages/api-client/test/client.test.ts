@@ -53,6 +53,31 @@ describe("ApiClient", () => {
     expect(noToken.calls).toHaveLength(0); // never hits the network without a token
   });
 
+  it("exports and deletes account data on authenticated data-rights routes", async () => {
+    const { fetch, calls } = fakeFetch((url) => {
+      if (url.endsWith("/me/export")) {
+        return { status: 200, body: { data: { person: { id: "p1" }, identity: null, consent_record: [] } } };
+      }
+      if (url.endsWith("/me")) return { status: 204 };
+      return { status: 404, body: { error: "not found" } };
+    });
+    const client = new ApiClient({ baseUrl: "http://api", fetch, getToken: () => "clerk-jwt" });
+
+    const exported = await client.exportAccountData();
+    const deleted = await client.deleteAccount();
+
+    expect(exported).toEqual({
+      ok: true,
+      value: { person: { id: "p1" }, identity: null, consent_record: [] },
+    });
+    expect(deleted).toEqual({ ok: true, value: undefined });
+    expect(calls.map((call) => ({ method: call.init?.method, url: call.url }))).toEqual([
+      { method: "GET", url: "http://api/me/export" },
+      { method: "DELETE", url: "http://api/me" },
+    ]);
+    expect(calls.every((call) => call.init?.headers?.["authorization"] === "Bearer clerk-jwt")).toBe(true);
+  });
+
   it("builds a query string for consent checks and reads the granted flag", async () => {
     const { fetch, calls } = fakeFetch(() => ({ status: 200, body: { data: { granted: true } } }));
     const client = new ApiClient({ baseUrl: "http://api", fetch, getToken: () => "t" });
@@ -105,6 +130,55 @@ describe("ApiClient", () => {
       },
     });
     expect(calls[0]?.url).toBe("http://api/sleep/windows");
+  });
+
+  it("sends coach messages and push token registration with bearer auth", async () => {
+    const { fetch, calls } = fakeFetch((url) => {
+      if (url.endsWith("/coach/messages")) {
+        return { status: 200, body: { data: { disposition: "replied", message: "One step." } } };
+      }
+      if (url.endsWith("/push/tokens")) {
+        return {
+          status: 201,
+          body: {
+            data: {
+              id: "pt1",
+              platform: "ios",
+              status: "active",
+              updatedAt: "2026-06-18T12:00:00.000Z",
+            },
+          },
+        };
+      }
+      return { status: 404, body: { error: "not found" } };
+    });
+    const client = new ApiClient({ baseUrl: "http://api", fetch, getToken: () => "clerk-jwt" });
+
+    const coach = await client.sendCoachMessage({
+      vertical: "smoking",
+      frame: "craving_rescue",
+      text: "craving hit",
+      channel: "app",
+      context: { daysWon: 2, streakActive: true, enrolledVerticals: ["smoking"] },
+    });
+    const push = await client.registerPushToken({ token: "ExponentPushToken[phase2]", platform: "ios" });
+
+    expect(coach).toEqual({ ok: true, value: { disposition: "replied", message: "One step." } });
+    expect(push.ok && push.value.status).toBe("active");
+    expect(calls.map((call) => ({ method: call.init?.method, url: call.url }))).toEqual([
+      { method: "POST", url: "http://api/coach/messages" },
+      { method: "POST", url: "http://api/push/tokens" },
+    ]);
+    expect(calls.every((call) => call.init?.headers?.["authorization"] === "Bearer clerk-jwt")).toBe(true);
+    expect(JSON.parse(calls[0]?.init?.body ?? "{}")).toMatchObject({
+      vertical: "smoking",
+      frame: "craving_rescue",
+      text: "craving hit",
+    });
+    expect(JSON.parse(calls[1]?.init?.body ?? "{}")).toEqual({
+      token: "ExponentPushToken[phase2]",
+      platform: "ios",
+    });
   });
 
   it("surfaces a transport failure as status 0", async () => {

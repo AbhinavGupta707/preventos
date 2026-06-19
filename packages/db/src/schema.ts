@@ -211,3 +211,13 @@ export const coachInteraction = core.table("coach_interaction", {
   latencyMs: integer("latency_ms").notNull(),
   createdAt: ts("created_at").notNull().defaultNow(),
 });
+
+export const pushToken = core.table("push_token", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  personId: uuid("person_id").notNull().references(() => person.id),
+  token: text("token").notNull(),
+  platform: text("platform").notNull(),
+  status: text("status").notNull().default("active"),
+  createdAt: ts("created_at").notNull().defaultNow(),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+});

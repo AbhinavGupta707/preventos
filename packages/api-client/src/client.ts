@@ -3,6 +3,8 @@ import { err, ok } from "@preventos/shared";
 import type {
   ApiClientConfig,
   ApiError,
+  CoachMessageInput,
+  CoachMessageView,
   ConsentChange,
   ConsentInput,
   ConsentScope,
@@ -17,6 +19,9 @@ import type {
   HttpRequestInit,
   PlanCreateInput,
   PlanView,
+  PersonDataBundle,
+  PushTokenInput,
+  PushTokenView,
   SignUpInput,
   SignedUpPerson,
   SleepDiaryInput,
@@ -215,5 +220,31 @@ export class ApiClient {
   async logCraving(channel: "app" | "web" = "app"): Promise<Result<CravingLogged, ApiError>> {
     const res = await this.send({ method: "POST", path: "/logs/craving", body: { channel }, auth: true });
     return res.ok ? ok(ApiClient.data(res.value)) : res;
+  }
+
+  // ---- coach ----
+
+  async sendCoachMessage(input: CoachMessageInput): Promise<Result<CoachMessageView, ApiError>> {
+    const res = await this.send({ method: "POST", path: "/coach/messages", body: input, auth: true });
+    return res.ok ? ok(ApiClient.data(res.value)) : res;
+  }
+
+  // ---- push ----
+
+  async registerPushToken(input: PushTokenInput): Promise<Result<PushTokenView, ApiError>> {
+    const res = await this.send({ method: "POST", path: "/push/tokens", body: input, auth: true });
+    return res.ok ? ok(ApiClient.data(res.value)) : res;
+  }
+
+  // ---- account data rights ----
+
+  async exportAccountData(): Promise<Result<PersonDataBundle, ApiError>> {
+    const res = await this.send({ method: "GET", path: "/me/export", auth: true });
+    return res.ok ? ok(ApiClient.data(res.value)) : res;
+  }
+
+  async deleteAccount(): Promise<Result<void, ApiError>> {
+    const res = await this.send({ method: "DELETE", path: "/me", auth: true });
+    return res.ok ? ok(undefined) : res;
   }
 }

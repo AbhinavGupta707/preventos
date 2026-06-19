@@ -1,12 +1,15 @@
+import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
+import { Platform } from "react-native";
 
 import type { Result } from "@preventos/shared";
 import { err, ok } from "@preventos/shared";
 
 /**
- * Push scaffolding (WP2.5). Local notifications only until SVC lands — remote
- * push needs the server-side JITAI dispatcher. The OS prompt is only ever
- * called from the primed choreography stage (see core/pushChoreography).
+ * Push scaffolding (WP2.5). The OS prompt is only ever called from the primed
+ * choreography stage (see core/pushChoreography). Remote registration stores an
+ * Expo push token server-side; delivery still runs behind the worker provider
+ * seam and never calls a real provider in CI.
  */
 
 Notifications.setNotificationHandler({
@@ -27,6 +30,29 @@ export const requestOsPermission = async (): Promise<Result<"granted" | "denied"
     return ok(response.granted ? "granted" : "denied");
   } catch (error: unknown) {
     return err(error instanceof Error ? error.message : "permission request failed");
+  }
+};
+
+const pushPlatform = (): "ios" | "android" | "web" =>
+  Platform.OS === "ios" || Platform.OS === "android" ? Platform.OS : "web";
+
+const expoProjectId = (): string | undefined => {
+  const extraProjectId = Constants.expoConfig?.extra?.["eas"];
+  if (typeof extraProjectId === "object" && extraProjectId !== null && "projectId" in extraProjectId) {
+    const projectId = (extraProjectId as { readonly projectId?: unknown }).projectId;
+    if (typeof projectId === "string" && projectId !== "") return projectId;
+  }
+  return Constants.easConfig?.projectId;
+};
+
+export const getRemotePushToken = async (): Promise<Result<{ readonly token: string; readonly platform: "ios" | "android" | "web" }, string>> => {
+  const projectId = expoProjectId();
+  if (projectId === undefined) return err("Expo project id is required for remote push tokens");
+  try {
+    const token = await Notifications.getExpoPushTokenAsync({ projectId });
+    return ok({ token: token.data, platform: pushPlatform() });
+  } catch (error: unknown) {
+    return err(error instanceof Error ? error.message : "push token request failed");
   }
 };
 

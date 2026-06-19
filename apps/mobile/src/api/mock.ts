@@ -1,11 +1,17 @@
 import type { BfoSection } from "@preventos/domain";
-import type { SleepDiaryInput, SleepWindowInput, SleepWindowView } from "@preventos/api-client";
+import type {
+  PersonDataBundle,
+  PushTokenInput,
+  SleepDiaryInput,
+  SleepWindowInput,
+  SleepWindowView,
+} from "@preventos/api-client";
 import type { Result } from "@preventos/shared";
 import { ok } from "@preventos/shared";
 
 import { nextBestAction } from "../core/nextBestAction";
 import type { NextAction, TodayContext } from "../core/nextBestAction";
-import type { ApiPort, JourneyEnrolment } from "./port";
+import type { ApiPort, CoachReplyRequest, JourneyEnrolment } from "./port";
 
 const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -71,6 +77,7 @@ export class MockApi implements ApiPort {
   async streamCoachReply(
     _message: string,
     onToken: (token: string) => void,
+    _request: CoachReplyRequest,
   ): Promise<Result<void, string>> {
     for (const sentence of PREVIEW_REPLIES) {
       for (const word of sentence.split(/(?<= )/)) {
@@ -81,8 +88,18 @@ export class MockApi implements ApiPort {
     return ok(undefined);
   }
 
-  async registerPushToken(_token: string): Promise<Result<void, string>> {
+  async registerPushToken(_input: PushTokenInput): Promise<Result<void, string>> {
     await wait(50);
+    return ok(undefined);
+  }
+
+  async exportAccountData(): Promise<Result<PersonDataBundle, string>> {
+    await wait(40);
+    return ok({ person: { id: "mock-person" }, identity: null, localOnly: true });
+  }
+
+  async deleteAccount(): Promise<Result<void, string>> {
+    await wait(40);
     return ok(undefined);
   }
 }

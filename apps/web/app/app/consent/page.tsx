@@ -1,13 +1,72 @@
 "use client";
 
+import { SignInButton, SignOutButton, UserButton, useAuth } from "@clerk/nextjs";
 import { useState } from "react";
 import { useAppStore } from "../../../lib/store/app-store";
 import { syncApp } from "../../../lib/sync";
+
+const clerkConfigured =
+  process.env["NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"] !== undefined &&
+  process.env["NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"] !== "";
+
+function downloadJson(data: unknown, filename: string): void {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function ClerkAccountPanel() {
+  const { isLoaded, isSignedIn } = useAuth();
+
+  if (!isLoaded) {
+    return (
+      <div className="notice">
+        <p style={{ marginTop: 0 }}>Checking account session...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="notice">
+      {isSignedIn ? (
+        <>
+          <p style={{ marginTop: 0 }}>Signed in for live account controls.</p>
+          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexWrap: "wrap" }}>
+            <UserButton />
+            <SignOutButton>
+              <button className="button button-quiet" type="button">
+                Sign out
+              </button>
+            </SignOutButton>
+          </div>
+        </>
+      ) : (
+        <>
+          <p style={{ marginTop: 0 }}>
+            Sign in to use live account export and deletion. Account recovery is available from the sign-in flow.
+          </p>
+          <SignInButton mode="modal">
+            <button className="button" type="button">
+              Sign in
+            </button>
+          </SignInButton>
+        </>
+      )}
+    </div>
+  );
+}
 
 export default function ConsentPage() {
   const { state, hydrated, update, erase } = useAppStore();
   const [confirmingErase, setConfirmingErase] = useState(false);
   const [erased, setErased] = useState(false);
+  const [erasedMessage, setErasedMessage] = useState("All data on this device has been deleted.");
+  const [status, setStatus] = useState<string | null>(null);
+  const [busy, setBusy] = useState<"export" | "delete" | null>(null);
 
   if (!hydrated) return <p>Loading…</p>;
 
@@ -19,14 +78,49 @@ export default function ConsentPage() {
     syncApp({ action: "consent", key, value });
   }
 
-  function exportData() {
-    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "preventos-my-data.json";
-    link.click();
-    URL.revokeObjectURL(url);
+  async function exportData() {
+    setBusy("export");
+    setStatus(null);
+    try {
+      const response = await fetch("/api/account/export");
+      if (response.ok) {
+        downloadJson(await response.json(), "preventos-my-data.json");
+        setStatus("Account export downloaded.");
+      } else if (response.status === 424) {
+        downloadJson(state, "preventos-device-data.json");
+        setStatus("Device export downloaded.");
+      } else {
+        const body = (await response.json().catch(() => ({}))) as { error?: string };
+        setStatus(body.error ?? "Export failed.");
+      }
+    } catch {
+      downloadJson(state, "preventos-device-data.json");
+      setStatus("Device export downloaded.");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function eraseData() {
+    setBusy("delete");
+    setStatus(null);
+    try {
+      const response = await fetch("/api/account", { method: "DELETE" });
+      if (response.ok || response.status === 424) {
+        erase();
+        setErasedMessage(response.ok ? "Account deletion completed. Local device data was cleared too." : "All data on this device has been deleted.");
+        setErased(true);
+      } else {
+        const body = (await response.json().catch(() => ({}))) as { error?: string };
+        setStatus(body.error ?? "Deletion failed.");
+      }
+    } catch {
+      erase();
+      setErasedMessage("All data on this device has been deleted.");
+      setErased(true);
+    } finally {
+      setBusy(null);
+    }
   }
 
   if (erased) {
@@ -34,7 +128,7 @@ export default function ConsentPage() {
       <section className="section">
         <h1>Privacy &amp; consent</h1>
         <p className="notice" role="status">
-          All data on this device has been deleted. <a href="/app/onboarding">Start again</a> whenever you like.
+          {erasedMessage} <a href="/app/onboarding">Start again</a> whenever you like.
         </p>
       </section>
     );
@@ -44,9 +138,16 @@ export default function ConsentPage() {
     <section className="section">
       <h1>Privacy &amp; consent</h1>
       <p className="prose">
-        Everything you record currently lives on this device only. Every switch starts off and stays off until you
-        turn it on.
+        Every switch starts off and stays off until you turn it on. In live API mode, export and deletion use your
+        authenticated account; offline mode stays on this device.
       </p>
+
+      {clerkConfigured ? (
+        <>
+          <h2>Account</h2>
+          <ClerkAccountPanel />
+        </>
+      ) : null}
 
       <h2>Your choices</h2>
       <div style={{ marginBottom: "0.5rem" }}>
@@ -76,7 +177,7 @@ export default function ConsentPage() {
       <h2>Your data</h2>
       <p>
         <button className="button button-quiet" type="button" onClick={exportData}>
-          Download my data (JSON)
+          {busy === "export" ? "Preparing export..." : "Download my data (JSON)"}
         </button>
       </p>
 
@@ -91,11 +192,10 @@ export default function ConsentPage() {
             type="button"
             style={{ background: "#a33" }}
             onClick={() => {
-              erase();
-              setErased(true);
+              void eraseData();
             }}
           >
-            Yes, delete everything
+            {busy === "delete" ? "Deleting..." : "Yes, delete everything"}
           </button>{" "}
           <button className="button button-quiet" type="button" onClick={() => setConfirmingErase(false)}>
             Cancel
@@ -103,9 +203,14 @@ export default function ConsentPage() {
         </div>
       ) : (
         <button className="button button-quiet" type="button" onClick={() => setConfirmingErase(true)}>
-          Delete all my data from this device
+          Delete all my data
         </button>
       )}
+      {status !== null ? (
+        <p className="notice" role="status">
+          {status}
+        </p>
+      ) : null}
     </section>
   );
 }

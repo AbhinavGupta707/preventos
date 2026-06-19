@@ -1,3 +1,5 @@
+import type { TokenProvider } from "@preventos/api-client";
+
 import { FetchApi } from "./fetch";
 import { MockApi } from "./mock";
 import type { ApiPort } from "./port";
@@ -9,8 +11,19 @@ import type { ApiPort } from "./port";
  */
 const baseUrl = process.env.EXPO_PUBLIC_API_URL;
 const allowDevSessions = process.env.EXPO_PUBLIC_ALLOW_DEV_SESSIONS === "true";
+const configuredBaseUrl = baseUrl !== undefined && baseUrl !== "" ? baseUrl : undefined;
+let authTokenProvider: TokenProvider | undefined;
 
-export const api: ApiPort = baseUrl ? new FetchApi({ baseUrl, allowDevSessions }) : new MockApi();
+export function setAuthTokenProvider(provider: TokenProvider | undefined): void {
+  authTokenProvider = provider;
+}
+
+const getAuthToken: TokenProvider = () => authTokenProvider?.();
+
+export const liveApiConfigured = configuredBaseUrl !== undefined;
+export const api: ApiPort = configuredBaseUrl !== undefined
+  ? new FetchApi({ baseUrl: configuredBaseUrl, allowDevSessions, getAuthToken })
+  : new MockApi();
 
 export { MockApi } from "./mock";
 export { FetchApi } from "./fetch";

@@ -2,8 +2,9 @@ import { router } from "expo-router";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { api } from "../src/api";
 import { canPromptOs } from "../src/core/pushChoreography";
-import { requestOsPermission, scheduleQuitDayReminder } from "../src/notifications/push";
+import { getRemotePushToken, requestOsPermission, scheduleQuitDayReminder } from "../src/notifications/push";
 import { useAppStore } from "../src/state/store";
 import { Button, Screen, Text } from "../src/ui/primitives";
 import { color, space } from "../src/ui/tokens";
@@ -26,6 +27,8 @@ export default function PushPrimer() {
     const result = await requestOsPermission();
     if (result.ok && result.value === "granted") {
       applyChoreography("os_granted");
+      const remoteToken = await getRemotePushToken();
+      if (remoteToken.ok) await api.registerPushToken(remoteToken.value);
       const quitDate = enrolments.find((e) => e.quitDate)?.quitDate;
       if (quitDate) await scheduleQuitDayReminder(quitDate);
     } else {

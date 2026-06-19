@@ -3,6 +3,7 @@
 // and avoids CORS. Best-effort: when the backend is unconfigured it reports
 // synced:false and the caller stays on its local-first state.
 import { NextResponse } from "next/server";
+import { clerkBearerToken } from "../../../lib/clerk-server";
 import { apiConfigured, syncResultPayload, syncToApi } from "../../../lib/api";
 import { syncActionSchema } from "../../../lib/sync-schema";
 
@@ -22,7 +23,9 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   const authHeader = request.headers.get("authorization");
-  const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice("Bearer ".length) : undefined;
+  const bearerToken = authHeader?.startsWith("Bearer ")
+    ? authHeader.slice("Bearer ".length)
+    : await clerkBearerToken();
   const result = await syncToApi(parsed.data, bearerToken);
   return NextResponse.json(
     syncResultPayload(result),

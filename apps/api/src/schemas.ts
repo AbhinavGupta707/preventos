@@ -131,6 +131,13 @@ export const coachMessageSchema = z
   })
   .strict();
 
+export const pushTokenSchema = z
+  .object({
+    token: z.string().min(10).max(500),
+    platform: z.enum(["ios", "android", "web"]),
+  })
+  .strict();
+
 // ---- marketing (WP8.2) — the AUTHORITATIVE privacy allow-list ----
 // apps/api is the store of record; these schemas are the single enforced control
 // that keeps the marketing funnel free of free text, identifiers, and

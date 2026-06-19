@@ -11,9 +11,10 @@ const DATABASE_URL = process.env["DATABASE_URL"];
 if (DATABASE_URL === undefined) throw new Error("DATABASE_URL is required");
 
 const authRuntime = buildAuthFromEnv(process.env);
-const { db } = createDb(DATABASE_URL);
+const { db, pool } = createDb(DATABASE_URL);
 const server = await buildServer({
   db,
+  pool,
   auth: authRuntime.auth,
   logger: true,
   ...(authRuntime.devSessions !== undefined ? { devSessions: authRuntime.devSessions } : {}),

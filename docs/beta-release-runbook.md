@@ -27,6 +27,9 @@ Code status:
   `preview-simulator`, and `production` profiles.
 - The API and worker are runnable Node services, but production hosting is not
   yet encoded as infrastructure-as-code.
+- Mobile live builds now call the authenticated API for coach replies and remote
+  push token registration. BFO/intake persistence and Today/NBA arbitration
+  remain local-only until server routes are added.
 
 Non-negotiable release boundaries:
 
@@ -46,6 +49,9 @@ Non-negotiable release boundaries:
   key sets.
 - Create the Fireworks key and set the beta model policy. Leave the legacy
   Claude fallback unset for beta unless the owner explicitly re-enables it.
+- Choose and credential a real push delivery provider after beta safety review.
+  Until then, keep worker delivery at `PUSH_PROVIDER=noop`; registered tokens
+  are stored but not sent to Expo/APNS/FCM by CI or the worker.
 - Confirm Apple Developer and Google Play Console access for internal testing.
 - Adopt consumer privacy/store documents, including LLM processor language,
   retention/deletion schedule, and no-medical-device positioning.
@@ -70,8 +76,12 @@ Optional local development:
 - `DEV_SESSION_PERSON_ID`
 - `PREVENTOS_API_URL`
 - `EXPO_PUBLIC_API_URL`
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `EXPO_PUBLIC_CLERK_JWT_TEMPLATE`
 - `CONTENT_ROOT`
 - `PREVENTOS_CONTENT_ROOT`
+- `PUSH_PROVIDER`
 - `RATE_LIMIT_TRUSTED_PROXIES`
 
 LLM activation. Fireworks is the chosen production coach provider; leave these
@@ -89,15 +99,47 @@ Clerk activation:
 - `CLERK_JWT_KEY`
 - `CLERK_JWT_AUDIENCE`
 - `CLERK_AUTHORIZED_PARTIES`
+- `CLERK_JWT_TEMPLATE`
 
 Current auth status: `apps/api` selects Clerk by default through the
-`@preventos/auth` `ClerkAuthProvider`. Fake auth remains available only when
+`@preventos/auth` `ClerkAuthProvider`. `apps/web` and `apps/mobile` load Clerk
+client SDKs only when their public publishable-key env vars are set, then pass
+session tokens through `@preventos/api-client` to server-backed routes including
+account export and deletion. Fake auth remains available only when
 `PREVENTOS_AUTH_PROVIDER=fake`, `ALLOW_DEV_SESSIONS=true`, or a seeded
 `DEV_SESSION_TOKEN`/`DEV_SESSION_PERSON_ID` pair explicitly asks for local dev
 auth. Local web/mobile live sync may use the gated `/dev/session` stand-in only
 when `ALLOW_DEV_SESSIONS=true` (and mobile also sets
 `EXPO_PUBLIC_ALLOW_DEV_SESSIONS=true`). Those dev sessions are not production
 auth and must remain disabled outside local development.
+
+Current mobile runtime status: in live API mode, the mobile coach calls
+`POST /coach/messages` with a Clerk/dev bearer token and the existing
+deterministic client crisis gate still runs before the request is created.
+Remote push registration calls `POST /push/tokens` only after the OS permission
+flow grants notifications and requires `proactive_contact` consent server-side.
+The token payload is stored in `core.push_token`; the event payload records only
+person id, token id, and platform. BFO submission and Today/NBA retrieval are
+still documented local fallbacks because no server route exists yet.
+
+## Phase 3 Release QA Status
+
+Checked on 2026-06-19 against draft PR #27
+(`codex/live-beta-activation` -> `main`).
+
+| Area | Status | Evidence / next action |
+|---|---|---|
+| Branch and CI | Pass locally; check after each push | PR #27 is draft/open and merge state clean. `ci / verify` passed on the Phase 3 head before the critical-review follow-up; re-check GitHub Actions after every new push. |
+| Mobile app identity | Pass for internal testing | `apps/mobile/app.json` sets display name `PreventOS`, scheme `preventos`, iOS bundle id `app.preventos.mobile`, Android package `app.preventos.mobile`, and EAS project `b503d74b-58fa-4019-9cbb-39ed317a51a1`. |
+| Icons and splash | Pass for internal testing | Required app icon, splash icon, Android adaptive icon layers, monochrome icon, and favicon assets are present with expected PNG dimensions. |
+| Permissions | Pass with owner caveat | Mobile config uses `expo-notifications`; no HealthKit or Health Connect permissions are configured. Notification delivery must remain disabled while `PUSH_PROVIDER=noop`. |
+| Auth, logout, and data rights | Code-ready, owner-blocked for credentials | Clerk is env-gated; mobile settings expose sign-out when Clerk is configured and export/delete controls use server routes in live API mode. Owner must create Clerk tenants, JWT templates, allowed origins, and recovery flow settings. |
+| Rescue and crisis | Pass | Mobile crisis surface is static/offline, the chat reducer runs the deterministic classifier before any coach request, and server-side coach `crisis_bypass` responses route to crisis instead of a fallback coach bubble. Full `pnpm verify` re-ran the safety, mobile, API, and coach suites. |
+| Programme gating | Pass for mobile internal testing | Mobile public setup opens QuitKit and Exhale only; Nightshift route files are gated behind `EXPO_PUBLIC_PREVENTOS_ENABLE_NIGHTSHIFT_INTERNAL`, and Steady is referral-only. Store screenshots must show only enabled QuitKit/Exhale surfaces unless the owner explicitly approves gated surfaces. |
+| Fireworks | Code-ready, owner-blocked for key | Fireworks remains server-side and env-driven; CI runs without `FIREWORKS_API_KEY`. Owner must set the staging key and run the Fireworks smoke command before beta traffic. |
+| Push | Registration ready, delivery blocked | Expo token registration is API-backed and consent-gated. Worker delivery is `noop` only until owner chooses provider credentials, notification copy, monitoring, and quiet-hours policy. |
+| Store accounts and devices | Blocked by owner | Apple Developer, Google Play Console, Expo credentials, physical iOS/Android devices, demo account, support URL, deletion URL, and published privacy/legal URLs are not available in this repo. Do not submit to stores from this branch. |
+| Store copy/screenshots | Owner action | Use the consumer beta store pack and claims register on final title, subtitle, description, reviewer notes, and screenshots. Do not use web pages or screenshots that promote public Steady/Nightshift availability. |
 
 ## Local Verification
 
@@ -114,8 +156,10 @@ Targeted checks when iterating on release/config docs:
 ```sh
 pnpm check-licenses
 pnpm content:validate
+pnpm --filter @preventos/api-client test
 pnpm --filter @preventos/api test
 pnpm --filter @preventos/worker test
+pnpm --filter @preventos/mobile test
 pnpm --filter @preventos/mobile typecheck
 pnpm --filter @preventos/web build
 pnpm --filter @preventos/console build
@@ -143,7 +187,15 @@ ALLOW_DEV_SESSIONS=true
 For mobile-to-API internal builds, set `EXPO_PUBLIC_API_URL` to a device-reachable
 API URL before building. Leave it unset for offline/mock previews. Set
 `EXPO_PUBLIC_ALLOW_DEV_SESSIONS=true` only for local/dev builds against an API
-that also has `ALLOW_DEV_SESSIONS=true`.
+that also has `ALLOW_DEV_SESSIONS=true`. Remote push token registration also
+needs the Expo project id from `apps/mobile/app.json` and a signed-in session
+whose account has granted `proactive_contact` consent.
+
+Keep `EXPO_PUBLIC_PREVENTOS_ENABLE_STEADY_INTERNAL=false` and
+`EXPO_PUBLIC_PREVENTOS_ENABLE_NIGHTSHIFT_INTERNAL=false` for consumer beta
+builds. Only set either flag for an owner-approved private/internal build; the
+Nightshift intake and diary routes redirect back to the programme picker when
+the Nightshift flag is absent.
 
 ## CI Verification
 
@@ -192,10 +244,15 @@ registration/discovery/install order before debugging runtime auth:
    verification; otherwise the Clerk SDK may retrieve JWKS through Clerk's
    backend API. Set `CLERK_AUTHORIZED_PARTIES` to the allowed web/console/mobile
    origins.
-7. Keep `PREVENTOS_AUTH_PROVIDER=clerk` (or leave it unset) in beta/prod.
-8. Disable `/dev/session` by leaving `ALLOW_DEV_SESSIONS` unset or false.
-9. Smoke-test a Clerk-issued bearer token against `/consents/check` or another
-   person-scoped API route before exposing real app traffic.
+7. Set `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` for apps/web and
+   `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY` for live mobile builds. If the API needs
+   a named Clerk JWT template, also set `CLERK_JWT_TEMPLATE` for web server
+   routes and `EXPO_PUBLIC_CLERK_JWT_TEMPLATE` for mobile.
+8. Keep `PREVENTOS_AUTH_PROVIDER=clerk` (or leave it unset) in beta/prod.
+9. Disable `/dev/session` by leaving `ALLOW_DEV_SESSIONS` unset or false.
+10. Smoke-test a Clerk-issued bearer token against `/consents/check`,
+   `/me/export`, and `DELETE /me` in a non-production account before exposing
+   real app traffic.
 
 Do not treat Clerk as active just because keys exist. The feature is present in
 code, but launch still requires the owner-created tenant, JWT template, allowed
@@ -245,6 +302,27 @@ is called for either elevated-risk turn. Do not run it in CI.
 Never debug LLM behavior before proving the deterministic safety classifier is
 registered and reachable.
 
+## Push Registration And Delivery Path
+
+Mobile remote push registration is implemented end-to-end for live API builds:
+
+1. The in-app primer must be accepted before the OS prompt can run.
+2. If the OS grants notification permission, mobile requests an Expo push token
+   for the configured EAS project.
+3. Mobile calls `POST /push/tokens` through `@preventos/api-client` with the
+   current bearer token.
+4. `apps/api` requires `proactive_contact` consent, stores or refreshes the
+   token in `core.push_token`, and emits `push.token_registered` with coded ids
+   only.
+5. Account export includes `push_token`; account erasure deletes it.
+
+Delivery is intentionally not active yet. `apps/worker` exposes a push delivery
+provider abstraction, but the only available provider in this build is
+`noop`. Keep `PUSH_PROVIDER=noop` in CI, staging, and beta until the owner
+selects credentials, copy approval, quiet-hours behavior, and provider-specific
+monitoring. Any non-noop value currently fails fast rather than making an
+unreviewed provider call.
+
 ## EAS, TestFlight, And Play Internal Testing
 
 Pre-build:
@@ -276,8 +354,14 @@ Internal testing checklist:
 - Verify rescue is reachable in one tap and works without network.
 - Verify crisis text routes to the scripted crisis surface and no coach reply is
   generated.
+- Verify live API builds call `/coach/messages` for ordinary coach turns and
+  never for client-gated crisis text.
 - Verify notifications permission choreography without over-promising delivery.
+- Verify remote push token registration reaches `/push/tokens` after permission
+  grant; actual delivery remains disabled while `PUSH_PROVIDER=noop`.
 - Verify privacy/consent surfaces are reachable.
+- Verify export, deletion, logout, unauthenticated, and expired-session states
+  on web and mobile live API builds.
 - Verify `EXPO_PUBLIC_API_URL` points to beta API for live builds and is unset
   for offline/mock builds.
 
@@ -306,8 +390,12 @@ Web:
 
 - Deploy `apps/web`.
 - Set `PREVENTOS_API_URL` to the API origin for live sync.
+- Set `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` when Clerk web auth is active.
+- Set `CLERK_JWT_TEMPLATE` if web server routes must request a named API token.
 - Confirm marketing waitlist and funnel events reach the API-backed marketing
   schema; offline `.data` fallback should be development-only.
+- Confirm privacy export/delete routes use Clerk tokens or explicitly gated
+  dev sessions; do not silently fall back to server mocks.
 - Run `pnpm --filter @preventos/web build`.
 
 Console:
@@ -323,17 +411,22 @@ Worker:
 - Deploy exactly one active worker process per environment until queue ownership
   is documented.
 - Set `DATABASE_URL`.
+- Set `PUSH_PROVIDER=noop` until a real delivery provider has owner-approved
+  credentials, copy, monitoring, and quiet-hours behavior.
 - Keep `CONTENT_ROOT` at the deployed content bundle unless intentionally
   overriding.
-- Confirm worker boot validates rule refs and content catalog before loops
-  start.
+- Confirm worker boot logs the push provider and validates rule refs and content
+  catalog before loops start.
 
 Mobile:
 
 - Build with EAS profiles above.
-- Use server-side secrets only. Mobile gets `EXPO_PUBLIC_API_URL`, never LLM or
-  database keys.
-- Confirm push credentials and notification copy before public rollout.
+- Use server-side secrets only. Mobile gets `EXPO_PUBLIC_API_URL`,
+  `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`, and optionally
+  `EXPO_PUBLIC_CLERK_JWT_TEMPLATE`, never LLM or database keys.
+- Confirm push token registration works in live API mode. Confirm push
+  credentials, delivery provider, notification copy, and quiet-hours policy
+  before public rollout.
 
 Rollback:
 

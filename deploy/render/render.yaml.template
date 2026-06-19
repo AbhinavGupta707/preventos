@@ -31,6 +31,18 @@ services:
           property: connectionString
       - key: ALLOW_DEV_SESSIONS
         value: "false"
+      - key: PREVENTOS_AUTH_PROVIDER
+        value: clerk
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: CLERK_JWT_KEY
+        sync: false
+      - key: CLERK_JWT_AUDIENCE
+        value: preventos-api
+      - key: CLERK_AUTHORIZED_PARTIES
+        value: https://OWNER_SETS_WEB_DOMAIN,https://OWNER_SETS_CONSOLE_DOMAIN
       - key: FIREWORKS_API_KEY
         sync: false
       - key: COACH_MODEL
@@ -51,6 +63,8 @@ services:
         fromDatabase:
           name: preventos-beta-postgres
           property: connectionString
+      - key: PUSH_PROVIDER
+        value: noop
 
   - type: web
     name: preventos-web-beta
@@ -66,6 +80,12 @@ services:
         value: 22.22.2
       - key: PREVENTOS_API_URL
         value: https://OWNER_SETS_API_DOMAIN
+      - key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: CLERK_JWT_TEMPLATE
+        value: preventos-api
       - key: RATE_LIMIT_TRUSTED_PROXIES
         value: "1"
 

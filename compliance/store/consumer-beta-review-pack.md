@@ -70,7 +70,7 @@ The canonical disclaimer language lives in
 | Exhale adult vaping support | Enabled | Existing adult vapers only; no youth targeting or product promotion. |
 | Savings/progress tracking | Enabled | User-entered estimates only; no financial guarantees. |
 | Optional AI coach | Conditional | Requires processor/transfer review and clear AI/non-clinician disclosure. |
-| Push reminders | Conditional | Requires proactive-contact consent and neutral lock-screen copy. |
+| Push reminders | Conditional | Token registration is implemented behind proactive-contact consent; delivery remains disabled until provider credentials, quiet-hours policy, monitoring, and neutral lock-screen copy are approved. |
 | First-party analytics | Conditional | Requires analytics consent and matching store labels. |
 
 ## Blocked features
@@ -96,7 +96,12 @@ The canonical disclaimer language lives in
 - [ ] App Store privacy nutrition labels completed from actual binary/SDKs.
 - [ ] Google Play Data Safety completed from actual binary/SDKs.
 - [ ] Age rating answers reflect 18+ smoking/vaping habit-support content.
-- [ ] Store screenshots show only enabled QuitKit + Exhale beta surfaces.
+- [ ] Store screenshots show only enabled QuitKit + Exhale beta surfaces. Do
+      not use public Steady/Nightshift pages or screenshots unless the owner
+      explicitly approves those gated programmes for the store listing.
 - [ ] Feature flags prevent Steady, Nightshift, wearable import, and high-risk
       claims from appearing to public beta users.
+- [ ] Push provider credentials, notification copy, quiet-hours policy, and
+      monitoring are approved before enabling notification delivery beyond
+      `PUSH_PROVIDER=noop`.
 - [ ] Claims register check run on all store listing copy before submission.

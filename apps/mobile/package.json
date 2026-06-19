@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "main": "expo-router/entry",
   "dependencies": {
+    "@clerk/clerk-expo": "^2.19.31",
     "@expo/vector-icons": "^15.1.1",
     "@preventos/api-client": "workspace:*",
     "@preventos/companion": "workspace:*",

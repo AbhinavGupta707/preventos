@@ -1,5 +1,12 @@
 import type { BfoSection, ReadinessStage, Vertical } from "@preventos/domain";
-import type { SleepDiaryInput, SleepWindowInput, SleepWindowView } from "@preventos/api-client";
+import type {
+  CoachFrame,
+  PersonDataBundle,
+  PushTokenInput,
+  SleepDiaryInput,
+  SleepWindowInput,
+  SleepWindowView,
+} from "@preventos/api-client";
 import type { Result } from "@preventos/shared";
 
 import type { NextAction, TodayContext } from "../core/nextBestAction";
@@ -12,13 +19,26 @@ export interface JourneyEnrolment {
   readonly quitDate?: string;
 }
 
+export interface CoachReplyRequest {
+  readonly vertical: Vertical;
+  readonly frame: CoachFrame;
+  readonly context?: Readonly<{
+    readonly daysWon?: number;
+    readonly streakActive?: boolean;
+    readonly enrolledVerticals?: readonly Vertical[];
+    readonly lastLapseVertical?: Vertical;
+  }>;
+}
+
+export const COACH_SAFETY_FLOW_ACTIVATED = "safety flow activated";
+
 /**
  * Typed client port to the PreventOS backend (WP2.x). Screens talk only to
  * this interface. `MockApi` implements it for offline/preview and tests;
  * `FetchApi` implements it against the live apps/api (selected when
- * EXPO_PUBLIC_API_URL is set). Methods without a server route yet
- * (coach/BFO/next-best-action/push) are served locally by both adapters until
- * their work packages land.
+ * EXPO_PUBLIC_API_URL is set). BFO persistence and next-best-action
+ * arbitration are still served locally because no server route exists yet;
+ * coach and push are server-backed in live mode.
  */
 export interface ApiPort {
   /** Ensures a backend session exists (dev: sign-up + token; prod: auth provider). */
@@ -47,8 +67,18 @@ export interface ApiPort {
    * crisis gate (`classifyOutbound`) before calling this — the chat reducer
    * enforces that by never producing a coach request for tier-1 text.
    */
-  streamCoachReply(message: string, onToken: (token: string) => void): Promise<Result<void, string>>;
+  streamCoachReply(
+    message: string,
+    onToken: (token: string) => void,
+    request: CoachReplyRequest,
+  ): Promise<Result<void, string>>;
 
   /** Register an Expo push token once permission is granted. */
-  registerPushToken(token: string): Promise<Result<void, string>>;
+  registerPushToken(input: PushTokenInput): Promise<Result<void, string>>;
+
+  /** Export the authenticated account's server-side data bundle. */
+  exportAccountData(): Promise<Result<PersonDataBundle, string>>;
+
+  /** Delete the authenticated account's mutable server-side data, then callers clear local state. */
+  deleteAccount(): Promise<Result<void, string>>;
 }

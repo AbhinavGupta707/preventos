@@ -64,6 +64,15 @@ describe("deterministic crisis gate — invariant 1: runs before any LLM, no byp
     expect(s.messages.at(-1)?.text).toBe("One step.");
     expect(s.messages.at(-1)?.streaming).toBe(false);
   });
+
+  it("server-side crisis bypass clears the pending coach turn without a coach reply", () => {
+    let s = chatReducer(emptyChat(), { type: "send", text: "server caught this as risk" });
+    expect(s.pendingCoachRequest).toBe("server caught this as risk");
+    s = chatReducer(s, { type: "server_crisis" });
+    expect(s.pendingCoachRequest).toBeNull();
+    expect(s.crisisActive).toBe(true);
+    expect(s.messages).toEqual([]);
+  });
 });
 
 describe("push permission choreography — primer before OS prompt, denial respected", () => {

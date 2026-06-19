@@ -32,7 +32,7 @@ beforeAll(async () => {
   handle = createDb(TEST_URL);
   await runMigrations(handle.pool);
   auth = new FakeAuthProvider();
-  server = await buildServer({ db: handle.db, auth, rateLimit: { max: 1000, timeWindowMs: 60_000 } });
+  server = await buildServer({ db: handle.db, pool: handle.pool, auth, rateLimit: { max: 1000, timeWindowMs: 60_000 } });
 });
 
 afterAll(async () => {
@@ -75,6 +75,72 @@ describe("sign-up", () => {
   it("rejects an empty pseudonym", async () => {
     const response = await server.inject({ method: "POST", url: "/people", payload: { pseudonym: "" } });
     expect(response.statusCode).toBe(400);
+  });
+});
+
+describe("account data rights", () => {
+  it("exports the authenticated person's data bundle and requires a valid session", async () => {
+    const unauthenticated = await server.inject({ method: "GET", url: "/me/export" });
+    expect(unauthenticated.statusCode).toBe(401);
+
+    const { personId, token } = await signUp("api-export");
+    await server.inject({
+      method: "POST",
+      url: "/consents/grant",
+      headers: asUser(token),
+      payload: { purpose: "programme_delivery" },
+    });
+
+    const response = await server.inject({ method: "GET", url: "/me/export", headers: asUser(token) });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.headers["content-disposition"]).toContain("preventos-my-data.json");
+    const { data } = response.json();
+    expect(data.person).toMatchObject({ id: personId, pseudonym: "api-export" });
+    expect(data.consent_record).toHaveLength(1);
+    expect(data.identity).toBeNull();
+  });
+
+  it("erases mutable account data for the authenticated person and rejects invalid tokens", async () => {
+    const invalid = await server.inject({ method: "DELETE", url: "/me", headers: asUser("expired-or-bad") });
+    expect(invalid.statusCode).toBe(401);
+
+    const { personId, token } = await signUp("api-erase");
+    await server.inject({
+      method: "POST",
+      url: "/consents/grant",
+      headers: asUser(token),
+      payload: { purpose: "programme_delivery" },
+    });
+    await server.inject({
+      method: "POST",
+      url: "/enrolments",
+      headers: asUser(token),
+      payload: { vertical: "smoking" },
+    });
+    await server.inject({
+      method: "POST",
+      url: "/plans",
+      headers: asUser(token),
+      payload: { vertical: "smoking", type: "quit", slots: { quitDate: "2026-06-20" } },
+    });
+
+    const erased = await server.inject({ method: "DELETE", url: "/me", headers: asUser(token) });
+
+    expect(erased.statusCode).toBe(204);
+    const person = await handle.pool.query("SELECT pseudonym, age_band FROM core.person WHERE id = $1", [personId]);
+    expect(person.rows[0]).toMatchObject({ pseudonym: `erased-${personId.slice(0, 8)}`, age_band: null });
+    const enrolments = await handle.pool.query("SELECT count(*) FROM core.enrolment WHERE person_id = $1", [personId]);
+    const plans = await handle.pool.query("SELECT count(*) FROM core.plan_object WHERE person_id = $1", [personId]);
+    const consent = await handle.pool.query("SELECT count(*) FROM core.consent_record WHERE person_id = $1", [personId]);
+    const erasedEvents = await handle.pool.query(
+      "SELECT count(*) FROM core.event WHERE person_id = $1 AND type = 'person.erased'",
+      [personId],
+    );
+    expect(enrolments.rows[0].count).toBe("0");
+    expect(plans.rows[0].count).toBe("0");
+    expect(consent.rows[0].count).toBe("1");
+    expect(erasedEvents.rows[0].count).toBe("1");
   });
 });
 
@@ -126,6 +192,91 @@ describe("consent", () => {
       url: "/consents/grant",
       headers: asUser(token),
       payload: { purpose: "marketing_spam" },
+    });
+    expect(response.statusCode).toBe(400);
+  });
+});
+
+describe("push token registration", () => {
+  it("requires a session and proactive_contact consent before storing a token", async () => {
+    const unauthenticated = await server.inject({
+      method: "POST",
+      url: "/push/tokens",
+      payload: { token: "ExponentPushToken[api-phase2]", platform: "ios" },
+    });
+    expect(unauthenticated.statusCode).toBe(401);
+
+    const { personId, token } = await signUp("api-push");
+    const noConsent = await server.inject({
+      method: "POST",
+      url: "/push/tokens",
+      headers: asUser(token),
+      payload: { token: "ExponentPushToken[api-phase2]", platform: "ios" },
+    });
+    expect(noConsent.statusCode).toBe(403);
+
+    await server.inject({
+      method: "POST",
+      url: "/consents/grant",
+      headers: asUser(token),
+      payload: { purpose: "proactive_contact" },
+    });
+    const registered = await server.inject({
+      method: "POST",
+      url: "/push/tokens",
+      headers: asUser(token),
+      payload: { token: "ExponentPushToken[api-phase2]", platform: "ios" },
+    });
+    const duplicate = await server.inject({
+      method: "POST",
+      url: "/push/tokens",
+      headers: asUser(token),
+      payload: { token: "ExponentPushToken[api-phase2]", platform: "android" },
+    });
+
+    expect(registered.statusCode).toBe(201);
+    expect(registered.json().data).toMatchObject({ platform: "ios", status: "active" });
+    expect(duplicate.statusCode).toBe(201);
+    expect(duplicate.json().data.id).toBe(registered.json().data.id);
+    expect(duplicate.json().data.platform).toBe("android");
+
+    const rows = await handle.pool.query(
+      "SELECT token, platform, status FROM core.push_token WHERE person_id = $1",
+      [personId],
+    );
+    expect(rows.rowCount).toBe(1);
+    expect(rows.rows[0]).toMatchObject({
+      token: "ExponentPushToken[api-phase2]",
+      platform: "android",
+      status: "active",
+    });
+
+    const events = await handle.pool.query(
+      "SELECT payload FROM core.event WHERE person_id = $1 AND type = 'push.token_registered' ORDER BY id",
+      [personId],
+    );
+    expect(events.rowCount).toBe(2);
+    expect(events.rows[0].payload).toMatchObject({
+      personId,
+      tokenId: registered.json().data.id,
+      platform: "ios",
+    });
+    expect(JSON.stringify(events.rows.map((row) => row.payload))).not.toContain("ExponentPushToken");
+  });
+
+  it("rejects malformed push token payloads", async () => {
+    const { token } = await signUp("api-push-bad");
+    await server.inject({
+      method: "POST",
+      url: "/consents/grant",
+      headers: asUser(token),
+      payload: { purpose: "proactive_contact" },
+    });
+    const response = await server.inject({
+      method: "POST",
+      url: "/push/tokens",
+      headers: asUser(token),
+      payload: { token: "short", platform: "pager" },
     });
     expect(response.statusCode).toBe(400);
   });

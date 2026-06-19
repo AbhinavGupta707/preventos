@@ -1,5 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { apiConfigured, resetApiSessionForTest, syncResultPayload, syncToApi } from "../lib/api";
+import {
+  apiConfigured,
+  deleteAccountInApi,
+  exportAccountDataToApi,
+  resetApiSessionForTest,
+  syncResultPayload,
+  syncToApi,
+} from "../lib/api";
 
 interface Call {
   method: string;
@@ -31,6 +38,8 @@ function stubApi(): void {
     if (path.startsWith("/consents")) return reply(201, { data: { purpose: "x", action: "granted" } });
     if (path === "/logs/drink") return reply(201, { data: { id: "d1", date: "2026-06-13", units: 2 }, safety: { tier: 0, crisis: false } });
     if (path === "/logs/sleep-diary") return reply(201, { data: { id: "s1", date: "2026-06-13" } });
+    if (path === "/me/export") return reply(200, { data: { person: { id: "p1" }, identity: null } });
+    if (path === "/me") return reply(204, undefined);
     if (path === "/sleep/windows") {
       return reply(201, {
         data: {
@@ -101,6 +110,23 @@ describe("web → apps/api sync proxy", () => {
     delete process.env["ALLOW_DEV_SESSIONS"];
     const res = await syncToApi({ action: "drink", date: "2026-06-13", units: 2.5 });
     expect(res).toEqual({ synced: false, error: "Authentication required." });
+    expect(calls).toHaveLength(0);
+  });
+
+  it("exports and deletes account data with a Clerk bearer token", async () => {
+    const exported = await exportAccountDataToApi("clerk-jwt");
+    const deleted = await deleteAccountInApi("clerk-jwt");
+
+    expect(exported).toEqual({ ok: true, value: { person: { id: "p1" }, identity: null } });
+    expect(deleted).toEqual({ ok: true, value: undefined });
+    expect(calls.map((c) => c.path)).toEqual(["/me/export", "/me"]);
+  });
+
+  it("keeps account data-rights dev sessions explicitly gated", async () => {
+    delete process.env["ALLOW_DEV_SESSIONS"];
+    const exported = await exportAccountDataToApi();
+
+    expect(exported).toEqual({ ok: false, error: { status: 401, message: "Authentication required." } });
     expect(calls).toHaveLength(0);
   });
 
