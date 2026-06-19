@@ -12,5 +12,5 @@ const passThrough = (_request: NextRequest) => NextResponse.next();
 export default clerkConfigured ? clerkMiddleware() : passThrough;
 
 export const config = {
-  matcher: ["/((?!_next|.*\\..*).*)", "/api/(.*)"],
+  matcher: ["/((?!_next|.*\\..*).*)", "/api/(.*)", "/__clerk/(.*)"],
 };
