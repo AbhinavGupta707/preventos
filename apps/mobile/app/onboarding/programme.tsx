@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
+import { internalProgrammeEnabled } from "../../src/config/programmes";
 import { ProgrammeChip, Screen, Text } from "../../src/ui/primitives";
 import { color, radius, space } from "../../src/ui/tokens";
 
@@ -9,12 +10,13 @@ interface ProgrammeCardProps {
   readonly tagline: string;
   readonly testID: string;
   readonly onPress?: () => void;
-  readonly status?: "open" | "private" | "referral";
+  readonly status?: "open" | "internal" | "private" | "referral";
 }
 
 function ProgrammeCard({ title, tagline, testID, onPress, status = "open" }: ProgrammeCardProps) {
   const disabled = status === "private";
-  const chipLabel = status === "open" ? "Open beta" : status === "referral" ? "Referral only" : "Private";
+  const chipLabel =
+    status === "open" ? "Open beta" : status === "internal" ? "Internal" : status === "referral" ? "Referral only" : "Private";
   const chipTone = status === "open" ? "success" : status === "referral" ? "peach" : "muted";
   return (
     <Pressable
@@ -38,6 +40,7 @@ function ProgrammeCard({ title, tagline, testID, onPress, status = "open" }: Pro
 }
 
 export default function ProgrammePicker() {
+  const nightshiftInternal = internalProgrammeEnabled("sleep");
   return (
     <Screen testID="onboarding-programme">
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
@@ -63,8 +66,13 @@ export default function ProgrammePicker() {
         <ProgrammeCard
           testID="programme-sleep"
           title="Nightshift — sleep"
-          tagline="Private testing while safety assumptions are reviewed."
-          status="private"
+          tagline={
+            nightshiftInternal
+              ? "Internal testing while safety assumptions are reviewed."
+              : "Private testing while safety assumptions are reviewed."
+          }
+          status={nightshiftInternal ? "internal" : "private"}
+          onPress={nightshiftInternal ? () => router.push("/onboarding/sleep") : undefined}
         />
         <ProgrammeCard
           testID="programme-alcohol"

@@ -88,6 +88,7 @@ pnpm db:migrate
 | `DEV_SESSION_TOKEN` / `DEV_SESSION_PERSON_ID` | Optional local only | unset | unset |
 | `PREVENTOS_API_URL` | `http://127.0.0.1:3001` when syncing | Staging API origin | Beta/prod API origin |
 | `EXPO_PUBLIC_API_URL` | unset for MockApi, or LAN/API URL | Staging API origin for live internal builds | Beta/prod API origin for live internal builds |
+| `EXPO_PUBLIC_PREVENTOS_ENABLE_STEADY_INTERNAL` / `EXPO_PUBLIC_PREVENTOS_ENABLE_NIGHTSHIFT_INTERNAL` | `false` unless testing gated mobile routes | `false` unless owner-approved private build | `false` |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | unset unless testing Clerk web locally | Web Clerk publishable key | Web Clerk publishable key |
 | `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY` | unset unless testing Clerk mobile locally | Mobile Clerk publishable key | Mobile Clerk publishable key |
 | `CLERK_JWT_TEMPLATE` / `EXPO_PUBLIC_CLERK_JWT_TEMPLATE` | optional named API token template | `preventos-api` if configured in Clerk | `preventos-api` if configured in Clerk |

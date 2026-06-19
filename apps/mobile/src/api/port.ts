@@ -30,6 +30,8 @@ export interface CoachReplyRequest {
   }>;
 }
 
+export const COACH_SAFETY_FLOW_ACTIVATED = "safety flow activated";
+
 /**
  * Typed client port to the PreventOS backend (WP2.x). Screens talk only to
  * this interface. `MockApi` implements it for offline/preview and tests;

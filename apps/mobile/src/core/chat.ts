@@ -39,6 +39,7 @@ export type ChatAction =
   | { type: "send"; text: string }
   | { type: "stream_token"; token: string }
   | { type: "stream_end" }
+  | { type: "server_crisis" }
   | { type: "crisis_dismissed" };
 
 export const emptyChat = (): ChatState => ({
@@ -93,6 +94,14 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
         ...state,
         messages: [...state.messages.slice(0, -1), { ...last, streaming: false }],
       };
+    }
+    case "server_crisis": {
+      const last = state.messages.at(-1);
+      const messages =
+        last?.role === "user" && last.text === state.pendingCoachRequest
+          ? state.messages.slice(0, -1)
+          : state.messages;
+      return { ...state, messages, pendingCoachRequest: null, crisisActive: true };
     }
     case "crisis_dismissed":
       return { ...state, crisisActive: false };

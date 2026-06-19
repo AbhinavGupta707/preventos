@@ -129,13 +129,13 @@ Checked on 2026-06-19 against draft PR #27
 
 | Area | Status | Evidence / next action |
 |---|---|---|
-| Branch and CI | Pass | PR #27 is draft/open, merge state clean, `ci / verify` passed after Phase 2. |
+| Branch and CI | Pass locally; check after each push | PR #27 is draft/open and merge state clean. `ci / verify` passed on the Phase 3 head before the critical-review follow-up; re-check GitHub Actions after every new push. |
 | Mobile app identity | Pass for internal testing | `apps/mobile/app.json` sets display name `PreventOS`, scheme `preventos`, iOS bundle id `app.preventos.mobile`, Android package `app.preventos.mobile`, and EAS project `b503d74b-58fa-4019-9cbb-39ed317a51a1`. |
 | Icons and splash | Pass for internal testing | Required app icon, splash icon, Android adaptive icon layers, monochrome icon, and favicon assets are present with expected PNG dimensions. |
 | Permissions | Pass with owner caveat | Mobile config uses `expo-notifications`; no HealthKit or Health Connect permissions are configured. Notification delivery must remain disabled while `PUSH_PROVIDER=noop`. |
 | Auth, logout, and data rights | Code-ready, owner-blocked for credentials | Clerk is env-gated; mobile settings expose sign-out when Clerk is configured and export/delete controls use server routes in live API mode. Owner must create Clerk tenants, JWT templates, allowed origins, and recovery flow settings. |
-| Rescue and crisis | Pass | Mobile crisis surface is static/offline, and the chat reducer runs the deterministic classifier before any coach request. Full `pnpm verify` re-ran the safety, mobile, API, and coach suites. |
-| Programme gating | Pass for mobile internal testing | Mobile public setup opens QuitKit and Exhale only; Nightshift is private and Steady is referral-only. Store screenshots must show only enabled QuitKit/Exhale surfaces unless the owner explicitly approves gated surfaces. |
+| Rescue and crisis | Pass | Mobile crisis surface is static/offline, the chat reducer runs the deterministic classifier before any coach request, and server-side coach `crisis_bypass` responses route to crisis instead of a fallback coach bubble. Full `pnpm verify` re-ran the safety, mobile, API, and coach suites. |
+| Programme gating | Pass for mobile internal testing | Mobile public setup opens QuitKit and Exhale only; Nightshift route files are gated behind `EXPO_PUBLIC_PREVENTOS_ENABLE_NIGHTSHIFT_INTERNAL`, and Steady is referral-only. Store screenshots must show only enabled QuitKit/Exhale surfaces unless the owner explicitly approves gated surfaces. |
 | Fireworks | Code-ready, owner-blocked for key | Fireworks remains server-side and env-driven; CI runs without `FIREWORKS_API_KEY`. Owner must set the staging key and run the Fireworks smoke command before beta traffic. |
 | Push | Registration ready, delivery blocked | Expo token registration is API-backed and consent-gated. Worker delivery is `noop` only until owner chooses provider credentials, notification copy, monitoring, and quiet-hours policy. |
 | Store accounts and devices | Blocked by owner | Apple Developer, Google Play Console, Expo credentials, physical iOS/Android devices, demo account, support URL, deletion URL, and published privacy/legal URLs are not available in this repo. Do not submit to stores from this branch. |
@@ -190,6 +190,12 @@ API URL before building. Leave it unset for offline/mock previews. Set
 that also has `ALLOW_DEV_SESSIONS=true`. Remote push token registration also
 needs the Expo project id from `apps/mobile/app.json` and a signed-in session
 whose account has granted `proactive_contact` consent.
+
+Keep `EXPO_PUBLIC_PREVENTOS_ENABLE_STEADY_INTERNAL=false` and
+`EXPO_PUBLIC_PREVENTOS_ENABLE_NIGHTSHIFT_INTERNAL=false` for consumer beta
+builds. Only set either flag for an owner-approved private/internal build; the
+Nightshift intake and diary routes redirect back to the programme picker when
+the Nightshift flag is absent.
 
 ## CI Verification
 

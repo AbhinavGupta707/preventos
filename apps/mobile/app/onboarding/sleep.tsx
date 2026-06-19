@@ -1,9 +1,10 @@
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import type { ReadinessStage } from "@preventos/domain";
 
+import { internalProgrammeEnabled } from "../../src/config/programmes";
 import { todayIso, useAppStore } from "../../src/state/store";
 import { OptionRow, Screen, Text } from "../../src/ui/primitives";
 import { color, space } from "../../src/ui/tokens";
@@ -28,6 +29,7 @@ export default function SleepIntake() {
   const [troubles, setTroubles] = useState<readonly string[]>([]);
   const [step, setStep] = useState<"troubles" | "readiness">("troubles");
   const enrol = useAppStore((s) => s.enrol);
+  if (!internalProgrammeEnabled("sleep")) return <Redirect href="/onboarding/programme" />;
 
   const finish = (readiness: ReadinessStage) => {
     enrol(

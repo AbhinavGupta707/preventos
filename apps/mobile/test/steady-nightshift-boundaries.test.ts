@@ -1,9 +1,11 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { internalProgrammeEnabled } from "../src/config/programmes";
 
 const appRoot = join(__dirname, "..", "app");
 const programmePicker = readFileSync(join(appRoot, "onboarding", "programme.tsx"), "utf8");
+const sleepIntake = readFileSync(join(appRoot, "onboarding", "sleep.tsx"), "utf8");
 const steadyReferral = readFileSync(join(appRoot, "steady-referral.tsx"), "utf8");
 const sleepDiary = readFileSync(join(appRoot, "sleep-diary.tsx"), "utf8");
 
@@ -21,5 +23,15 @@ describe("mobile Steady and Nightshift launch boundaries", () => {
     expect(sleepDiary).toContain("No score to chase");
     expect(sleepDiary).toMatch(/speak to a qualified\s+health professional/);
     expect(sleepDiary).not.toMatch(/treat(s|ment)? insomnia|CBT-?I|sleep therapy|medical device/i);
+  });
+
+  it("keeps Nightshift route-level gated unless an internal mobile flag is set", () => {
+    expect(internalProgrammeEnabled("sleep", {})).toBe(false);
+    expect(internalProgrammeEnabled("sleep", { EXPO_PUBLIC_PREVENTOS_ENABLE_NIGHTSHIFT_INTERNAL: "true" })).toBe(true);
+    expect(programmePicker).toContain('internalProgrammeEnabled("sleep")');
+    expect(sleepIntake).toContain('internalProgrammeEnabled("sleep")');
+    expect(sleepIntake).toContain('href="/onboarding/programme"');
+    expect(sleepDiary).toContain('internalProgrammeEnabled("sleep")');
+    expect(sleepDiary).toContain('href="/onboarding/programme"');
   });
 });

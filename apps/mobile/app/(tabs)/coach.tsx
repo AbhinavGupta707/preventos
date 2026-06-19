@@ -15,7 +15,7 @@ import type { CoachFrame } from "@preventos/api-client";
 import type { Vertical } from "@preventos/domain";
 
 import { api } from "../../src/api";
-import type { CoachReplyRequest } from "../../src/api/port";
+import { COACH_SAFETY_FLOW_ACTIVATED, type CoachReplyRequest } from "../../src/api/port";
 import { chatReducer, emptyChat } from "../../src/core/chat";
 import { daysWonFor, todayIso, useAppStore } from "../../src/state/store";
 import { Companion } from "../../src/ui/Companion";
@@ -78,6 +78,11 @@ export default function Coach() {
       .then((result) => {
         if (cancelled) return;
         if (!result.ok) {
+          if (result.error === COACH_SAFETY_FLOW_ACTIVATED) {
+            dispatch({ type: "server_crisis" });
+            setPendingCoachMeta(null);
+            return;
+          }
           dispatch({
             type: "stream_token",
             token: "Coach is unavailable right now. Rescue tools still work offline.",

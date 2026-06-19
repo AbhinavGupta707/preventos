@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { FetchLike, HttpRequestInit } from "@preventos/api-client";
 import { FetchApi } from "../src/api/fetch";
+import { COACH_SAFETY_FLOW_ACTIVATED } from "../src/api/port";
 
 interface Call {
   readonly method: string;
@@ -15,10 +16,11 @@ function harness(enrolStatus = 201): { fetch: FetchLike; calls: Call[] } {
   const fetch: FetchLike = (url, init?: HttpRequestInit) => {
     const path = url.replace("http://api", "");
     const method = init?.method ?? "GET";
+    const body = init?.body !== undefined ? (JSON.parse(init.body) as Record<string, unknown>) : undefined;
     calls.push({
       method,
       path,
-      ...(init?.body !== undefined ? { body: JSON.parse(init.body) as Record<string, unknown> } : {}),
+      ...(body !== undefined ? { body } : {}),
     });
     const route = (status: number, body: unknown) =>
       Promise.resolve({
@@ -33,7 +35,17 @@ function harness(enrolStatus = 201): { fetch: FetchLike; calls: Call[] } {
     if (path === "/plans") return route(201, { data: { id: "pl1", version: 1 } });
     if (path === "/logs/craving") return route(201, { data: { id: "c1", occurredAt: "now" } });
     if (path === "/logs/sleep-diary") return route(201, { data: { id: "s1", date: "2026-06-18" } });
-    if (path === "/coach/messages") return route(200, { data: { disposition: "replied", message: "Server coach." } });
+    if (path === "/coach/messages") {
+      if (body?.["text"] === "server crisis") {
+        return route(200, {
+          data: {
+            disposition: "crisis_bypass",
+            crisis: { flowId: "crisis-self-harm", steps: [], resources: [] },
+          },
+        });
+      }
+      return route(200, { data: { disposition: "replied", message: "Server coach." } });
+    }
     if (path === "/push/tokens") {
       return route(201, {
         data: { id: "pt1", platform: "ios", status: "active", updatedAt: "2026-06-18T12:00:00.000Z" },
@@ -136,6 +148,21 @@ describe("FetchApi adapter", () => {
       channel: "app",
       context: { daysWon: 3, streakActive: true, enrolledVerticals: ["smoking"] },
     });
+  });
+
+  it("surfaces server-side crisis bypass without emitting coach tokens", async () => {
+    const { fetch, calls } = harness();
+    const api = new FetchApi({ baseUrl: "http://api", fetch, getAuthToken: () => "clerk-jwt" });
+    const tokens: string[] = [];
+
+    const coach = await api.streamCoachReply("server crisis", (t) => tokens.push(t), {
+      vertical: "smoking",
+      frame: "general",
+    });
+
+    expect(coach).toEqual({ ok: false, error: COACH_SAFETY_FLOW_ACTIVATED });
+    expect(tokens).toEqual([]);
+    expect(calls.map((c) => c.path)).toEqual(["/coach/messages"]);
   });
 
   it("keeps next-best-action local until a server route exists", async () => {

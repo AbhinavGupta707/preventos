@@ -15,7 +15,7 @@ import { err, ok } from "@preventos/shared";
 
 import type { NextAction, TodayContext } from "../core/nextBestAction";
 import { MockApi } from "./mock";
-import type { ApiPort, CoachReplyRequest, JourneyEnrolment } from "./port";
+import { COACH_SAFETY_FLOW_ACTIVATED, type ApiPort, type CoachReplyRequest, type JourneyEnrolment } from "./port";
 
 export interface FetchApiConfig {
   /** Origin of apps/api, e.g. "http://10.0.2.2:3001". */
@@ -155,7 +155,7 @@ export class FetchApi implements ApiPort {
       onToken(res.value.message);
       return ok(undefined);
     }
-    return err(res.value.disposition === "crisis_bypass" ? "safety flow activated" : "empty coach reply");
+    return err(res.value.disposition === "crisis_bypass" ? COACH_SAFETY_FLOW_ACTIVATED : "empty coach reply");
   }
 
   async registerPushToken(input: PushTokenInput): Promise<Result<void, string>> {

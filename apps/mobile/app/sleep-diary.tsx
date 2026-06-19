@@ -1,7 +1,9 @@
+import { Redirect } from "expo-router";
 import { useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 
 import { api } from "../src/api";
+import { internalProgrammeEnabled } from "../src/config/programmes";
 import {
   durationLabel,
   isValidHHMM,
@@ -114,6 +116,8 @@ export default function SleepDiary() {
   const needed = sleepDiaryEntriesNeeded(entries, MIN_DIARY_ENTRIES);
   const recent = useMemo(() => entries.slice(-5).reverse(), [entries]);
   const formValid = isValidHHMM(bedTime) && isValidHHMM(getUpTime);
+
+  if (!internalProgrammeEnabled("sleep")) return <Redirect href="/onboarding/programme" />;
 
   async function saveDiary() {
     if (!formValid) {
