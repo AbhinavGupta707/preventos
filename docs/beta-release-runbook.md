@@ -122,6 +122,25 @@ The token payload is stored in `core.push_token`; the event payload records only
 person id, token id, and platform. BFO submission and Today/NBA retrieval are
 still documented local fallbacks because no server route exists yet.
 
+## Phase 3 Release QA Status
+
+Checked on 2026-06-19 against draft PR #27
+(`codex/live-beta-activation` -> `main`).
+
+| Area | Status | Evidence / next action |
+|---|---|---|
+| Branch and CI | Pass | PR #27 is draft/open, merge state clean, `ci / verify` passed after Phase 2. |
+| Mobile app identity | Pass for internal testing | `apps/mobile/app.json` sets display name `PreventOS`, scheme `preventos`, iOS bundle id `app.preventos.mobile`, Android package `app.preventos.mobile`, and EAS project `b503d74b-58fa-4019-9cbb-39ed317a51a1`. |
+| Icons and splash | Pass for internal testing | Required app icon, splash icon, Android adaptive icon layers, monochrome icon, and favicon assets are present with expected PNG dimensions. |
+| Permissions | Pass with owner caveat | Mobile config uses `expo-notifications`; no HealthKit or Health Connect permissions are configured. Notification delivery must remain disabled while `PUSH_PROVIDER=noop`. |
+| Auth, logout, and data rights | Code-ready, owner-blocked for credentials | Clerk is env-gated; mobile settings expose sign-out when Clerk is configured and export/delete controls use server routes in live API mode. Owner must create Clerk tenants, JWT templates, allowed origins, and recovery flow settings. |
+| Rescue and crisis | Pass | Mobile crisis surface is static/offline, and the chat reducer runs the deterministic classifier before any coach request. Full `pnpm verify` re-ran the safety, mobile, API, and coach suites. |
+| Programme gating | Pass for mobile internal testing | Mobile public setup opens QuitKit and Exhale only; Nightshift is private and Steady is referral-only. Store screenshots must show only enabled QuitKit/Exhale surfaces unless the owner explicitly approves gated surfaces. |
+| Fireworks | Code-ready, owner-blocked for key | Fireworks remains server-side and env-driven; CI runs without `FIREWORKS_API_KEY`. Owner must set the staging key and run the Fireworks smoke command before beta traffic. |
+| Push | Registration ready, delivery blocked | Expo token registration is API-backed and consent-gated. Worker delivery is `noop` only until owner chooses provider credentials, notification copy, monitoring, and quiet-hours policy. |
+| Store accounts and devices | Blocked by owner | Apple Developer, Google Play Console, Expo credentials, physical iOS/Android devices, demo account, support URL, deletion URL, and published privacy/legal URLs are not available in this repo. Do not submit to stores from this branch. |
+| Store copy/screenshots | Owner action | Use the consumer beta store pack and claims register on final title, subtitle, description, reviewer notes, and screenshots. Do not use web pages or screenshots that promote public Steady/Nightshift availability. |
+
 ## Local Verification
 
 From the repo root:

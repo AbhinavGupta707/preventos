@@ -23,6 +23,7 @@
 | Ads/marketing | No ads, no sale of health data, no health-data marketing profiles. | SDK inventory and privacy policy. |
 | Account deletion | In-app and public web deletion request path. | URL and app settings screenshot. |
 | Support contact | Public support URL/email shown in store and app. | Active URL and monitored inbox. |
+| Notifications | Permission prompt only after in-app primer; delivery disabled until provider approval. | Device test showing prompt choreography and API token registration; `PUSH_PROVIDER=noop` until delivery is approved. |
 
 ## Apple App Store / TestFlight
 
@@ -64,7 +65,7 @@ permission/SDK review.
 | Fitness info | No | No | Not used | No HealthKit/Health Connect beta. |
 | App interactions | Yes if analytics consented | Service providers only if analytics processor approved | Analytics, app functionality | Prefer first-party only. |
 | Diagnostics | TBD | TBD | App performance | Depends on crash reporting SDK. |
-| Device or other IDs | Yes for push/auth where needed | Service providers only | App functionality, notifications | No advertising ID use. |
+| Device or other IDs | Yes for push/auth where needed | Service providers only | App functionality, notifications | Expo push tokens are registered only after permission and consent; no advertising ID use. |
 | User-generated content | Yes | Service providers only | App functionality | Plans and coach messages. |
 
 ## Final pre-submit gate
@@ -75,3 +76,5 @@ permission/SDK review.
 - [ ] Confirm no ad SDK, tracking SDK, or unapproved analytics SDK in the binary.
 - [ ] Confirm privacy policy, support URL, and deletion URL are live.
 - [ ] Confirm all processor/register entries match App Privacy and Data Safety labels.
+- [ ] Confirm notification copy, quiet-hours policy, and delivery provider are
+      approved before switching worker delivery away from `noop`.
