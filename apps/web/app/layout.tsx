@@ -18,19 +18,23 @@ export const metadata: Metadata = {
 const clerkPublishableKey = process.env["NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"];
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  const page = (
-    <html lang="en-GB">
-      <body>
-        <SiteNav />
-        <main id="main">{children}</main>
-        <SiteFooter />
-      </body>
-    </html>
+  const content = (
+    <>
+      <SiteNav />
+      <main id="main">{children}</main>
+      <SiteFooter />
+    </>
   );
 
-  return clerkPublishableKey !== undefined && clerkPublishableKey !== "" ? (
-    <ClerkProvider publishableKey={clerkPublishableKey}>{page}</ClerkProvider>
-  ) : (
-    page
+  return (
+    <html lang="en-GB">
+      <body>
+        {clerkPublishableKey !== undefined && clerkPublishableKey !== "" ? (
+          <ClerkProvider publishableKey={clerkPublishableKey}>{content}</ClerkProvider>
+        ) : (
+          content
+        )}
+      </body>
+    </html>
   );
 }
