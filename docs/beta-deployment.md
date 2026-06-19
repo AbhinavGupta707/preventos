@@ -66,7 +66,7 @@ beta branch itself is the deployment source.
 | Service | Runtime | Build command | Start command | Required env |
 |---|---|---|---|---|
 | API | Node/Fastify | `pnpm --filter @preventos/api typecheck` | `pnpm --filter @preventos/api start` | `DATABASE_URL`, `PORT`, `HOST=0.0.0.0`, `ALLOW_DEV_SESSIONS=false`, Clerk server env |
-| Worker | Node process | `pnpm --filter @preventos/worker typecheck` | `pnpm --filter @preventos/worker start` | `DATABASE_URL` |
+| Worker | Node process | `pnpm --filter @preventos/worker typecheck` | `pnpm --filter @preventos/worker start` | `DATABASE_URL`, `PUSH_PROVIDER=noop` |
 | Web | Next.js | `pnpm --filter @preventos/web build` | `pnpm --filter @preventos/web start` | `PREVENTOS_API_URL`, `PORT`, `RATE_LIMIT_TRUSTED_PROXIES`, Clerk public/server env |
 | Console | Next.js | `pnpm --filter @preventos/console build` | `pnpm --filter @preventos/console start` | `DATABASE_URL`, `PORT` |
 | Postgres | Postgres 16 | n/a | n/a | owner-selected plan, backups, retention |
@@ -95,6 +95,7 @@ pnpm db:migrate
 | `COACH_MODEL` | unset unless testing selection | owner-selected model or unset default | owner-selected model or unset default |
 | `CLERK_SECRET_KEY` / `CLERK_PUBLISHABLE_KEY` / `CLERK_WEBHOOK_SECRET` | unset unless testing Clerk locally | owner-created Clerk app keys | owner-created Clerk app keys |
 | `CONTENT_ROOT` / `PREVENTOS_CONTENT_ROOT` | unset unless testing alternate content bundle | unset unless host path differs | unset unless host path differs |
+| `PUSH_PROVIDER` | `noop` | `noop` until owner selects delivery provider | `noop` until owner selects delivery provider |
 | `RATE_LIMIT_TRUSTED_PROXIES` | `1` | host-specific proxy hop count | host-specific proxy hop count |
 
 Do not treat Clerk as fully active just because keys exist. Launch still
@@ -106,7 +107,7 @@ and a successful end-to-end Clerk sign-in/session flow.
 | Service | Probe | Expected result |
 |---|---|---|
 | API | `GET /health` | HTTP 200 with `{ "data": { "status": "ok" } }` |
-| Worker | Process liveness and logs | Process stays up; boot logs include rule-set validation and worker loops started |
+| Worker | Process liveness and logs | Process stays up; boot logs include push provider config, rule-set validation, and worker loops started |
 | Web | `GET /` | HTTP 200; waitlist/events use API store when `PREVENTOS_API_URL` is set |
 | Console | `GET /` and smoke `/evidence` after DB env is set | HTTP 200; `/evidence` reads live aggregates and preserves k-anonymity suppression |
 | Postgres | host-native health plus `pnpm db:migrate` | migrations apply once; rerun reports none |
@@ -149,6 +150,8 @@ Safety:
 - Confirm API safety tests and coach tests pass without LLM keys.
 - In staging, send a normal tier-0 coach turn and confirm a governed reply.
 - In staging, send tier-1 and tier-2 risk text and confirm the LLM is bypassed.
+- Confirm mobile live API mode calls `/coach/messages` only for gate-cleared
+  ordinary coach text.
 - Confirm Steady public beta entry remains gated or referral-only.
 - Confirm Nightshift public beta entry remains internal/gated.
 
@@ -161,6 +164,8 @@ App stores and mobile:
 - Set only `EXPO_PUBLIC_API_URL`, `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`, and
   optionally `EXPO_PUBLIC_CLERK_JWT_TEMPLATE` for live mobile builds; never
   embed server secrets in mobile.
+- Verify granted notification permission registers a token through
+  `/push/tokens`; delivery remains disabled while `PUSH_PROVIDER=noop`.
 - Build with the intended EAS profile and install on clean iOS and Android
   devices.
 
@@ -181,6 +186,8 @@ Operations:
 - Clerk tenants, allowed origins, redirect URLs, JWT/session templates, and key
   sets.
 - Fireworks key and beta model policy.
+- Push delivery provider, credentials, notification copy approval, monitoring,
+  and quiet-hours policy.
 - Apple Developer account/team and TestFlight ownership.
 - Google Play Console account/package ownership.
 - Whether public beta remains QuitKit + Exhale only, with Steady and Nightshift

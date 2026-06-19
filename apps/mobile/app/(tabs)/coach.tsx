@@ -11,7 +11,11 @@ import {
   View,
 } from "react-native";
 
+import type { CoachFrame } from "@preventos/api-client";
+import type { Vertical } from "@preventos/domain";
+
 import { api } from "../../src/api";
+import type { CoachReplyRequest } from "../../src/api/port";
 import { chatReducer, emptyChat } from "../../src/core/chat";
 import { daysWonFor, todayIso, useAppStore } from "../../src/state/store";
 import { Companion } from "../../src/ui/Companion";
@@ -19,11 +23,22 @@ import { ProgrammeChip, Screen, Text } from "../../src/ui/primitives";
 import { color, radius, space, type } from "../../src/ui/tokens";
 
 /** Session-frame affordances — vertical-specialised entry points (WP2.6). */
-const FRAMES = ["Craving help", "Plan review", "Tough day", "Wins this week"] as const;
+const FRAMES: readonly { readonly label: string; readonly frame: CoachFrame }[] = [
+  { label: "Craving help", frame: "craving_rescue" },
+  { label: "Plan review", frame: "general" },
+  { label: "Tough day", frame: "general" },
+  { label: "Wins this week", frame: "general" },
+] as const;
+
+const lastLapseVertical = (
+  enrolments: readonly { readonly vertical: Vertical }[],
+  lapses: Readonly<Partial<Record<Vertical, readonly string[]>>>,
+): Vertical | undefined => enrolments.find((enrolment) => (lapses[enrolment.vertical]?.length ?? 0) > 0)?.vertical;
 
 export default function Coach() {
   const [state, dispatch] = useReducer(chatReducer, undefined, emptyChat);
   const [draft, setDraft] = useState("");
+  const [pendingCoachMeta, setPendingCoachMeta] = useState<CoachReplyRequest | null>(null);
   const scrollRef = useRef<ScrollView>(null);
   const enrolments = useAppStore((s) => s.enrolments);
   const lapses = useAppStore((s) => s.lapses);
@@ -36,6 +51,7 @@ export default function Coach() {
   // Crisis gate fired → scripted crisis flow, full-screen, nothing else.
   useEffect(() => {
     if (state.crisisActive) {
+      setPendingCoachMeta(null);
       dispatch({ type: "crisis_dismissed" });
       router.push("/crisis");
     }
@@ -44,15 +60,56 @@ export default function Coach() {
   // A pending request exists only for gate-cleared text; stream the reply.
   useEffect(() => {
     if (!state.pendingCoachRequest) return;
-    void api.streamCoachReply(state.pendingCoachRequest, (token) =>
-      dispatch({ type: "stream_token", token }),
-    ).then(() => dispatch({ type: "stream_end" }));
+    const request =
+      pendingCoachMeta ??
+      ({
+        vertical: enrolments[0]?.vertical ?? "smoking",
+        frame: "general",
+      } satisfies CoachReplyRequest);
+    let cancelled = false;
+    void api
+      .streamCoachReply(
+        state.pendingCoachRequest,
+        (token) => {
+          if (!cancelled) dispatch({ type: "stream_token", token });
+        },
+        request,
+      )
+      .then((result) => {
+        if (cancelled) return;
+        if (!result.ok) {
+          dispatch({
+            type: "stream_token",
+            token: "Coach is unavailable right now. Rescue tools still work offline.",
+          });
+        }
+        dispatch({ type: "stream_end" });
+        setPendingCoachMeta(null);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [state.pendingCoachRequest]);
 
-  const send = (text: string) => {
+  const makeCoachRequest = (frame: CoachFrame): CoachReplyRequest => {
+    const lapseVertical = lastLapseVertical(enrolments, lapses);
+    return {
+      vertical: enrolments[0]?.vertical ?? "smoking",
+      frame,
+      context: {
+        daysWon: companionDaysWon,
+        streakActive: companionDaysWon > 0,
+        enrolledVerticals: enrolments.map((enrolment) => enrolment.vertical),
+        ...(lapseVertical !== undefined ? { lastLapseVertical: lapseVertical } : {}),
+      },
+    };
+  };
+
+  const send = (text: string, frame: CoachFrame = "general") => {
     const trimmed = text.trim();
     if (!trimmed) return;
     setDraft("");
+    setPendingCoachMeta(makeCoachRequest(frame));
     dispatch({ type: "send", text: trimmed });
   };
 
@@ -80,13 +137,13 @@ export default function Coach() {
             <View style={styles.frames}>
               {FRAMES.map((f) => (
                 <Pressable
-                  key={f}
+                  key={f.label}
                   accessibilityRole="button"
-                  accessibilityLabel={`Start coach frame: ${f}`}
+                  accessibilityLabel={`Start coach frame: ${f.label}`}
                   style={({ pressed }) => [styles.frameChip, pressed ? styles.pressed : null]}
-                  onPress={() => send(f)}
+                  onPress={() => send(f.label, f.frame)}
                 >
-                  <ProgrammeChip label={f} tone={f === "Wins this week" ? "success" : "peach"} />
+                  <ProgrammeChip label={f.label} tone={f.label === "Wins this week" ? "success" : "peach"} />
                 </Pressable>
               ))}
             </View>

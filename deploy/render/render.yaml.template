@@ -63,6 +63,8 @@ services:
         fromDatabase:
           name: preventos-beta-postgres
           property: connectionString
+      - key: PUSH_PROVIDER
+        value: noop
 
   - type: web
     name: preventos-web-beta

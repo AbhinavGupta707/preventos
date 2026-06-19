@@ -33,6 +33,12 @@ function harness(enrolStatus = 201): { fetch: FetchLike; calls: Call[] } {
     if (path === "/plans") return route(201, { data: { id: "pl1", version: 1 } });
     if (path === "/logs/craving") return route(201, { data: { id: "c1", occurredAt: "now" } });
     if (path === "/logs/sleep-diary") return route(201, { data: { id: "s1", date: "2026-06-18" } });
+    if (path === "/coach/messages") return route(200, { data: { disposition: "replied", message: "Server coach." } });
+    if (path === "/push/tokens") {
+      return route(201, {
+        data: { id: "pt1", platform: "ios", status: "active", updatedAt: "2026-06-18T12:00:00.000Z" },
+      });
+    }
     if (path === "/me/export") return route(200, { data: { person: { id: "p1" }, identity: null } });
     if (path === "/me") return route(204, {});
     if (path === "/sleep/windows") {
@@ -111,14 +117,47 @@ describe("FetchApi adapter", () => {
     expect(calls.at(-1)?.body).toEqual({ desiredRiseTime: "07:00", effectiveFrom: "2026-06-18" });
   });
 
-  it("falls back to preview (no throw) for endpoints that don't exist yet", async () => {
+  it("streams coach replies through the live API adapter", async () => {
+    const { fetch, calls } = harness();
+    const api = new FetchApi({ baseUrl: "http://api", fetch, getAuthToken: () => "clerk-jwt" });
+    const tokens: string[] = [];
+    const coach = await api.streamCoachReply("hi", (t) => tokens.push(t), {
+      vertical: "smoking",
+      frame: "craving_rescue",
+      context: { daysWon: 3, streakActive: true, enrolledVerticals: ["smoking"] },
+    });
+    expect(coach.ok).toBe(true);
+    expect(tokens.join("")).toBe("Server coach.");
+    expect(calls.map((c) => c.path)).toEqual(["/coach/messages"]);
+    expect(calls[0]?.body).toMatchObject({
+      text: "hi",
+      vertical: "smoking",
+      frame: "craving_rescue",
+      channel: "app",
+      context: { daysWon: 3, streakActive: true, enrolledVerticals: ["smoking"] },
+    });
+  });
+
+  it("keeps next-best-action local until a server route exists", async () => {
     const { fetch, calls } = harness();
     const api = new FetchApi({ baseUrl: "http://api", fetch });
-    const tokens: string[] = [];
-    const coach = await api.streamCoachReply("hi", (t) => tokens.push(t));
-    expect(coach.ok).toBe(true);
-    expect(tokens.join("")).not.toHaveLength(0);
-    expect(calls).toHaveLength(0); // never hit the network
+    const next = await api.getNextBestAction({
+      enrolledVerticals: ["smoking"],
+      pendingDebrief: false,
+      checkinDoneToday: false,
+      hasIfThenPlan: false,
+    });
+    expect(next.ok && next.value.kind).toBe("checkin");
+    expect(calls).toHaveLength(0);
+  });
+
+  it("registers push tokens through the authenticated live adapter", async () => {
+    const { fetch, calls } = harness();
+    const api = new FetchApi({ baseUrl: "http://api", fetch, getAuthToken: () => "clerk-jwt" });
+    const res = await api.registerPushToken({ token: "ExponentPushToken[phase2]", platform: "ios" });
+    expect(res.ok).toBe(true);
+    expect(calls.map((c) => c.path)).toEqual(["/push/tokens"]);
+    expect(calls[0]?.body).toEqual({ token: "ExponentPushToken[phase2]", platform: "ios" });
   });
 
   it("uses a Clerk token provider without calling /dev/session", async () => {
@@ -145,6 +184,14 @@ describe("FetchApi adapter", () => {
     const { fetch, calls } = harness();
     const api = new FetchApi({ baseUrl: "http://api", fetch });
     const res = await api.logCraving();
+    expect(res).toEqual({ ok: false, error: "authenticated session required" });
+    expect(calls).toHaveLength(0);
+  });
+
+  it("does not register a push token without a Clerk token or explicit dev-session allowance", async () => {
+    const { fetch, calls } = harness();
+    const api = new FetchApi({ baseUrl: "http://api", fetch });
+    const res = await api.registerPushToken({ token: "ExponentPushToken[phase2]", platform: "ios" });
     expect(res).toEqual({ ok: false, error: "authenticated session required" });
     expect(calls).toHaveLength(0);
   });

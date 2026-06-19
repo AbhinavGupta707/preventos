@@ -52,6 +52,7 @@ export const EVENT_SCHEMAS = {
   "sleep.window.adjusted": z.object({ personId: uuid, windowId: uuid, version: z.number().int() }).strict(),
   "drink.logged": z.object({ personId: uuid, entryId: uuid, date: isoDate }).strict(),
   "plan.updated": z.object({ personId: uuid, planId: uuid, version: z.number().int() }).strict(),
+  "push.token_registered": z.object({ personId: uuid, tokenId: uuid, platform: z.enum(["ios", "android", "web"]) }).strict(),
   "person.erased": z.object({ personId: uuid }).strict(),
 } as const;
 

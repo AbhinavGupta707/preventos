@@ -8,3 +8,5 @@ export { DEFAULT_RULE_SET } from "./ruleset.js";
 export { assertRuleSetResolvable, loadRefUniverse, resolveRuleSetRefs } from "./refguard.js";
 export type { RefUniverse } from "./refguard.js";
 export { localStamp } from "./local-time.js";
+export { buildPushProvider, NoopPushProvider } from "./push.js";
+export type { PushDelivery, PushDeliveryProvider, PushDeliveryResult } from "./push.js";

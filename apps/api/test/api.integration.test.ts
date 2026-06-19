@@ -197,6 +197,91 @@ describe("consent", () => {
   });
 });
 
+describe("push token registration", () => {
+  it("requires a session and proactive_contact consent before storing a token", async () => {
+    const unauthenticated = await server.inject({
+      method: "POST",
+      url: "/push/tokens",
+      payload: { token: "ExponentPushToken[api-phase2]", platform: "ios" },
+    });
+    expect(unauthenticated.statusCode).toBe(401);
+
+    const { personId, token } = await signUp("api-push");
+    const noConsent = await server.inject({
+      method: "POST",
+      url: "/push/tokens",
+      headers: asUser(token),
+      payload: { token: "ExponentPushToken[api-phase2]", platform: "ios" },
+    });
+    expect(noConsent.statusCode).toBe(403);
+
+    await server.inject({
+      method: "POST",
+      url: "/consents/grant",
+      headers: asUser(token),
+      payload: { purpose: "proactive_contact" },
+    });
+    const registered = await server.inject({
+      method: "POST",
+      url: "/push/tokens",
+      headers: asUser(token),
+      payload: { token: "ExponentPushToken[api-phase2]", platform: "ios" },
+    });
+    const duplicate = await server.inject({
+      method: "POST",
+      url: "/push/tokens",
+      headers: asUser(token),
+      payload: { token: "ExponentPushToken[api-phase2]", platform: "android" },
+    });
+
+    expect(registered.statusCode).toBe(201);
+    expect(registered.json().data).toMatchObject({ platform: "ios", status: "active" });
+    expect(duplicate.statusCode).toBe(201);
+    expect(duplicate.json().data.id).toBe(registered.json().data.id);
+    expect(duplicate.json().data.platform).toBe("android");
+
+    const rows = await handle.pool.query(
+      "SELECT token, platform, status FROM core.push_token WHERE person_id = $1",
+      [personId],
+    );
+    expect(rows.rowCount).toBe(1);
+    expect(rows.rows[0]).toMatchObject({
+      token: "ExponentPushToken[api-phase2]",
+      platform: "android",
+      status: "active",
+    });
+
+    const events = await handle.pool.query(
+      "SELECT payload FROM core.event WHERE person_id = $1 AND type = 'push.token_registered' ORDER BY id",
+      [personId],
+    );
+    expect(events.rowCount).toBe(2);
+    expect(events.rows[0].payload).toMatchObject({
+      personId,
+      tokenId: registered.json().data.id,
+      platform: "ios",
+    });
+    expect(JSON.stringify(events.rows.map((row) => row.payload))).not.toContain("ExponentPushToken");
+  });
+
+  it("rejects malformed push token payloads", async () => {
+    const { token } = await signUp("api-push-bad");
+    await server.inject({
+      method: "POST",
+      url: "/consents/grant",
+      headers: asUser(token),
+      payload: { purpose: "proactive_contact" },
+    });
+    const response = await server.inject({
+      method: "POST",
+      url: "/push/tokens",
+      headers: asUser(token),
+      payload: { token: "short", platform: "pager" },
+    });
+    expect(response.statusCode).toBe(400);
+  });
+});
+
 describe("enrolment", () => {
   it("requires programme_delivery consent (403 before grant, 201 after)", async () => {
     const { personId, token } = await signUp("api-enrol");

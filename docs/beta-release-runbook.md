@@ -27,6 +27,9 @@ Code status:
   `preview-simulator`, and `production` profiles.
 - The API and worker are runnable Node services, but production hosting is not
   yet encoded as infrastructure-as-code.
+- Mobile live builds now call the authenticated API for coach replies and remote
+  push token registration. BFO/intake persistence and Today/NBA arbitration
+  remain local-only until server routes are added.
 
 Non-negotiable release boundaries:
 
@@ -46,6 +49,9 @@ Non-negotiable release boundaries:
   key sets.
 - Create the Fireworks key and set the beta model policy. Leave the legacy
   Claude fallback unset for beta unless the owner explicitly re-enables it.
+- Choose and credential a real push delivery provider after beta safety review.
+  Until then, keep worker delivery at `PUSH_PROVIDER=noop`; registered tokens
+  are stored but not sent to Expo/APNS/FCM by CI or the worker.
 - Confirm Apple Developer and Google Play Console access for internal testing.
 - Adopt consumer privacy/store documents, including LLM processor language,
   retention/deletion schedule, and no-medical-device positioning.
@@ -75,6 +81,7 @@ Optional local development:
 - `EXPO_PUBLIC_CLERK_JWT_TEMPLATE`
 - `CONTENT_ROOT`
 - `PREVENTOS_CONTENT_ROOT`
+- `PUSH_PROVIDER`
 - `RATE_LIMIT_TRUSTED_PROXIES`
 
 LLM activation. Fireworks is the chosen production coach provider; leave these
@@ -106,6 +113,15 @@ when `ALLOW_DEV_SESSIONS=true` (and mobile also sets
 `EXPO_PUBLIC_ALLOW_DEV_SESSIONS=true`). Those dev sessions are not production
 auth and must remain disabled outside local development.
 
+Current mobile runtime status: in live API mode, the mobile coach calls
+`POST /coach/messages` with a Clerk/dev bearer token and the existing
+deterministic client crisis gate still runs before the request is created.
+Remote push registration calls `POST /push/tokens` only after the OS permission
+flow grants notifications and requires `proactive_contact` consent server-side.
+The token payload is stored in `core.push_token`; the event payload records only
+person id, token id, and platform. BFO submission and Today/NBA retrieval are
+still documented local fallbacks because no server route exists yet.
+
 ## Local Verification
 
 From the repo root:
@@ -121,8 +137,10 @@ Targeted checks when iterating on release/config docs:
 ```sh
 pnpm check-licenses
 pnpm content:validate
+pnpm --filter @preventos/api-client test
 pnpm --filter @preventos/api test
 pnpm --filter @preventos/worker test
+pnpm --filter @preventos/mobile test
 pnpm --filter @preventos/mobile typecheck
 pnpm --filter @preventos/web build
 pnpm --filter @preventos/console build
@@ -150,7 +168,9 @@ ALLOW_DEV_SESSIONS=true
 For mobile-to-API internal builds, set `EXPO_PUBLIC_API_URL` to a device-reachable
 API URL before building. Leave it unset for offline/mock previews. Set
 `EXPO_PUBLIC_ALLOW_DEV_SESSIONS=true` only for local/dev builds against an API
-that also has `ALLOW_DEV_SESSIONS=true`.
+that also has `ALLOW_DEV_SESSIONS=true`. Remote push token registration also
+needs the Expo project id from `apps/mobile/app.json` and a signed-in session
+whose account has granted `proactive_contact` consent.
 
 ## CI Verification
 
@@ -257,6 +277,27 @@ is called for either elevated-risk turn. Do not run it in CI.
 Never debug LLM behavior before proving the deterministic safety classifier is
 registered and reachable.
 
+## Push Registration And Delivery Path
+
+Mobile remote push registration is implemented end-to-end for live API builds:
+
+1. The in-app primer must be accepted before the OS prompt can run.
+2. If the OS grants notification permission, mobile requests an Expo push token
+   for the configured EAS project.
+3. Mobile calls `POST /push/tokens` through `@preventos/api-client` with the
+   current bearer token.
+4. `apps/api` requires `proactive_contact` consent, stores or refreshes the
+   token in `core.push_token`, and emits `push.token_registered` with coded ids
+   only.
+5. Account export includes `push_token`; account erasure deletes it.
+
+Delivery is intentionally not active yet. `apps/worker` exposes a push delivery
+provider abstraction, but the only available provider in this build is
+`noop`. Keep `PUSH_PROVIDER=noop` in CI, staging, and beta until the owner
+selects credentials, copy approval, quiet-hours behavior, and provider-specific
+monitoring. Any non-noop value currently fails fast rather than making an
+unreviewed provider call.
+
 ## EAS, TestFlight, And Play Internal Testing
 
 Pre-build:
@@ -288,7 +329,11 @@ Internal testing checklist:
 - Verify rescue is reachable in one tap and works without network.
 - Verify crisis text routes to the scripted crisis surface and no coach reply is
   generated.
+- Verify live API builds call `/coach/messages` for ordinary coach turns and
+  never for client-gated crisis text.
 - Verify notifications permission choreography without over-promising delivery.
+- Verify remote push token registration reaches `/push/tokens` after permission
+  grant; actual delivery remains disabled while `PUSH_PROVIDER=noop`.
 - Verify privacy/consent surfaces are reachable.
 - Verify export, deletion, logout, unauthenticated, and expired-session states
   on web and mobile live API builds.
@@ -341,10 +386,12 @@ Worker:
 - Deploy exactly one active worker process per environment until queue ownership
   is documented.
 - Set `DATABASE_URL`.
+- Set `PUSH_PROVIDER=noop` until a real delivery provider has owner-approved
+  credentials, copy, monitoring, and quiet-hours behavior.
 - Keep `CONTENT_ROOT` at the deployed content bundle unless intentionally
   overriding.
-- Confirm worker boot validates rule refs and content catalog before loops
-  start.
+- Confirm worker boot logs the push provider and validates rule refs and content
+  catalog before loops start.
 
 Mobile:
 
@@ -352,7 +399,9 @@ Mobile:
 - Use server-side secrets only. Mobile gets `EXPO_PUBLIC_API_URL`,
   `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`, and optionally
   `EXPO_PUBLIC_CLERK_JWT_TEMPLATE`, never LLM or database keys.
-- Confirm push credentials and notification copy before public rollout.
+- Confirm push token registration works in live API mode. Confirm push
+  credentials, delivery provider, notification copy, and quiet-hours policy
+  before public rollout.
 
 Rollback:
 

@@ -29,6 +29,7 @@ consumer beta until their extra safety assumptions are explicitly accepted.
 | G4 Privacy pack | Drafts exist | Adopt consumer privacy policy, retention/deletion schedule, Art. 9 basis, processor list, LLM data handling, wearable data stance | Privacy/Store agent |
 | G5 Store + claims compliance | Claims lint exists | Apple/Google health disclaimers, no-medical-device language, app review notes, age gates, data safety declarations | Privacy/Store agent |
 | G6 Coach provider activation | Fireworks is primary in code; CI uses Fake with no key | Owner supplies `FIREWORKS_API_KEY` in staging, runs Fireworks smoke command, then sets server secret for beta | Fireworks Activation agent + owner |
+| G7 Push delivery activation | Remote token registration is implemented; worker delivery is `noop` | Owner chooses provider/credentials, approves notification copy and quiet-hours policy, then enables a real delivery provider after staging tests | Owner + Release/Infra agent |
 
 ## Clinical/Legal Blockers
 

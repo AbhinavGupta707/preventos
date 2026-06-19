@@ -15,6 +15,7 @@ import { registerLogRoutes } from "./routes/logs.js";
 import { registerMarketingRoutes } from "./routes/marketing.js";
 import { registerPeopleRoutes } from "./routes/people.js";
 import { registerPlanRoutes } from "./routes/plans.js";
+import { registerPushRoutes } from "./routes/push.js";
 import { registerSleepRoutes } from "./routes/sleep.js";
 
 export interface ServerDeps {
@@ -82,6 +83,7 @@ export async function buildServer(deps: ServerDeps): Promise<FastifyInstance> {
     registerEnrolmentRoutes(scope, deps.db);
     registerLogRoutes(scope, deps.db);
     registerPlanRoutes(scope, deps.db);
+    registerPushRoutes(scope, deps.db);
     registerSleepRoutes(scope, deps.db);
     registerCoachRoutes(scope, deps.db, coach);
   });

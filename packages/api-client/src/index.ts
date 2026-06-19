@@ -2,6 +2,9 @@ export { ApiClient } from "./client.js";
 export type {
   ApiClientConfig,
   ApiError,
+  CoachFrame,
+  CoachMessageInput,
+  CoachMessageView,
   ConsentChange,
   ConsentInput,
   ConsentScope,
@@ -18,6 +21,8 @@ export type {
   PlanCreateInput,
   PlanView,
   PersonDataBundle,
+  PushTokenInput,
+  PushTokenView,
   SafetyScreen,
   SignUpInput,
   SignedUpPerson,

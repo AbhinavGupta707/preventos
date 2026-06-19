@@ -189,6 +189,48 @@ export interface CravingLogged {
   readonly occurredAt: string;
 }
 
+export type CoachFrame =
+  | "general"
+  | "craving_rescue"
+  | "drink_diary_debrief"
+  | "sleep_window_explainer"
+  | "taper_check_in";
+
+export interface CoachMessageInput {
+  readonly vertical: Vertical;
+  readonly frame: CoachFrame;
+  readonly text: string;
+  readonly channel?: "app" | "web";
+  readonly context?: Readonly<{
+    readonly daysWon?: number;
+    readonly streakActive?: boolean;
+    readonly enrolledVerticals?: readonly Vertical[];
+    readonly lastLapseVertical?: Vertical;
+  }>;
+}
+
+export interface CoachMessageView {
+  readonly disposition: "replied" | "crisis_bypass" | "blocked_post_filter" | "fallback";
+  readonly message?: string;
+  readonly crisis?: Readonly<{
+    readonly flowId: string;
+    readonly steps: readonly unknown[];
+    readonly resources: readonly unknown[];
+  }>;
+}
+
+export interface PushTokenInput {
+  readonly token: string;
+  readonly platform: "ios" | "android" | "web";
+}
+
+export interface PushTokenView {
+  readonly id: string;
+  readonly platform: string;
+  readonly status: string;
+  readonly updatedAt: string;
+}
+
 export interface PersonDataBundle {
   readonly person: unknown;
   readonly identity: unknown;
